@@ -4,17 +4,23 @@
 
 If you want to build your own version of BiTGApps, you'll need to fetch the git sources:
 
-* First create initial path
+* Create initial path
 
 ```shellscript
-mkdir -p BiTGApps/sources
+mkdir -p BiTGApps
 ```
 
-* Then clone sources
+* Clone build sources
 
 ```shellscript
 git clone https://github.com/BiTGApps/BiTGApps-Build BiTGApps
 git clone https://github.com/BiTGApps/BiTGApps BiTGApps/BiTGApps
+```
+
+* Clone package sources
+
+```shellscript
+mkdir -p BiTGApps/sources
 git clone https://github.com/BiTGApps/arm-sources BiTGApps/sources/arm-sources
 git clone https://github.com/BiTGApps/arm64-sources BiTGApps/sources/arm64-sources
 git clone https://github.com/BiTGApps/aosp-sources BiTGApps/sources/aosp-sources
