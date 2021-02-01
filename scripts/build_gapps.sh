@@ -38,7 +38,7 @@ esac
 # Set defaults
 ARCH="$1"
 API="$2"
-COMMONRELEASE="$COMMONRELEASE"
+COMMONGAPPSRELEASE="$COMMONGAPPSRELEASE"
 
 # Version conflict
 TARGET_VERSION_N1="7.1.1"
@@ -177,8 +177,8 @@ makegapps() {
         # Build property variable; Do not modify
         version_N1="7.1.1"
         # Create release directory
-        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.1-${COMMONRELEASE}
-        RELEASEDIR="BiTGApps-${ARCH}-7.1.1-${COMMONRELEASE}"
+        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}
+        RELEASEDIR="BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}"
         # Create package components
         mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
         mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -264,8 +264,8 @@ makegapps() {
         # Build property variable; Do not modify
         version_N2="7.1.2"
         # Create release directory
-        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.2-${COMMONRELEASE}
-        RELEASEDIR="BiTGApps-${ARCH}-7.1.2-${COMMONRELEASE}"
+        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}
+        RELEASEDIR="BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}"
         # Create package components
         mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
         mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -357,8 +357,8 @@ makegapps() {
       version_26="8.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.0.0-${COMMONRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-8.0.0-${COMMONRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.0.0-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-8.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -448,8 +448,8 @@ makegapps() {
       version_27="8.1.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.1.0-${COMMONRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-8.1.0-${COMMONRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.1.0-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-8.1.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -539,8 +539,8 @@ makegapps() {
       version_28="9.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-9.0.0-${COMMONRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-9.0.0-${COMMONRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-9.0.0-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-9.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -631,8 +631,8 @@ makegapps() {
       version_29="10.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-10.0.0-${COMMONRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-10.0.0-${COMMONRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-10.0.0-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-10.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -720,8 +720,8 @@ makegapps() {
       version_30="11.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-11.0.0-${COMMONRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-11.0.0-${COMMONRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-11.0.0-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-11.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -823,8 +823,8 @@ makegapps() {
         # Build property variable; Do not modify
         version_N1="7.1.1"
         # Create release directory
-        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.1-${COMMONRELEASE}
-        RELEASEDIR="BiTGApps-${ARCH}-7.1.1-${COMMONRELEASE}"
+        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}
+        RELEASEDIR="BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}"
         # Create package components
         mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
         mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -911,8 +911,8 @@ makegapps() {
         # Build property variable; Do not modify
         version_N2="7.1.2"
         # Create release directory
-        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.2-${COMMONRELEASE}
-        RELEASEDIR="BiTGApps-${ARCH}-7.1.2-${COMMONRELEASE}"
+        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}
+        RELEASEDIR="BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}"
         # Create package components
         mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
         mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -1005,8 +1005,8 @@ makegapps() {
       version_26="8.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.0.0-${COMMONRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-8.0.0-${COMMONRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.0.0-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-8.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -1097,8 +1097,8 @@ makegapps() {
       version_27="8.1.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.1.0-${COMMONRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-8.1.0-${COMMONRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.1.0-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-8.1.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -1189,8 +1189,8 @@ makegapps() {
       version_28="9.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-9.0.0-${COMMONRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-9.0.0-${COMMONRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-9.0.0-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-9.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -1283,8 +1283,8 @@ makegapps() {
       version_29="10.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-10.0.0-${COMMONRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-10.0.0-${COMMONRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-10.0.0-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-10.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -1372,8 +1372,8 @@ makegapps() {
       version_30="11.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-11.0.0-${COMMONRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-11.0.0-${COMMONRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-11.0.0-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-11.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP

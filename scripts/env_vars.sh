@@ -20,8 +20,11 @@
 # GNU General Public License for more details.
 ##############################################################
 
-# Set release tag for all build
-export COMMONRELEASE=""
+# Set release tag in all GApps build file
+export COMMONGAPPSRELEASE=""
+
+# Set release tag in all Addons build file
+export COMMONADDONRELEASE=""
 
 # Set GApps package release tag; Used by installer
 export GAPPS_RELEASE='""'

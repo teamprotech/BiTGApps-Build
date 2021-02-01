@@ -40,7 +40,7 @@ fi
 # Set defaults
 VARIANT="$1"
 ARCH="common"
-COMMONRELEASE="$COMMONRELEASE"
+COMMONADDONRELEASE="$COMMONADDONRELEASE"
 
 # Build defaults
 BUILDDIR="build"
@@ -131,8 +131,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps Assistant Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-assistant-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-assistant-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-assistant-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-assistant-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -172,8 +172,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps Calculator Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-calculator-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-calculator-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-calculator-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-calculator-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -212,8 +212,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps Calendar Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-calendar-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-calendar-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-calendar-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-calendar-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -252,8 +252,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps Contacts Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-contacts-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-contacts-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-contacts-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-contacts-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -292,8 +292,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps DeskClock Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-deskclock-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-deskclock-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-deskclock-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-deskclock-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -332,8 +332,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps Dialer Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-dialer-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-dialer-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-dialer-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-dialer-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -373,8 +373,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps Gboard Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-gboard-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-gboard-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-gboard-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-gboard-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -414,8 +414,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps Markup Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-markup-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-markup-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-markup-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-markup-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -457,8 +457,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps Messages Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-messages-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-messages-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-messages-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-messages-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -500,8 +500,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps Photos Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-photos-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-photos-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-photos-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-photos-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -541,8 +541,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps SoundPicker Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-soundpicker-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-soundpicker-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -581,8 +581,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps YouTube Vanced Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-vanced-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-vanced-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-vanced-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-vanced-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -622,8 +622,8 @@ makeaddonv2() {
     SOURCES_AARCH64="sources/addon-sources/arm64"
     echo "Generating BiTGApps Wellbeing Addon package"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-wellbeing-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-wellbeing-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP

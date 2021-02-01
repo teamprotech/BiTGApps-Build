@@ -27,7 +27,7 @@ fi
 
 # Set defaults
 ARCH="$1"
-COMMONRELEASE="$COMMONRELEASE"
+COMMONADDONRELEASE="$COMMONADDONRELEASE"
 
 # Build defaults
 BUILDDIR="build"
@@ -104,8 +104,8 @@ makeaddonv1() {
     SOURCES_ARMEABI="sources/addon-sources/$ARCH"
     echo "Generating BiTGApps Addon package for $ARCH architecture"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-${ARCH}-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-${ARCH}-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-${ARCH}-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-${ARCH}-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -160,8 +160,8 @@ makeaddonv1() {
     SOURCES_AARCH64="sources/addon-sources/$ARCH"
     echo "Generating BiTGApps Addon package for $ARCH architecture"
     # Create release directory
-    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-${ARCH}-${COMMONRELEASE}
-    RELEASEDIR="BiTGApps-addon-${ARCH}-${COMMONRELEASE}"
+    mkdir $BUILDDIR/$ARCH/BiTGApps-addon-${ARCH}-${COMMONADDONRELEASE}
+    RELEASEDIR="BiTGApps-addon-${ARCH}-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
