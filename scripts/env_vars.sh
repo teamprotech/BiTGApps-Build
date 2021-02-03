@@ -61,3 +61,12 @@ export TARGET_PHOTOS_GOOGLE='"true"'
 export TARGET_SOUNDPICKER_GOOGLE='"true"'
 export TARGET_VANCED_GOOGLE='"true"'
 export TARGET_WELLBEING_GOOGLE='"true"'
+
+# Set hosting server; Used by release script
+export SERVER=""
+
+# Set "1" for test release else leave empty; Used by release script
+export TESTRELEASE=""
+
+# Set APK release tag; Used by release script
+export APKRELEASE=""
