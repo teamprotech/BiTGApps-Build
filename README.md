@@ -65,6 +65,32 @@ To build specific BiTGApps Additional package variant for both platforms
 make assistant
 ```
 
+Updated sources can be uploaded:
+
+* For BiTGApps packages and Additional package
+
+```shellscript
+./upload_sources.sh [arch]
+```
+
+* For BiTGApps Additional packages contain files of both platforms
+
+```shellscript
+./upload_sources.sh common
+```
+
+* For BiTGApps configuration files
+
+```shellscript
+./upload_sources.sh config
+```
+
+* For BiTGApps APK
+
+```shellscript
+./upload_sources.sh apk
+```
+
 ## License
 
 The BiTGApps Project itself is licensed under the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt).
