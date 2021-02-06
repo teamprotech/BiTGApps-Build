@@ -20,7 +20,7 @@ git clone https://github.com/BiTGApps/BiTGApps BiTGApps/BiTGApps
 * Clone package sources
 
 ```shellscript
-mkdir -p BiTGApps/sources
+mkdir BiTGApps/sources
 git clone https://github.com/BiTGApps/arm-sources BiTGApps/sources/arm-sources
 git clone https://github.com/BiTGApps/arm64-sources BiTGApps/sources/arm64-sources
 git clone https://github.com/BiTGApps/aosp-sources BiTGApps/sources/aosp-sources
@@ -33,6 +33,11 @@ Before building, set environmental variables. [Click here](https://github.com/Bi
 
 ```shellscript
 nano scripts/env_vars.sh
+```
+
+After setting environmental variables:
+
+```shellscript
 . scripts/env_vars.sh
 ```
 
@@ -65,7 +70,29 @@ To build specific BiTGApps Additional package variant for both platforms
 make assistant
 ```
 
-Updated sources can be uploaded:
+**For contributors, updated sources can be uploaded.**
+
+Before uploading, set environmental variables (Auto-generated):
+
+* For GApps release
+
+```shellscript
+. ENV/api.sh
+```
+
+* For Addon release (Platform based)
+
+```shellscript
+. ENV/platform.sh
+```
+
+* For specific Addons release (Variant based)
+
+```shellscript
+. ENV/variant.sh
+```
+
+After setting environmental variables:
 
 * For BiTGApps packages and Additional package
 

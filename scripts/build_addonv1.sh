@@ -20,8 +20,16 @@
 # GNU General Public License for more details.
 ##############################################################
 
+# Check availability of environmental variables
+if { [ ! -n "$COMMONADDONRELEASE" ] ||
+     [ ! -n "$ADDON_RELEASE" ]; }; then
+     echo "! Environmental variables not set. Aborting..."
+  exit 1
+fi
+
 # Check architecture
 if { [ "$1" != "arm" ] && [ "$1" != "arm64" ]; }; then
+  echo "Usage: $0 (arm|arm64)"
   exit 1
 fi
 
@@ -40,7 +48,6 @@ ZIPSIGNER="BiTGApps/tools/zipsigner-resources/zipsigner.jar"
 UPDATEBINARY="BiTGApps/scripts/update-binary"
 UPDATESCRIPT="BiTGApps/scripts/updater-script"
 INSTALLER="BiTGApps/scripts/installer.sh"
-LICENSE="BiTGApps/scripts/LICENSE"
 BUSYBOX="BiTGApps/tools/busybox-resources/busybox-arm"
 
 # Set ZIP structure
@@ -86,6 +93,26 @@ ZIPTYPE=""
 ADDON=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
 }
 
+# Set license for pre-built package
+makelicense() {
+echo "This BiTGApps build is provided ONLY as courtesy by BiTGApps.com and is without warranty of ANY kind.
+
+This build is authored by the TheHitMan7 and is as such protected by BiTGApps.com's copyright.
+This build is provided under the terms that it can be freely used for personal use only and is not allowed to be mirrored to the public other than BiTGApps.com.
+You are not allowed to modify this build for further (re)distribution.
+
+The APKs found in this build are developed and owned by Google Inc.
+They are included only for your convenience, neither BiTGApps.com and The BiTGApps Project have no ownership over them.
+The user self is responsible for obtaining the proper licenses for the APKs, e.g. via Google's Play Store.
+To use Google's applications you accept to Google's license agreement and further distribution of Google's application
+are subject of Google's terms and conditions, these can be found at http://www.google.com/policies/
+
+BusyBox is subject to the GPLv2, its license can be found at https://www.busybox.net/license.html
+
+Any other intellectual property of this build, like e.g. the file and folder structure and the installation scripts are part of The BiTGApps Project and are subject
+to the GPLv3. The applicable license can be found at https://github.com/BiTGApps/BiTGApps/blob/master/LICENSE" >"$BUILDDIR/$ARCH/$RELEASEDIR/LICENSE"
+}
+
 # Main
 makeaddonv1() {
   # Create build directory
@@ -94,6 +121,8 @@ makeaddonv1() {
   # Create out directory
   test -d $OUTDIR || mkdir $OUTDIR
   test -d $OUTDIR/$ARCH || mkdir $OUTDIR/$ARCH
+  # Create ENV directory
+  test -d $OUTDIR/ENV || mkdir $OUTDIR/ENV
   # Install variable; Do not modify
   ZIPTYPE='"addon"'
   CONFIG='"conf"'
@@ -134,13 +163,14 @@ makeaddonv1() {
     cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-    cp -f $LICENSE $BUILDDIR/$ARCH/$RELEASEDIR
     cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
     # Create utility script
     makeutilityscript
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$CONFIG"
+    # Create LICENSE
+    makelicense
     # Create ZIP
     cd $BUILDDIR/$ARCH/$RELEASEDIR
     zip -qr9 ${RELEASEDIR}.zip *
@@ -148,6 +178,9 @@ makeaddonv1() {
     mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
     # Sign ZIP
     java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
+      echo "TARGET_PLATFOMR_ARM" >> $OUTDIR/ENV/env_platform.sh
+    fi
     # List signed ZIP
     ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     # Wipe unsigned ZIP
@@ -190,13 +223,14 @@ makeaddonv1() {
     cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-    cp -f $LICENSE $BUILDDIR/$ARCH/$RELEASEDIR
     cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
     # Create utility script
     makeutilityscript
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$CONFIG"
+    # Create LICENSE
+    makelicense
     # Create ZIP
     cd $BUILDDIR/$ARCH/$RELEASEDIR
     zip -qr9 ${RELEASEDIR}.zip *
@@ -204,6 +238,9 @@ makeaddonv1() {
     mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
     # Sign ZIP
     java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
+      echo "TARGET_PLATFOMR_ARM64" >> $OUTDIR/ENV/env_platform.sh
+    fi
     # List signed ZIP
     ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     # Wipe unsigned ZIP
