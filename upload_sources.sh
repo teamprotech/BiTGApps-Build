@@ -229,24 +229,24 @@ config_sources() {
   if [ "$CONFIG" == "config" ]; then
     if [ ! -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "ga" ]; then
-        curl -T addon-config.prop "ftp://${user}:${password}@${host}/config/Addon/addon-config.prop"
-        curl -T boot-config.prop "ftp://${user}:${password}@${host}/config/Bootlog/boot-config.prop"
-        curl -T cts-config.prop "ftp://${user}:${password}@${host}/config/Safetynet/cts-config.prop"
-        curl -T setup-config.prop "ftp://${user}:${password}@${host}/config/SetupWizard/setup-config.prop"
+        curl -T BiTGApps/configs/addon-config.prop "ftp://${user}:${password}@${host}/config/Addon/addon-config.prop"
+        curl -T BiTGApps/configs/boot-config.prop "ftp://${user}:${password}@${host}/config/Bootlog/boot-config.prop"
+        curl -T BiTGApps/configs/cts-config.prop "ftp://${user}:${password}@${host}/config/Safetynet/cts-config.prop"
+        curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${password}@${host}/config/SetupWizard/setup-config.prop"
       fi
       if [ "$SERVER" == "dh" ]; then
-        scp addon-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Addon
-        scp boot-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Bootlog
-        scp cts-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Safetynet
-        scp setup-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/SetupWizard
+        scp BiTGApps/configs/addon-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Addon
+        scp BiTGApps/configs/boot-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Bootlog
+        scp BiTGApps/configs/cts-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Safetynet
+        scp BiTGApps/configs/setup-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/SetupWizard
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "sf" ]; then
-        scp addon-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Addon
-        scp boot-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Bootlog
-        scp cts-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Safetynet
-        scp setup-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/SetupWizard
+        scp BiTGApps/configs/addon-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Addon
+        scp BiTGApps/configs/boot-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Bootlog
+        scp BiTGApps/configs/cts-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Safetynet
+        scp BiTGApps/configs/setup-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/SetupWizard
       fi
     fi
   fi
