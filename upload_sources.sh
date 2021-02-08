@@ -229,24 +229,24 @@ config_sources() {
   if [ "$CONFIG" == "config" ]; then
     if [ ! -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "ga" ]; then
-        curl -T BiTGApps/configs/addon-config.prop "ftp://${user}:${password}@${host}/config/Addon/addon-config.prop"
-        curl -T BiTGApps/configs/boot-config.prop "ftp://${user}:${password}@${host}/config/Bootlog/boot-config.prop"
-        curl -T BiTGApps/configs/cts-config.prop "ftp://${user}:${password}@${host}/config/Safetynet/cts-config.prop"
-        curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${password}@${host}/config/SetupWizard/setup-config.prop"
+        $TARGET_CONFIG_ADDON && curl -T BiTGApps/configs/addon-config.prop "ftp://${user}:${password}@${host}/config/Addon/addon-config.prop"
+        $TARGET_CONFIG_BOOT && curl -T BiTGApps/configs/boot-config.prop "ftp://${user}:${password}@${host}/config/Bootlog/boot-config.prop"
+        $TARGET_CONFIG_CTS && curl -T BiTGApps/configs/cts-config.prop "ftp://${user}:${password}@${host}/config/Safetynet/cts-config.prop"
+        $TARGET_CONFIG_SETUP && curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${password}@${host}/config/SetupWizard/setup-config.prop"
       fi
       if [ "$SERVER" == "dh" ]; then
-        scp BiTGApps/configs/addon-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Addon
-        scp BiTGApps/configs/boot-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Bootlog
-        scp BiTGApps/configs/cts-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Safetynet
-        scp BiTGApps/configs/setup-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/SetupWizard
+        $TARGET_CONFIG_ADDON && scp BiTGApps/configs/addon-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Addon
+        $TARGET_CONFIG_BOOT && scp BiTGApps/configs/boot-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Bootlog
+        $TARGET_CONFIG_CTS && scp BiTGApps/configs/cts-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Safetynet
+        $TARGET_CONFIG_SETUP && scp BiTGApps/configs/setup-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/SetupWizard
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "sf" ]; then
-        scp BiTGApps/configs/addon-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Addon
-        scp BiTGApps/configs/boot-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Bootlog
-        scp BiTGApps/configs/cts-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Safetynet
-        scp BiTGApps/configs/setup-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/SetupWizard
+        $TARGET_CONFIG_ADDON && scp BiTGApps/configs/addon-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Addon
+        $TARGET_CONFIG_BOOT && scp BiTGApps/configs/boot-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Bootlog
+        $TARGET_CONFIG_CTS && scp BiTGApps/configs/cts-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Safetynet
+        $TARGET_CONFIG_SETUP && scp BiTGApps/configs/setup-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/SetupWizard
       fi
     fi
   fi

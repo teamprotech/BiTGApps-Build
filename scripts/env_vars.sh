@@ -70,3 +70,15 @@ export TESTRELEASE=""
 
 # Set APK release tag; Used by release script
 export APKRELEASE=""
+
+# Set Addon config for upload
+export TARGET_CONFIG_ADDON="false"
+
+# Set Boot log config for upload
+export TARGET_CONFIG_BOOT="false"
+
+# Set CTS config for upload
+export TARGET_CONFIG_CTS="false"
+
+# Set SetupWizard config for upload
+export TARGET_CONFIG_SETUP="false"
