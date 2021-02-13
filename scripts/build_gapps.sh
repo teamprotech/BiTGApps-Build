@@ -93,6 +93,7 @@ INSTALLER="BiTGApps/scripts/installer.sh"
 CONFIG="BiTGApps/scripts/config.prop"
 DATA="BiTGApps/scripts/data.prop"
 BOOTLOG="BiTGApps/scripts/init.boot.rc"
+USF="BiTGApps/scripts/init.usf.rc"
 PM="BiTGApps/scripts/pm.sh"
 BUSYBOX="BiTGApps/tools/busybox-resources/busybox-arm"
 SQLITE_ARMEABI="BiTGApps/tools/sqlite-resources/armeabi-v7a/sqlite-static"
@@ -852,6 +853,7 @@ makegapps() {
       cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $USF $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -1539,6 +1541,7 @@ makegapps() {
       cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $USF $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
