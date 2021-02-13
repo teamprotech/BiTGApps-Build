@@ -100,6 +100,13 @@ SQLITE_AARCH64="BiTGApps/tools/sqlite-resources/arm64-v8a/sqlite-static"
 ZIPALIGN_ARMEABI="BiTGApps/tools/zipalign-resources/armeabi-v7a/zipalign-static"
 ZIPALIGN_AARCH64="BiTGApps/tools/zipalign-resources/arm64-v8a/zipalign-static"
 
+# Set patched keystore sources
+API_26_KEYSTORE="BiTGApps/tools/safetynet-resources/26"
+API_27_KEYSTORE="BiTGApps/tools/safetynet-resources/27"
+API_28_KEYSTORE="BiTGApps/tools/safetynet-resources/28"
+API_29_KEYSTORE="BiTGApps/tools/safetynet-resources/29"
+API_30_KEYSTORE="BiTGApps/tools/safetynet-resources/30"
+
 # Set ZIP structure
 METADIR="META-INF/com/google/android"
 ZIP="zip"
@@ -108,6 +115,10 @@ SYS="$ZIP/sys"
 AOSPZIP="$ZIP/aosp"
 AOSPCORE="$ZIP/aosp/core"
 AOSPSYS="$ZIP/aosp/sys"
+USF="USF"
+USFAPI="$API"
+USFBIN="bin"
+USFLIB="lib64"
 
 # Set replace line
 replace_line() {
@@ -798,6 +809,10 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFBIN
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFLIB
       # Install app packages
       cp -f $SOURCESv30/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -827,6 +842,9 @@ makegapps() {
       cp -f $AOSPSOURCESv30/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install patched keystore
+      cp -f $API_30_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
+      cp -f $API_30_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -1478,6 +1496,10 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFBIN
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFLIB
       # Install app packages
       cp -f $SOURCESv30/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1507,6 +1529,9 @@ makegapps() {
       cp -f $AOSPSOURCESv30/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install patched keystore
+      cp -f $API_30_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
+      cp -f $API_30_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
