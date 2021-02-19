@@ -96,6 +96,7 @@ BOOTLOG="BiTGApps/scripts/init.boot.rc"
 SPL="BiTGApps/scripts/init.spl.rc"
 USF="BiTGApps/scripts/init.usf.rc"
 PM="BiTGApps/scripts/pm.sh"
+OTA="BiTGApps/scripts/90-bitgapps.sh"
 BUSYBOX="BiTGApps/tools/busybox-resources/busybox-arm"
 SQLITE_ARMEABI="BiTGApps/tools/sqlite-resources/armeabi-v7a/sqlite-static"
 SQLITE_AARCH64="BiTGApps/tools/sqlite-resources/arm64-v8a/sqlite-static"
@@ -198,6 +199,16 @@ Zipalign is subject to the Apache License, Version 2.0 developed and owned by Go
 
 Any other intellectual property of this build, like e.g. the file and folder structure and the installation scripts are part of The BiTGApps Project and are subject
 to the GPLv3. The applicable license can be found at https://github.com/BiTGApps/BiTGApps/blob/master/LICENSE" >"$BUILDDIR/$ARCH/$RELEASEDIR/LICENSE"
+}
+
+# Compress and add OTA survival script
+makeota() {
+  cp -f $OTA $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  cd $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  # Only compress in 'xz' format
+  tar -cJf "Addon.tar.xz" 90-bitgapps.sh
+  rm -rf 90-bitgapps.sh
+  cd ../../../..
 }
 
 # Main
@@ -306,6 +317,8 @@ makegapps() {
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
         # Create LICENSE
         makelicense
+        # Add OTA script
+        makeota
         # Create ZIP
         cd $BUILDDIR/$ARCH/$RELEASEDIR
         zip -qr9 ${RELEASEDIR}.zip *
@@ -397,6 +410,8 @@ makegapps() {
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
         # Create LICENSE
         makelicense
+        # Add OTA script
+        makeota
         # Create ZIP
         cd $BUILDDIR/$ARCH/$RELEASEDIR
         zip -qr9 ${RELEASEDIR}.zip *
@@ -493,6 +508,8 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Create LICENSE
       makelicense
+      # Add OTA script
+      makeota
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -588,6 +605,8 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Create LICENSE
       makelicense
+      # Add OTA script
+      makeota
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -684,6 +703,8 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Create LICENSE
       makelicense
+      # Add OTA script
+      makeota
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -777,6 +798,8 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Create LICENSE
       makelicense
+      # Add OTA script
+      makeota
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -881,6 +904,8 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Create LICENSE
       makelicense
+      # Add OTA script
+      makeota
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -990,6 +1015,8 @@ makegapps() {
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
         # Create LICENSE
         makelicense
+        # Add OTA script
+        makeota
         # Create ZIP
         cd $BUILDDIR/$ARCH/$RELEASEDIR
         zip -qr9 ${RELEASEDIR}.zip *
@@ -1082,6 +1109,8 @@ makegapps() {
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
         # Create LICENSE
         makelicense
+        # Add OTA script
+        makeota
         # Create ZIP
         cd $BUILDDIR/$ARCH/$RELEASEDIR
         zip -qr9 ${RELEASEDIR}.zip *
@@ -1179,6 +1208,8 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Create LICENSE
       makelicense
+      # Add OTA script
+      makeota
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1275,6 +1306,8 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Create LICENSE
       makelicense
+      # Add OTA script
+      makeota
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1373,6 +1406,8 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Create LICENSE
       makelicense
+      # Add OTA script
+      makeota
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1466,6 +1501,8 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Create LICENSE
       makelicense
+      # Add OTA script
+      makeota
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1570,6 +1607,8 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Create LICENSE
       makelicense
+      # Add OTA script
+      makeota
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
