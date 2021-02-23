@@ -41,6 +41,12 @@ export TARGET_DIRTY_INSTALL='""'
 # Set release tag; Used by installer
 export TARGET_RELEASE_TAG='""'
 
+# Set release tag; Used by OTA script
+export GAPPS_RELEASE_TAG=""
+
+# Set system layout for release tag function; used by build script
+export COMMON_SYSTEM_LAYOUT=''
+
 # Set release date; Used by build property file
 export BuildDate=""
 

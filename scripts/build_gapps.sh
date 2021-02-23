@@ -26,6 +26,8 @@ if { [ ! -n "$COMMONGAPPSRELEASE" ] ||
      [ ! -n "$TARGET_GAPPS_RELEASE" ] ||
      [ ! -n "$TARGET_DIRTY_INSTALL" ] ||
      [ ! -n "$TARGET_RELEASE_TAG" ] ||
+     [ ! -n "$GAPPS_RELEASE_TAG" ] ||
+     [ ! -n "$COMMON_SYSTEM_LAYOUT" ] ||
      [ ! -n "$BuildDate" ] ||
      [ ! -n "$BuildID" ]; }; then
      echo "! Environmental variables not set. Aborting..."
@@ -205,6 +207,8 @@ to the GPLv3. The applicable license can be found at https://github.com/BiTGApps
 makeota() {
   cp -f $OTA $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
   cd $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  # Change Release Tag string before compressing
+  replace_line "90-bitgapps.sh" 'ro.gapps.release_tag' "  insert_line $COMMON_SYSTEM_LAYOUT/build.prop 'ro.gapps.release_tag=$GAPPS_RELEASE_TAG' after 'net.bt.name=Android' 'ro.gapps.release_tag=$GAPPS_RELEASE_TAG'"
   # Only compress in 'xz' format
   tar -cJf "Addon.tar.xz" 90-bitgapps.sh
   rm -rf 90-bitgapps.sh
