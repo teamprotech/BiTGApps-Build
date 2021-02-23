@@ -125,7 +125,7 @@ AOSPZIP="$ZIP/aosp"
 AOSPCORE="$ZIP/aosp/core"
 AOSPSYS="$ZIP/aosp/sys"
 OVERLAY="$ZIP/overlay"
-USF="USF"
+USFD="USF"
 USFAPI="$API"
 USFBIN="bin"
 USFLIB="lib64"
@@ -843,10 +843,10 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv30/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -877,8 +877,8 @@ makegapps() {
       cp -f $AOSPSOURCESv30/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Install patched keystore
-      cp -f $API_30_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
-      cp -f $API_30_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
+      cp -f $API_30_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
+      cp -f $API_30_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -949,10 +949,10 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv31/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv31/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -983,8 +983,8 @@ makegapps() {
       cp -f $AOSPSOURCESv31/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Install patched keystore
-      cp -f $API_31_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
-      cp -f $API_31_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
+      cp -f $API_31_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
+      cp -f $API_31_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -1652,10 +1652,10 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv30/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1686,8 +1686,8 @@ makegapps() {
       cp -f $AOSPSOURCESv30/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Install patched keystore
-      cp -f $API_30_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
-      cp -f $API_30_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
+      cp -f $API_30_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
+      cp -f $API_30_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -1758,10 +1758,10 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv31/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv31/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1792,8 +1792,8 @@ makegapps() {
       cp -f $AOSPSOURCESv31/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Install patched keystore
-      cp -f $API_31_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
-      cp -f $API_31_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
+      cp -f $API_31_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
+      cp -f $API_31_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
