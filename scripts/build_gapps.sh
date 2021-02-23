@@ -845,8 +845,8 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFLIB
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv30/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -951,8 +951,8 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFLIB
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv31/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv31/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1654,8 +1654,8 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFLIB
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv30/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1760,8 +1760,8 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFLIB
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFBIN
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USF/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv31/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv31/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
