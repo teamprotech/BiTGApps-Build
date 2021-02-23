@@ -29,7 +29,7 @@ git clone https://github.com/BiTGApps/addon-sources BiTGApps/sources/addon-sourc
 
 **To build BiTGApps you'll need the Android build tools installed and set-up in your $PATH. If you use Ubuntu you can check out [@mfonville's Android build tools for Ubuntu](http://mfonville.github.io/android-build-tools/).**
 
-Before building, set environmental variables. [Click here](https://github.com/BiTGApps/BiTGApps/wiki/Environmental-Variables) on How To Set.
+Before building, set environmental variables. [Click here](https://github.com/BiTGApps/BiTGApps/blob/master/docs/variables.md) on How To Set.
 
 ```shellscript
 nano scripts/env_vars.sh
