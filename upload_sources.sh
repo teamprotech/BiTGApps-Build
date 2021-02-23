@@ -63,6 +63,7 @@ arm_sources() {
     if [ ! -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "ga" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
+          $TARGET_API_31 && curl -T out/arm/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/arm/S/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_30 && curl -T out/arm/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/arm/R/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_29 && curl -T out/arm/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/arm/Q/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_28 && curl -T out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/arm/Pie/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
@@ -77,6 +78,7 @@ arm_sources() {
       fi
       if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
+          $TARGET_API_31 && scp out/arm/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/S
           $TARGET_API_30 && scp out/arm/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/R
           $TARGET_API_29 && scp out/arm/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/Q
           $TARGET_API_28 && scp out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/Pie
@@ -93,6 +95,7 @@ arm_sources() {
     if [ -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "sf" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
+          $TARGET_API_31 && scp out/arm/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/31
           $TARGET_API_30 && scp out/arm/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/30
           $TARGET_API_29 && scp out/arm/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/29
           $TARGET_API_28 && scp out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/28
@@ -115,6 +118,7 @@ arm64_sources() {
     if [ ! -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "ga" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
+          $TARGET_API_31 && curl -T out/arm64/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/arm64/S/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_30 && curl -T out/arm64/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/arm64/R/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_29 && curl -T out/arm64/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/arm64/Q/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_28 && curl -T out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/arm64/Pie/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
@@ -129,6 +133,7 @@ arm64_sources() {
       fi
       if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
+          $TARGET_API_31 && scp out/arm64/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/S
           $TARGET_API_30 && scp out/arm64/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/R
           $TARGET_API_29 && scp out/arm64/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/Q
           $TARGET_API_28 && scp out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/Pie
@@ -145,6 +150,7 @@ arm64_sources() {
     if [ -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "sf" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
+          $TARGET_API_31 && scp out/arm64/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/31
           $TARGET_API_30 && scp out/arm64/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/30
           $TARGET_API_29 && scp out/arm64/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/29
           $TARGET_API_28 && scp out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/28

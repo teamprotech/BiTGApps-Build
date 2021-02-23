@@ -52,6 +52,11 @@ set_env_api() {
     else
       export TARGET_API_30="false"
     fi
+    if [ -n "$(cat out/ENV/env_api.sh | grep TARGET_API_31)" ]; then
+      export TARGET_API_31="true"
+    else
+      export TARGET_API_31="false"
+    fi
   else
     echo "! API script not found. Aborting..."
     exit 1
