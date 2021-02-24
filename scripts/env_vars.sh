@@ -53,6 +53,9 @@ export BuildDate=""
 # Set release tag; Used by build property file
 export BuildID=""
 
+# Set architecture for Markup lib; used by build script
+export TARGET_ARCH=""
+
 # Set non config based Addons target; Used by installer
 export TARGET_ASSISTANT_GOOGLE='"true"'
 export TARGET_CALCULATOR_GOOGLE='"true"'
