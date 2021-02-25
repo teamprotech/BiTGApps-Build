@@ -112,8 +112,6 @@ echo '#!/sbin/sh
 REL=""
 ZIPTYPE=""
 ADDON=""
-ARMEABI=""
-AARCH64=""
 TARGET_ASSISTANT_GOOGLE="false"
 TARGET_CALCULATOR_GOOGLE="false"
 TARGET_CALENDAR_GOOGLE="false"
@@ -189,8 +187,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ASSISTANT_GOOGLE="" TARGET_ASSISTANT_GOOGLE="$TARGET_ASSISTANT_GOOGLE"
     # Create LICENSE
     makelicense
@@ -235,8 +231,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CALCULATOR_GOOGLE="" TARGET_CALCULATOR_GOOGLE="$TARGET_CALCULATOR_GOOGLE"
     # Create LICENSE
     makelicense
@@ -281,8 +275,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CALENDAR_GOOGLE="" TARGET_CALENDAR_GOOGLE="$TARGET_CALENDAR_GOOGLE"
     # Create LICENSE
     makelicense
@@ -327,8 +319,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONTACTS_GOOGLE="" TARGET_CONTACTS_GOOGLE="$TARGET_CONTACTS_GOOGLE"
     # Create LICENSE
     makelicense
@@ -373,8 +363,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DESKCLOCK_GOOGLE="" TARGET_DESKCLOCK_GOOGLE="$TARGET_DESKCLOCK_GOOGLE"
     # Create LICENSE
     makelicense
@@ -420,8 +408,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIALER_GOOGLE="" TARGET_DIALER_GOOGLE="$TARGET_DIALER_GOOGLE"
     # Create LICENSE
     makelicense
@@ -467,8 +453,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GBOARD_GOOGLE="" TARGET_GBOARD_GOOGLE="$TARGET_GBOARD_GOOGLE"
     # Create LICENSE
     makelicense
@@ -489,15 +473,6 @@ makeaddonv2() {
   fi
   # Markup
   if [ "$VARIANT" == "markup" ]; then
-    # Install variable; Do not modify
-	if [ "$TARGET_ARCH" == "arm" ]; then
-      ARMEABI='"true"'
-      AARCH64='"false"'
-	fi
-	if [ "$TARGET_ARCH" == "arm64" ]; then
-      ARMEABI='"false"'
-      AARCH64='"true"'
-	fi
     # Set Addon package sources
     SOURCES_ALL="sources/addon-sources/all"
     SOURCES_ARMEABI="sources/addon-sources/arm"
@@ -525,8 +500,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_MARKUP_GOOGLE="" TARGET_MARKUP_GOOGLE="$TARGET_MARKUP_GOOGLE"
     # Create LICENSE
     makelicense
@@ -574,8 +547,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_MESSAGES_GOOGLE="" TARGET_MESSAGES_GOOGLE="$TARGET_MESSAGES_GOOGLE"
     # Create LICENSE
     makelicense
@@ -621,8 +592,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_PHOTOS_GOOGLE="" TARGET_PHOTOS_GOOGLE="$TARGET_PHOTOS_GOOGLE"
     # Create LICENSE
     makelicense
@@ -667,8 +636,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_SOUNDPICKER_GOOGLE="" TARGET_SOUNDPICKER_GOOGLE="$TARGET_SOUNDPICKER_GOOGLE"
     # Create LICENSE
     makelicense
@@ -714,8 +681,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VANCED_GOOGLE="" TARGET_VANCED_GOOGLE="$TARGET_VANCED_GOOGLE"
     # Create LICENSE
     makelicense
@@ -760,8 +725,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'ARMEABI=""'
-    remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'AARCH64=""'
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_WELLBEING_GOOGLE="" TARGET_WELLBEING_GOOGLE="$TARGET_WELLBEING_GOOGLE"
     # Create LICENSE
     makelicense
