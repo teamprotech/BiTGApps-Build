@@ -74,6 +74,9 @@ export SERVER=""
 # Set "1" for test release else leave empty; Used by release script
 export TESTRELEASE=""
 
+# Set ZIP file token; used by build script
+export TOKEN=""
+
 # Set APK release tag; Used by release script
 export APKRELEASE=""
 

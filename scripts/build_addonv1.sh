@@ -188,13 +188,32 @@ makeaddonv1() {
     zip -qr9 ${RELEASEDIR}.zip *
     cd ../../..
     mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
-    # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-    if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
-      echo "TARGET_PLATFOMR_ARM" >> $OUTDIR/ENV/env_platform.sh
+    # Sign ZIP; No token required for official release
+    if [ ! -n "$TESTRELEASE" ]; then
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    fi
+    # Sign ZIP; Add ZIP token for test release
+    if [ -n "$TESTRELEASE" ]; then
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+    fi
+    # Set build PLATFORM in global environment
+    if [ ! -n "$TESTRELEASE" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
+        echo "TARGET_PLATFORM_ARM" >> $OUTDIR/ENV/env_platform.sh
+      fi
+    fi
+    if [ -n "$TESTRELEASE" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        echo "TARGET_PLATFORM_ARM" >> $OUTDIR/ENV/env_platform.sh
+      fi
     fi
     # List signed ZIP
-    ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+    if [ ! -n "$TESTRELEASE" ]; then
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+    fi
+    if [ -n "$TESTRELEASE" ]; then
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+    fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
   fi
@@ -253,13 +272,32 @@ makeaddonv1() {
     zip -qr9 ${RELEASEDIR}.zip *
     cd ../../..
     mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
-    # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-    if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
-      echo "TARGET_PLATFOMR_ARM64" >> $OUTDIR/ENV/env_platform.sh
+    # Sign ZIP; No token required for official release
+    if [ ! -n "$TESTRELEASE" ]; then
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    fi
+    # Sign ZIP; Add ZIP token for test release
+    if [ -n "$TESTRELEASE" ]; then
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+    fi
+    # Set build PLATFORM in global environment
+    if [ ! -n "$TESTRELEASE" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
+        echo "TARGET_PLATFORM_ARM64" >> $OUTDIR/ENV/env_platform.sh
+      fi
+    fi
+    if [ -n "$TESTRELEASE" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        echo "TARGET_PLATFORM_ARM64" >> $OUTDIR/ENV/env_platform.sh
+      fi
     fi
     # List signed ZIP
-    ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+    if [ ! -n "$TESTRELEASE" ]; then
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+    fi
+    if [ -n "$TESTRELEASE" ]; then
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+    fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
   fi

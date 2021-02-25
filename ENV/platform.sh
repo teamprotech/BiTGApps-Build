@@ -22,15 +22,15 @@
 
 set_env_platform() {
   if [ -f "out/ENV/env_platform.sh" ]; then
-    if [ -n "$(cat out/ENV/env_platform.sh | grep TARGET_PLATFOMR_ARM)" ]; then
-      export TARGET_PLATFOMR_ARM="true"
+    if [ -n "$(cat out/ENV/env_platform.sh | grep TARGET_PLATFORM_ARM)" ]; then
+      export TARGET_PLATFORM_ARM="true"
     else
-      export TARGET_PLATFOMR_ARM="false"
+      export TARGET_PLATFORM_ARM="false"
     fi
-    if [ -n "$(cat out/ENV/env_platform.sh | grep TARGET_PLATFOMR_ARM64)" ]; then
-      export TARGET_PLATFOMR_ARM64="true"
+    if [ -n "$(cat out/ENV/env_platform.sh | grep TARGET_PLATFORM_ARM64)" ]; then
+      export TARGET_PLATFORM_ARM64="true"
     else
-      export TARGET_PLATFOMR_ARM64="false"
+      export TARGET_PLATFORM_ARM64="false"
     fi
   else
     echo "! Platform script not found. Aborting..."
