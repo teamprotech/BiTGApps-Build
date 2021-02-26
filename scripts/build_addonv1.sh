@@ -194,7 +194,7 @@ makeaddonv1() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build PLATFORM in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -203,7 +203,7 @@ makeaddonv1() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_PLATFORM_ARM" >> $OUTDIR/ENV/env_platform.sh
       fi
     fi
@@ -212,7 +212,7 @@ makeaddonv1() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -278,7 +278,7 @@ makeaddonv1() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build PLATFORM in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -287,7 +287,7 @@ makeaddonv1() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_PLATFORM_ARM64" >> $OUTDIR/ENV/env_platform.sh
       fi
     fi
@@ -296,7 +296,7 @@ makeaddonv1() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip

@@ -201,7 +201,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -210,7 +210,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_ASSISTANT" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -219,7 +219,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -264,7 +264,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -273,7 +273,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_CALCULATOR" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -282,7 +282,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -327,7 +327,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -336,7 +336,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_CALENDAR" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -345,7 +345,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -390,7 +390,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -399,7 +399,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_CONTACTS" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -408,7 +408,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -453,7 +453,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -462,7 +462,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_DESKCLOCK" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -471,7 +471,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -517,7 +517,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -526,7 +526,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_DIALER" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -535,7 +535,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -581,7 +581,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -590,7 +590,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_GBOARD" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -599,7 +599,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -647,7 +647,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -656,7 +656,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_MARKUP" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -665,7 +665,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -713,7 +713,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -722,7 +722,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_MESSAGES" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -731,7 +731,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -777,7 +777,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -786,7 +786,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_PHOTOS" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -795,7 +795,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -840,7 +840,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -849,7 +849,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_SOUNDPICKER" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -858,7 +858,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -904,7 +904,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -913,7 +913,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_VANCED" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -922,7 +922,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -967,7 +967,7 @@ makeaddonv2() {
     fi
     # Sign ZIP; Add ZIP token for test release
     if [ -n "$TESTRELEASE" ]; then
-      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
     fi
     # Set build VARIANT in global environment
     if [ ! -n "$TESTRELEASE" ]; then
@@ -976,7 +976,7 @@ makeaddonv2() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+      if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
         echo "TARGET_VARIANT_WELLBEING" >> $OUTDIR/ENV/env_variant.sh
       fi
     fi
@@ -985,7 +985,7 @@ makeaddonv2() {
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     fi
     if [ -n "$TESTRELEASE" ]; then
-      ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
     fi
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip

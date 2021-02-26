@@ -339,7 +339,7 @@ makegapps() {
         fi
         # Sign ZIP; Add ZIP token for test release
         if [ -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
         fi
         # Set build API in global environment
         if [ ! -n "$TESTRELEASE" ]; then
@@ -348,7 +348,7 @@ makegapps() {
           fi
         fi
         if [ -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
             echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
           fi
         fi
@@ -357,7 +357,7 @@ makegapps() {
           ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
         fi
         if [ -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
         fi
         # Wipe unsigned ZIP
         rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -451,7 +451,7 @@ makegapps() {
         fi
         # Sign ZIP; Add ZIP token for test release
         if [ -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
         fi
         # Set build API in global environment
         if [ ! -n "$TESTRELEASE" ]; then
@@ -460,7 +460,7 @@ makegapps() {
           fi
         fi
         if [ -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
             echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
           fi
         fi
@@ -469,7 +469,7 @@ makegapps() {
           ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
         fi
         if [ -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
         fi
         # Wipe unsigned ZIP
         rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -568,7 +568,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -577,7 +577,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_26" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -586,7 +586,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -684,7 +684,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -693,7 +693,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_27" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -702,7 +702,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -801,7 +801,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -810,7 +810,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_28" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -819,7 +819,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -915,7 +915,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -924,7 +924,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_29" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -933,7 +933,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -1040,7 +1040,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -1049,7 +1049,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_30" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -1058,7 +1058,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -1165,7 +1165,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -1174,7 +1174,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_31" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -1183,7 +1183,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -1295,7 +1295,7 @@ makegapps() {
         fi
         # Sign ZIP; Add ZIP token for test release
         if [ -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
         fi
         # Set build API in global environment
         if [ ! -n "$TESTRELEASE" ]; then
@@ -1304,7 +1304,7 @@ makegapps() {
           fi
         fi
         if [ -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
             echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
           fi
         fi
@@ -1313,7 +1313,7 @@ makegapps() {
           ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
         fi
         if [ -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
         fi
         # Wipe unsigned ZIP
         rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -1408,7 +1408,7 @@ makegapps() {
         fi
         # Sign ZIP; Add ZIP token for test release
         if [ -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
         fi
         # Set build API in global environment
         if [ ! -n "$TESTRELEASE" ]; then
@@ -1417,7 +1417,7 @@ makegapps() {
           fi
         fi
         if [ -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
             echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
           fi
         fi
@@ -1426,7 +1426,7 @@ makegapps() {
           ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
         fi
         if [ -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
         fi
         # Wipe unsigned ZIP
         rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -1526,7 +1526,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -1535,7 +1535,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_26" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -1544,7 +1544,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -1643,7 +1643,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -1652,7 +1652,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_27" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -1661,7 +1661,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -1762,7 +1762,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -1771,7 +1771,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_28" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -1780,7 +1780,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -1876,7 +1876,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -1885,7 +1885,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_29" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -1894,7 +1894,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -2001,7 +2001,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -2010,7 +2010,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_30" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -2019,7 +2019,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
@@ -2126,7 +2126,7 @@ makegapps() {
       fi
       # Sign ZIP; Add ZIP token for test release
       if [ -n "$TESTRELEASE" ]; then
-        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip 2>/dev/null
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
       # Set build API in global environment
       if [ ! -n "$TESTRELEASE" ]; then
@@ -2135,7 +2135,7 @@ makegapps() {
         fi
       fi
       if [ -n "$TESTRELEASE" ]; then
-        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
           echo "TARGET_API_31" >> $OUTDIR/ENV/env_api.sh
         fi
       fi
@@ -2144,7 +2144,7 @@ makegapps() {
         ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       fi
       if [ -n "$TESTRELEASE" ]; then
-        ls $OUTDIR/$ARCH/${RELEASEDIR}_${TOKEN}.zip
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
       fi
       # Wipe unsigned ZIP
       rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
