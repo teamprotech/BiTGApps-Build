@@ -45,9 +45,6 @@ set_credentials() {
     read -p "Enter user: " user
     read -p "Enter host: " host
   fi
-  if [ "$SERVER" == "sf" ]; then
-    read -p "Enter user: " user
-  fi
 }
 
 check_credentials() {
@@ -93,19 +90,19 @@ arm_sources() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ "$SERVER" == "sf" ]; then
+      if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
-          $TARGET_API_31 && scp out/arm/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/31
-          $TARGET_API_30 && scp out/arm/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/30
-          $TARGET_API_29 && scp out/arm/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/29
-          $TARGET_API_28 && scp out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/28
-          $TARGET_API_27 && scp out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/27
-          $TARGET_API_26 && scp out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/26
-          $TARGET_API_25 && scp out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/25
-          $TARGET_API_25 && scp out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm/25
+          $TARGET_API_31 && scp out/arm/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/S
+          $TARGET_API_30 && scp out/arm/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/R
+          $TARGET_API_29 && scp out/arm/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Q
+          $TARGET_API_28 && scp out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Pie
+          $TARGET_API_27 && scp out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Oreo
+          $TARGET_API_26 && scp out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Oreo
+          $TARGET_API_25 && scp out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Nougat
+          $TARGET_API_25 && scp out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Nougat
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
-          $TARGET_PLATFORM_ARM && scp out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/config/arm
+          $TARGET_PLATFORM_ARM && scp out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/config/arm
         fi
       fi
     fi
@@ -148,19 +145,19 @@ arm64_sources() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ "$SERVER" == "sf" ]; then
+      if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
-          $TARGET_API_31 && scp out/arm64/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/31
-          $TARGET_API_30 && scp out/arm64/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/30
-          $TARGET_API_29 && scp out/arm64/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/29
-          $TARGET_API_28 && scp out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/28
-          $TARGET_API_27 && scp out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/27
-          $TARGET_API_26 && scp out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/26
-          $TARGET_API_25 && scp out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/25
-          $TARGET_API_25 && scp out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/arm64/25
+          $TARGET_API_31 && scp out/arm64/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/S
+          $TARGET_API_30 && scp out/arm64/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/R
+          $TARGET_API_29 && scp out/arm64/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Q
+          $TARGET_API_28 && scp out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Pie
+          $TARGET_API_27 && scp out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Oreo
+          $TARGET_API_26 && scp out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Oreo
+          $TARGET_API_25 && scp out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Nougat
+          $TARGET_API_25 && scp out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Nougat
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
-          $TARGET_PLATFORM_ARM64 && scp out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/config/arm64
+          $TARGET_PLATFORM_ARM64 && scp out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/config/arm64
         fi
       fi
     fi
@@ -207,23 +204,21 @@ common_sources() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ "$SERVER" == "sf" ]; then
+      if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONADDONRELEASE" ]; then
-          $TARGET_PLATFORM_ARM && scp out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/config/arm
-          $TARGET_PLATFORM_ARM64 && scp out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/config/arm64
-          $TARGET_VARIANT_ASSISTANT && scp out/common/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_CALCULATOR && scp out/common/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_CALENDAR && scp out/common/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_CONTACTS && scp out/common/BiTGApps-addon-contacts-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_DESKCLOCK && scp out/common/BiTGApps-addon-deskclock-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_DIALER && scp out/common/BiTGApps-addon-dialer-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_GBOARD && scp out/common/BiTGApps-addon-gboard-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_MARKUP && scp out/common/BiTGApps-addon-markup-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_MESSAGES && scp out/common/BiTGApps-addon-messages-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_PHOTOS && scp out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_SOUNDPICKER && scp out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_VANCED && scp out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
-          $TARGET_VARIANT_WELLBEING && scp out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_${TOKEN}.zip ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/addon/non-config
+          $TARGET_VARIANT_ASSISTANT && scp out/common/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_CALCULATOR && scp out/common/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_CALENDAR && scp out/common/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_CONTACTS && scp out/common/BiTGApps-addon-contacts-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_DESKCLOCK && scp out/common/BiTGApps-addon-deskclock-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_DIALER && scp out/common/BiTGApps-addon-dialer-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_GBOARD && scp out/common/BiTGApps-addon-gboard-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_MARKUP && scp out/common/BiTGApps-addon-markup-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_MESSAGES && scp out/common/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_PHOTOS && scp out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_SOUNDPICKER && scp out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_VANCED && scp out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_WELLBEING && scp out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
         fi
       fi
     fi
@@ -248,11 +243,11 @@ config_sources() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ "$SERVER" == "sf" ]; then
-        $TARGET_CONFIG_ADDON && scp BiTGApps/configs/addon-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Addon
-        $TARGET_CONFIG_BOOT && scp BiTGApps/configs/boot-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Bootlog
-        $TARGET_CONFIG_CTS && scp BiTGApps/configs/cts-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/Safetynet
-        $TARGET_CONFIG_SETUP && scp BiTGApps/configs/setup-config.prop ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/config/SetupWizard
+      if [ "$SERVER" == "dh" ]; then
+        $TARGET_CONFIG_ADDON && scp BiTGApps/configs/addon-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/config/Addon
+        $TARGET_CONFIG_BOOT && scp BiTGApps/configs/boot-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/config/Bootlog
+        $TARGET_CONFIG_CTS && scp BiTGApps/configs/cts-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/config/Safetynet
+        $TARGET_CONFIG_SETUP && scp BiTGApps/configs/setup-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/config/SetupWizard
       fi
     fi
   fi
@@ -278,9 +273,9 @@ apk_sources() {
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
-      if [ "$SERVER" == "sf" ]; then
+      if [ "$SERVER" == "dh" ]; then
         if [ -n "$APKRELEASE" ]; then
-          scp BiTGApps-v${APKRELEASE}.apk ${user}@frs.sourceforge.net:/home/frs/project/bitgapps/apk
+          scp BiTGApps-v${APKRELEASE}.apk ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/APK
         else
           echo "! APKRELEASE environmental variable not set. Aborting..."
         fi
