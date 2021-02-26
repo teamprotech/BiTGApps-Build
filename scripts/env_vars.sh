@@ -20,6 +20,9 @@
 # GNU General Public License for more details.
 ##############################################################
 
+# Set static environmental variables
+. scripts/static_env_vars.sh
+
 # Set release tag in all GApps build file
 export COMMONGAPPSRELEASE=""
 
@@ -52,21 +55,6 @@ export BuildDate=""
 
 # Set release tag; Used by build property file
 export BuildID=""
-
-# Set non config based Addons target; Used by installer
-export TARGET_ASSISTANT_GOOGLE='"true"'
-export TARGET_CALCULATOR_GOOGLE='"true"'
-export TARGET_CALENDAR_GOOGLE='"true"'
-export TARGET_CONTACTS_GOOGLE='"true"'
-export TARGET_DESKCLOCK_GOOGLE='"true"'
-export TARGET_DIALER_GOOGLE='"true"'
-export TARGET_GBOARD_GOOGLE='"true"'
-export TARGET_MARKUP_GOOGLE='"true"'
-export TARGET_MESSAGES_GOOGLE='"true"'
-export TARGET_PHOTOS_GOOGLE='"true"'
-export TARGET_SOUNDPICKER_GOOGLE='"true"'
-export TARGET_VANCED_GOOGLE='"true"'
-export TARGET_WELLBEING_GOOGLE='"true"'
 
 # Set hosting server; Used by release script
 export SERVER=""
