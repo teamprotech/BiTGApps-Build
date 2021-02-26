@@ -17,10 +17,15 @@ git clone https://github.com/BiTGApps/BiTGApps-Build BiTGApps
 git clone https://github.com/BiTGApps/BiTGApps BiTGApps/BiTGApps
 ```
 
-* Clone package sources
+* Create sources path
 
 ```shellscript
 mkdir BiTGApps/sources
+```
+
+* Clone package sources
+
+```shellscript
 git clone https://github.com/BiTGApps/arm-sources BiTGApps/sources/arm-sources
 git clone https://github.com/BiTGApps/arm64-sources BiTGApps/sources/arm64-sources
 git clone https://github.com/BiTGApps/aosp-sources BiTGApps/sources/aosp-sources
