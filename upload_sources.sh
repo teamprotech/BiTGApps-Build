@@ -20,6 +20,11 @@
 # GNU General Public License for more details.
 ##############################################################
 
+# Set environmental variables (Auto-generated)
+. ENV/api.sh      # For GApps release
+. ENV/platform.sh # For Platform based Addon release
+. ENV/variant.sh  # For Variant based Addon release
+
 # Check availability of environmental variables
 if { [ ! -n "$SERVER" ] ||
      [ ! -n "$TESTRELEASE" ]; }; then

@@ -77,33 +77,13 @@ make assistant
 
 **For contributors, updated sources can be uploaded.**
 
-Before uploading, set environmental variables (Auto-generated):
-
-* For GApps release
-
-```shellscript
-. ENV/api.sh
-```
-
-* For Addon release (Platform based)
-
-```shellscript
-. ENV/platform.sh
-```
-
-* For specific Addons release (Variant based)
-
-```shellscript
-. ENV/variant.sh
-```
-
-After setting environmental variables:
-
-* Set server credentials
+Before uploading, set server credentials:
 
 ```shellscript
 ./upload_sources.sh creds
 ```
+
+After setting server credentials:
 
 * For BiTGApps packages and Additional package
 
