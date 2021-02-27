@@ -99,6 +99,12 @@ Before uploading, set environmental variables (Auto-generated):
 
 After setting environmental variables:
 
+* Set server credentials
+
+```shellscript
+./upload_sources.sh creds
+```
+
 * For BiTGApps packages and Additional package
 
 ```shellscript

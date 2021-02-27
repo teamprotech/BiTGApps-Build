@@ -28,6 +28,7 @@ if { [ ! -n "$SERVER" ] ||
 fi
 
 # Set defaults
+export CREDENTIALS="$1"
 export ARMEABI="$1"
 export AARCH64="$1"
 export COMMON="$1"
@@ -36,10 +37,12 @@ export APK="$1"
 
 # Server credentials
 set_credentials() {
-  if [ "$SERVER" == "ga" ] || [ "$SERVER" == "dh" ]; then
-    read -p "Enter user: " user
-    read -p "Enter pass: " pass
-    read -p "Enter host: " host
+  if [ "$CREDENTIALS" == "creds" ]; then
+    if [ "$SERVER" == "ga" ] || [ "$SERVER" == "dh" ]; then
+      read -p "Enter user: " user
+      read -p "Enter pass: " pass
+      read -p "Enter host: " host
+    fi
   fi
 }
 
