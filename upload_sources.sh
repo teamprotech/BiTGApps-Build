@@ -36,19 +36,17 @@ export APK="$1"
 
 # Server credentials
 set_credentials() {
-  if [ "$SERVER" == "ga" ]; then
+  if [ "$SERVER" == "ga" ] || [ "$SERVER" == "dh" ]; then
     read -p "Enter user: " user
     read -p "Enter pass: " pass
-    read -p "Enter host: " host
-  fi
-  if [ "$SERVER" == "dh" ]; then
-    read -p "Enter user: " user
     read -p "Enter host: " host
   fi
 }
 
 check_credentials() {
-  if [ ! -n "$user" ]; then
+  if { [ ! -n "$user" ] &&
+       [ ! -n "$pass" ] &&
+       [ ! -n "$host" ]; }; then
     echo "! No credentials found. Aborting..."
     exit 1
   fi
@@ -75,34 +73,34 @@ arm_sources() {
       fi
       if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
-          $TARGET_API_31 && scp out/arm/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/S
-          $TARGET_API_30 && scp out/arm/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/R
-          $TARGET_API_29 && scp out/arm/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/Q
-          $TARGET_API_28 && scp out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/Pie
-          $TARGET_API_27 && scp out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/Oreo
-          $TARGET_API_26 && scp out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/Oreo
-          $TARGET_API_25 && scp out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/Nougat
-          $TARGET_API_25 && scp out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm/Nougat
+          $TARGET_API_31 && curl -T out/arm/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm/S/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_30 && curl -T out/arm/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm/R/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_29 && curl -T out/arm/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm/Q/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_28 && curl -T out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm/Pie/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_27 && curl -T out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm/Oreo/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_26 && curl -T out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm/Oreo/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm/Nougat/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm/Nougat/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
-          $TARGET_PLATFORM_ARM && scp out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/config/arm
+          $TARGET_PLATFORM_ARM && curl -T out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/config/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip"
         fi
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
-          $TARGET_API_31 && scp out/arm/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/S
-          $TARGET_API_30 && scp out/arm/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/R
-          $TARGET_API_29 && scp out/arm/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Q
-          $TARGET_API_28 && scp out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Pie
-          $TARGET_API_27 && scp out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Oreo
-          $TARGET_API_26 && scp out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Oreo
-          $TARGET_API_25 && scp out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Nougat
-          $TARGET_API_25 && scp out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm/Nougat
+          $TARGET_API_31 && curl -T out/arm/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm/S/BiTGApps-arm-12.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_30 && curl -T out/arm/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm/R/BiTGApps-arm-11.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_29 && curl -T out/arm/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm/Q/BiTGApps-arm-10.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_28 && curl -T out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm/Pie/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_27 && curl -T out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm/Oreo/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_26 && curl -T out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm/Oreo/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm/Nougat/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm/Nougat/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
-          $TARGET_PLATFORM_ARM && scp out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/config/arm
+          $TARGET_PLATFORM_ARM && curl -T out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/config/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
         fi
       fi
     fi
@@ -130,34 +128,34 @@ arm64_sources() {
       fi
       if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
-          $TARGET_API_31 && scp out/arm64/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/S
-          $TARGET_API_30 && scp out/arm64/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/R
-          $TARGET_API_29 && scp out/arm64/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/Q
-          $TARGET_API_28 && scp out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/Pie
-          $TARGET_API_27 && scp out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/Oreo
-          $TARGET_API_26 && scp out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/Oreo
-          $TARGET_API_25 && scp out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/Nougat
-          $TARGET_API_25 && scp out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/arm64/Nougat
+          $TARGET_API_31 && curl -T out/arm64/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm64/S/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_30 && curl -T out/arm64/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm64/R/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_29 && curl -T out/arm64/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm64/Q/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_28 && curl -T out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm64/Pie/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_27 && curl -T out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm64/Oreo/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_26 && curl -T out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm64/Oreo/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm64/Nougat/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/arm64/Nougat/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
-          $TARGET_PLATFORM_ARM64 && scp out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/config/arm64
+          $TARGET_PLATFORM_ARM64 && curl -T out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/config/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip"
         fi
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONGAPPSRELEASE" ]; then
-          $TARGET_API_31 && scp out/arm64/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/S
-          $TARGET_API_30 && scp out/arm64/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/R
-          $TARGET_API_29 && scp out/arm64/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Q
-          $TARGET_API_28 && scp out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Pie
-          $TARGET_API_27 && scp out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Oreo
-          $TARGET_API_26 && scp out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Oreo
-          $TARGET_API_25 && scp out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Nougat
-          $TARGET_API_25 && scp out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/arm64/Nougat
+          $TARGET_API_31 && curl -T out/arm64/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm64/S/BiTGApps-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_30 && curl -T out/arm64/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm64/R/BiTGApps-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_29 && curl -T out/arm64/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm64/Q/BiTGApps-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_28 && curl -T out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm64/Pie/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_27 && curl -T out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm64/Oreo/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_26 && curl -T out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm64/Oreo/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm64/Nougat/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/arm64/Nougat/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
-          $TARGET_PLATFORM_ARM64 && scp out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/config/arm64
+          $TARGET_PLATFORM_ARM64 && curl -T out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/config/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
         fi
       fi
     fi
@@ -187,38 +185,38 @@ common_sources() {
       fi
       if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONADDONRELEASE" ]; then
-          $TARGET_VARIANT_ASSISTANT && scp out/common/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_CALCULATOR && scp out/common/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_CALENDAR && scp out/common/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_CONTACTS && scp out/common/BiTGApps-addon-contacts-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_DESKCLOCK && scp out/common/BiTGApps-addon-deskclock-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_DIALER && scp out/common/BiTGApps-addon-dialer-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_GBOARD && scp out/common/BiTGApps-addon-gboard-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_MARKUP && scp out/common/BiTGApps-addon-markup-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_MESSAGES && scp out/common/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_PHOTOS && scp out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_SOUNDPICKER && scp out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_VANCED && scp out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
-          $TARGET_VARIANT_WELLBEING && scp out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/addon/non-config
+          $TARGET_VARIANT_ASSISTANT && curl -T out/common/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_CALCULATOR && curl -T out/common/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_CALENDAR && curl -T out/common/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_CONTACTS && curl -T out/common/BiTGApps-addon-contacts-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-contacts-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_DESKCLOCK && curl -T out/common/BiTGApps-addon-deskclock-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-deskclock-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_DIALER && curl -T out/common/BiTGApps-addon-dialer-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-dialer-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_GBOARD && curl -T out/common/BiTGApps-addon-gboard-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-gboard-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_MARKUP && curl -T out/common/BiTGApps-addon-markup-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-markup-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_MESSAGES && curl -T out/common/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_PHOTOS && curl -T out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_SOUNDPICKER && curl -T out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_VANCED && curl -T out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip"
+          $TARGET_VARIANT_WELLBEING && curl -T out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${password}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip"
         fi
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "dh" ]; then
         if [ -n "$COMMONADDONRELEASE" ]; then
-          $TARGET_VARIANT_ASSISTANT && scp out/common/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_CALCULATOR && scp out/common/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_CALENDAR && scp out/common/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_CONTACTS && scp out/common/BiTGApps-addon-contacts-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_DESKCLOCK && scp out/common/BiTGApps-addon-deskclock-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_DIALER && scp out/common/BiTGApps-addon-dialer-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_GBOARD && scp out/common/BiTGApps-addon-gboard-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_MARKUP && scp out/common/BiTGApps-addon-markup-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_MESSAGES && scp out/common/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_PHOTOS && scp out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_SOUNDPICKER && scp out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_VANCED && scp out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
-          $TARGET_VARIANT_WELLBEING && scp out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed-${TOKEN}.zip ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/addon/non-config
+          $TARGET_VARIANT_ASSISTANT && curl -T out/common/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_CALCULATOR && curl -T out/common/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_CALENDAR && curl -T out/common/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_CONTACTS && curl -T out/common/BiTGApps-addon-contacts-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-contacts-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_DESKCLOCK && curl -T out/common/BiTGApps-addon-deskclock-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-deskclock-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_DIALER && curl -T out/common/BiTGApps-addon-dialer-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-dialer-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_GBOARD && curl -T out/common/BiTGApps-addon-gboard-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-gboard-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_MARKUP && curl -T out/common/BiTGApps-addon-markup-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-markup-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_MESSAGES && curl -T out/common/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_PHOTOS && curl -T out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_SOUNDPICKER && curl -T out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_VANCED && curl -T out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_VARIANT_WELLBEING && curl -T out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/addon/non-config/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
         fi
       fi
     fi
@@ -236,18 +234,18 @@ config_sources() {
         $TARGET_CONFIG_SETUP && curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${password}@${host}/config/SetupWizard/setup-config.prop"
       fi
       if [ "$SERVER" == "dh" ]; then
-        $TARGET_CONFIG_ADDON && scp BiTGApps/configs/addon-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Addon
-        $TARGET_CONFIG_BOOT && scp BiTGApps/configs/boot-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Bootlog
-        $TARGET_CONFIG_CTS && scp BiTGApps/configs/cts-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/Safetynet
-        $TARGET_CONFIG_SETUP && scp BiTGApps/configs/setup-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/config/SetupWizard
+        $TARGET_CONFIG_ADDON && curl -T BiTGApps/configs/addon-config.prop "ftp://${user}:${password}@${host}/bitgapps.com/downloads/config/Addon/addon-config.prop"
+        $TARGET_CONFIG_BOOT && curl -T BiTGApps/configs/boot-config.prop "ftp://${user}:${password}@${host}/bitgapps.com/downloads/config/Bootlog/boot-config.prop"
+        $TARGET_CONFIG_CTS && curl -T BiTGApps/configs/cts-config.prop "ftp://${user}:${password}@${host}/bitgapps.com/downloads/config/Safetynet/cts-config.prop"
+        $TARGET_CONFIG_SETUP && curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${password}@${host}/bitgapps.com/downloads/config/SetupWizard/setup-config.prop"
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "dh" ]; then
-        $TARGET_CONFIG_ADDON && scp BiTGApps/configs/addon-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/config/Addon
-        $TARGET_CONFIG_BOOT && scp BiTGApps/configs/boot-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/config/Bootlog
-        $TARGET_CONFIG_CTS && scp BiTGApps/configs/cts-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/config/Safetynet
-        $TARGET_CONFIG_SETUP && scp BiTGApps/configs/setup-config.prop ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/config/SetupWizard
+        $TARGET_CONFIG_ADDON && curl -T BiTGApps/configs/addon-config.prop "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/config/Addon/addon-config.prop"
+        $TARGET_CONFIG_BOOT && curl -T BiTGApps/configs/boot-config.prop "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/config/Bootlog/boot-config.prop"
+        $TARGET_CONFIG_CTS && curl -T BiTGApps/configs/cts-config.prop "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/config/Safetynet/cts-config.prop"
+        $TARGET_CONFIG_SETUP && curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/config/SetupWizard/setup-config.prop"
       fi
     fi
   fi
@@ -266,7 +264,7 @@ apk_sources() {
       fi
       if [ "$SERVER" == "dh" ]; then
         if [ -n "$APKRELEASE" ]; then
-          scp BiTGApps-v${APKRELEASE}.apk ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/downloads/APK
+          curl -T BiTGApps-v${APKRELEASE}.apk "ftp://${user}:${password}@${host}/bitgapps.com/downloads/APK/BiTGApps-v${APKRELEASE}.apk"
         else
           echo "! APKRELEASE environmental variable not set. Aborting..."
         fi
@@ -275,7 +273,7 @@ apk_sources() {
     if [ -n "$TESTRELEASE" ]; then
       if [ "$SERVER" == "dh" ]; then
         if [ -n "$APKRELEASE" ]; then
-          scp BiTGApps-v${APKRELEASE}.apk ${user}@${host}:/home/dh_ddbfeb/bitgapps.com/release/Test/APK
+          curl -T BiTGApps-v${APKRELEASE}.apk "ftp://${user}:${password}@${host}/bitgapps.com/release/Test/APK/BiTGApps-v${APKRELEASE}.apk"
         else
           echo "! APKRELEASE environmental variable not set. Aborting..."
         fi
