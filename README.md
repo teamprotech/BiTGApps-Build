@@ -80,7 +80,7 @@ make assistant
 Before uploading, set server credentials:
 
 ```shellscript
-./upload_sources.sh creds
+. upload_sources.sh creds
 ```
 
 After setting server credentials:

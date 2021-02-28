@@ -49,6 +49,10 @@ set_credentials() {
       read -p "Enter host: " host
     fi
   fi
+  # Export credentials in the global environment
+  export user="$user"
+  export pass="$pass"
+  export host="$host"
 }
 
 check_credentials() {
