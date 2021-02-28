@@ -56,7 +56,7 @@ ZIP="zip"
 CORE="$ZIP/core"
 SYS="$ZIP/sys"
 
-# Set replace line
+# replace_line <file> <line replace string> <replacement line>
 replace_line() {
   if grep -q "$2" $1; then
     local line=$(grep -n "$2" $1 | head -n1 | cut -d: -f1)

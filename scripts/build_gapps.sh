@@ -130,11 +130,19 @@ USFAPI="$API"
 USFBIN="bin"
 USFLIB="lib64"
 
-# Set replace line
+# replace_line <file> <line replace string> <replacement line>
 replace_line() {
   if grep -q "$2" $1; then
     local line=$(grep -n "$2" $1 | head -n1 | cut -d: -f1)
     sed -i "${line}s;.*;${3};" $1
+  fi
+}
+
+# remove_line <file> <line match string>
+remove_line() {
+  if grep -q "$2" $1; then
+    local line=$(grep -n "$2" $1 | head -n1 | cut -d: -f1)
+    sed -i "${line}d" $1
   fi
 }
 
@@ -167,6 +175,7 @@ ZIPTYPE=""
 TARGET_GAPPS_RELEASE=""
 TARGET_DIRTY_INSTALL=""
 TARGET_ANDROID_SDK=""
+TARGET_VERSION_ERROR=""
 TARGET_ANDROID_ARCH=""
 ARMEABI=""
 AARCH64=""
@@ -251,6 +260,8 @@ makegapps() {
       sdk_25="25"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       if [ "$TARGET_VERSION_N1" == "7.1.1" ]; then
+        # Install variable; Do not modify
+        TARGET_VERSION_ERROR='"7.1.1"'
         # Build property variable; Do not modify
         version_N1="7.1.1"
         # Create release directory
@@ -311,6 +322,7 @@ makegapps() {
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
+        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VERSION_ERROR="" TARGET_VERSION_ERROR="$TARGET_VERSION_ERROR"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -363,6 +375,8 @@ makegapps() {
         rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
       fi
       if [ "$TARGET_VERSION_N2" == "7.1.2" ]; then
+        # Install variable; Do not modify
+        TARGET_VERSION_ERROR='"7.1.2"'
         # Build property variable; Do not modify
         version_N2="7.1.2"
         # Create release directory
@@ -423,6 +437,7 @@ makegapps() {
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
+        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VERSION_ERROR="" TARGET_VERSION_ERROR="$TARGET_VERSION_ERROR"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -540,6 +555,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V26"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -656,6 +672,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V27"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -773,6 +790,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V28"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -887,6 +905,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V29"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1012,6 +1031,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V30"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1137,6 +1157,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V31"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1206,6 +1227,8 @@ makegapps() {
       sdk_25="25"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       if [ "$TARGET_VERSION_N1" == "7.1.1" ]; then
+        # Install variable; Do not modify
+        TARGET_VERSION_ERROR='"7.1.1"'
         # Build property variable; Do not modify
         version_N1="7.1.1"
         # Create release directory
@@ -1267,6 +1290,7 @@ makegapps() {
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
+        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VERSION_ERROR="" TARGET_VERSION_ERROR="$TARGET_VERSION_ERROR"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1319,6 +1343,8 @@ makegapps() {
         rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
       fi
       if [ "$TARGET_VERSION_N2" == "7.1.2" ]; then
+        # Install variable; Do not modify
+        TARGET_VERSION_ERROR='"7.1.2"'
         # Build property variable; Do not modify
         version_N2="7.1.2"
         # Create release directory
@@ -1380,6 +1406,7 @@ makegapps() {
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
+        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VERSION_ERROR="" TARGET_VERSION_ERROR="$TARGET_VERSION_ERROR"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
         replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1498,6 +1525,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V26"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1615,6 +1643,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V27"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1734,6 +1763,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V28"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1848,6 +1878,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V29"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1973,6 +2004,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V30"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -2098,6 +2130,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V31"
+      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
