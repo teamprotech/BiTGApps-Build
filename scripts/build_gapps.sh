@@ -62,10 +62,6 @@ ARCH="$1"
 API="$2"
 COMMONGAPPSRELEASE="$COMMONGAPPSRELEASE"
 
-# Version conflict
-TARGET_VERSION_N1="7.1.1"
-TARGET_VERSION_N2="7.1.2"
-
 # Build defaults
 BUILDDIR="build"
 OUTDIR="out"
@@ -93,14 +89,7 @@ AOSPSOURCESv31="sources/aosp-sources/$ARCH/31"
 
 # Set installer sources
 UPDATEBINARY="BiTGApps/scripts/update-binary"
-UPDATESCRIPT="BiTGApps/scripts/updater-script"
 INSTALLER="BiTGApps/scripts/installer.sh"
-CONFIG="BiTGApps/scripts/config.prop"
-DATA="BiTGApps/scripts/data.prop"
-BOOTLOG="BiTGApps/scripts/init.boot.rc"
-SPL="BiTGApps/scripts/init.spl.rc"
-USF="BiTGApps/scripts/init.usf.rc"
-PM="BiTGApps/scripts/pm.sh"
 OTA="BiTGApps/scripts/90-bitgapps.sh"
 BUSYBOX="BiTGApps/tools/busybox-resources/busybox-arm"
 SQLITE_ARMEABI="BiTGApps/tools/sqlite-resources/armeabi-v7a/sqlite-static"
@@ -116,6 +105,10 @@ API_29_KEYSTORE="BiTGApps/tools/safetynet-resources/29"
 API_30_KEYSTORE="BiTGApps/tools/safetynet-resources/30"
 API_31_KEYSTORE="BiTGApps/tools/safetynet-resources/31"
 
+# Set Boot Image Editor sources
+AIK_ARMEABI="BiTGApps/tools/aik-resources/armeabi-v7a"
+AIK_AARCH64="BiTGApps/tools/aik-resources/arm64-v8a"
+
 # Set ZIP structure
 METADIR="META-INF/com/google/android"
 ZIP="zip"
@@ -125,10 +118,6 @@ AOSPZIP="$ZIP/aosp"
 AOSPCORE="$ZIP/aosp/core"
 AOSPSYS="$ZIP/aosp/sys"
 OVERLAY="$ZIP/overlay"
-USFD="USF"
-USFAPI="$API"
-USFBIN="bin"
-USFLIB="lib64"
 
 # replace_line <file> <line replace string> <replacement line>
 replace_line() {
@@ -175,7 +164,6 @@ ZIPTYPE=""
 TARGET_GAPPS_RELEASE=""
 TARGET_DIRTY_INSTALL=""
 TARGET_ANDROID_SDK=""
-TARGET_VERSION_ERROR=""
 TARGET_ANDROID_ARCH=""
 ARMEABI=""
 AARCH64=""
@@ -229,6 +217,183 @@ makeota() {
   cd ../../../..
 }
 
+# Set OTA build property
+makeotaprop() {
+echo '#
+# ADDITIONAL BITGAPPS BUILD PROPERTIES
+#
+
+# Begin build properties
+# End build properties
+
+# Begin addon properties
+# End addon properties' >"$BUILDDIR/$ARCH/$RELEASEDIR/config.prop"
+}
+
+# Set RTP build property
+makedataprop() {
+echo '##############################################################
+# File name       : data.prop
+#
+# Description     : Prevent purging of runtime permissions
+#
+# Copyright       : Copyright (C) 2018-2021 TheHitMan7
+#
+# License         : SPDX-License-Identifier: GPL-3.0-or-later
+##############################################################
+# The BiTGApps scripts are free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# These scripts are distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+##############################################################
+
+ro.build.system_data=true' >"$BUILDDIR/$ARCH/$RELEASEDIR/data.prop"
+}
+
+# Set logcat script
+makelogcatscript() {
+echo '##############################################################
+# File name       : init.logcat.rc
+#
+# Description     : Generate boot logs
+#
+# Copyright       : Copyright (C) 2018-2021 TheHitMan7
+#
+# License         : SPDX-License-Identifier: GPL-3.0-or-later
+##############################################################
+# The BiTGApps scripts are free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# These scripts are distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+##############################################################
+
+service boot_lc_main /system/bin/logcat -f /cache/boot_lc_main.txt
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+
+service boot_dmesg /system/bin/sh -c "dmesg -w > /cache/boot_dmesg.txt"
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+
+on fs
+    rm /cache/boot_lc_main.txt
+    rm /cache/boot_dmesg.txt
+    start boot_lc_main
+    start boot_dmesg
+
+on property:sys.boot_completed=1
+    stop boot_lc_main
+    stop boot_dmesg' >"$BUILDDIR/$ARCH/$RELEASEDIR/init.logcat.rc"
+}
+
+# Set updater script
+makeupdaterscript() {
+echo '# Dummy file; update-binary is a shell script.' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script"
+}
+
+# Compress and add Boot Image Editor
+makebooteditor() {
+  if [ "$ARCH" == "arm" ]; then
+    cd $AIK_ARMEABI
+    # Only compress in 'xz' format
+    tar -cJf "AIK.tar.xz" *
+    cd ../../../..
+    cp -f $AIK_ARMEABI/AIK.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    rm -rf $AIK_ARMEABI/AIK.tar.xz
+  fi
+  if [ "$ARCH" == "arm64" ]; then
+    cd $AIK_AARCH64
+    # Only compress in 'xz' format
+    tar -cJf "AIK.tar.xz" *
+    cd ../../../..
+    cp -f $AIK_AARCH64/AIK.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    rm -rf $AIK_AARCH64/AIK.tar.xz
+  fi
+}
+
+# Compress and add patched keystore
+makekeystore26() {
+  if [ "$API" == "26" ]; then
+    cd $API_26_KEYSTORE
+    # Only compress in 'xz' format
+    tar -cJf "Keystore.tar.xz" *
+    cd ../../../..
+    cp -f $API_26_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    rm -rf $API_26_KEYSTORE/Keystore.tar.xz
+  fi
+}
+
+makekeystore27() {
+  if [ "$API" == "27" ]; then
+    cd $API_27_KEYSTORE
+    # Only compress in 'xz' format
+    tar -cJf "Keystore.tar.xz" *
+    cd ../../../..
+    cp -f $API_27_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    rm -rf $API_27_KEYSTORE/Keystore.tar.xz
+  fi
+}
+
+makekeystore28() {
+  if [ "$API" == "28" ]; then
+    cd $API_28_KEYSTORE
+    # Only compress in 'xz' format
+    tar -cJf "Keystore.tar.xz" *
+    cd ../../../..
+    cp -f $API_28_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    rm -rf $API_28_KEYSTORE/Keystore.tar.xz
+  fi
+}
+
+makekeystore29() {
+  if [ "$API" == "29" ]; then
+    cd $API_29_KEYSTORE
+    # Only compress in 'xz' format
+    tar -cJf "Keystore.tar.xz" *
+    cd ../../../..
+    cp -f $API_29_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    rm -rf $API_29_KEYSTORE/Keystore.tar.xz
+  fi
+}
+
+makekeystore30() {
+  if [ "$API" == "30" ]; then
+    cd $API_30_KEYSTORE
+    # Only compress in 'xz' format
+    tar -cJf "Keystore.tar.xz" --exclude="README.md" *
+    cd ../../../..
+    cp -f $API_30_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    rm -rf $API_30_KEYSTORE/Keystore.tar.xz
+  fi
+}
+
+makekeystore31() {
+  if [ "$API" == "31" ]; then
+    cd $API_31_KEYSTORE
+    # Only compress in 'xz' format
+    tar -cJf "Keystore.tar.xz" --exclude="README.md" *
+    cd ../../../..
+    cp -f $API_31_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    rm -rf $API_31_KEYSTORE/Keystore.tar.xz
+  fi
+}
+
 # Main
 makegapps() {
   # Create build directory
@@ -258,237 +423,122 @@ makegapps() {
       TARGET_ANDROID_SDK_V25='"25"'
       # Build property variable; Do not modify
       sdk_25="25"
+      version_25="7.1.x"
       echo "Generating BiTGApps package for $ARCH with API level $API"
-      if [ "$TARGET_VERSION_N1" == "7.1.1" ]; then
-        # Install variable; Do not modify
-        TARGET_VERSION_ERROR='"7.1.1"'
-        # Build property variable; Do not modify
-        version_N1="7.1.1"
-        # Create release directory
-        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}
-        RELEASEDIR="BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}"
-        # Create package components
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
-        # Install app packages
-        cp -f $SOURCESv25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $AOSPSOURCESv25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
-        # Install etc packages
-        cp -f $SOURCESv25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $AOSPSOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-        # Install framework package
-        cp -f $SOURCESv25/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        # Install lib package
-        cp -f $SOURCESv25/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        # Install priv-app package
-        cp -f $SOURCESv25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $AOSPSOURCESv25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        # Installer components
-        cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-        cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
-        # Create utility script
-        makeutilityscript
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VERSION_ERROR="" TARGET_VERSION_ERROR="$TARGET_VERSION_ERROR"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-        # Create build property file
-        makegprop
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop platform= platform="$platform_32"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop sdk= sdk="$sdk_25"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop version= version="$version_N1"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-        # Create LICENSE
-        makelicense
-        # Add OTA script
-        makeota
-        # Create ZIP
-        cd $BUILDDIR/$ARCH/$RELEASEDIR
-        zip -qr9 ${RELEASEDIR}.zip *
-        cd ../../..
-        mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
-        # Sign ZIP; No token required for official release
-        if [ ! -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-        fi
-        # Sign ZIP; Add ZIP token for test release
-        if [ -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
-        fi
-        # Set build API in global environment
-        if [ ! -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
-            echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
-          fi
-        fi
-        if [ -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
-            echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
-          fi
-        fi
-        # List signed ZIP
-        if [ ! -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
-        fi
-        if [ -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
-        fi
-        # Wipe unsigned ZIP
-        rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+      # Create release directory
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.x-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-7.1.x-${COMMONGAPPSRELEASE}"
+      # Create package components
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      # Install app packages
+      cp -f $SOURCESv25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $AOSPSOURCESv25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      # Install etc packages
+      cp -f $SOURCESv25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $AOSPSOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
+      # Install framework package
+      cp -f $SOURCESv25/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Install lib package
+      cp -f $SOURCESv25/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      # Install priv-app package
+      cp -f $SOURCESv25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $AOSPSOURCESv25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
+      cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
+      cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create utility script
+      makeutilityscript
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
+      # Create build property file
+      makegprop
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop platform= platform="$platform_32"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop sdk= sdk="$sdk_25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop version= version="$version_25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
+      # Create LICENSE
+      makelicense
+      # Add OTA script
+      makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Create ZIP
+      cd $BUILDDIR/$ARCH/$RELEASEDIR
+      zip -qr9 ${RELEASEDIR}.zip *
+      cd ../../..
+      mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
+      # Sign ZIP; No token required for official release
+      if [ ! -n "$TESTRELEASE" ]; then
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       fi
-      if [ "$TARGET_VERSION_N2" == "7.1.2" ]; then
-        # Install variable; Do not modify
-        TARGET_VERSION_ERROR='"7.1.2"'
-        # Build property variable; Do not modify
-        version_N2="7.1.2"
-        # Create release directory
-        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}
-        RELEASEDIR="BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}"
-        # Create package components
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
-        # Install app packages
-        cp -f $SOURCESv25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $AOSPSOURCESv25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
-        # Install etc packages
-        cp -f $SOURCESv25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $AOSPSOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-        # Install framework package
-        cp -f $SOURCESv25/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        # Install lib package
-        cp -f $SOURCESv25/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        # Install priv-app package
-        cp -f $SOURCESv25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $AOSPSOURCESv25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        # Installer components
-        cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-        cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
-        # Create utility script
-        makeutilityscript
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VERSION_ERROR="" TARGET_VERSION_ERROR="$TARGET_VERSION_ERROR"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-        # Create build property file
-        makegprop
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop platform= platform="$platform_32"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop sdk= sdk="$sdk_25"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop version= version="$version_N2"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-        # Create LICENSE
-        makelicense
-        # Add OTA script
-        makeota
-        # Create ZIP
-        cd $BUILDDIR/$ARCH/$RELEASEDIR
-        zip -qr9 ${RELEASEDIR}.zip *
-        cd ../../..
-        mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
-        # Sign ZIP; No token required for official release
-        if [ ! -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-        fi
-        # Sign ZIP; Add ZIP token for test release
-        if [ -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
-        fi
-        # Set build API in global environment
-        if [ ! -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
-            echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
-          fi
-        fi
-        if [ -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
-            echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
-          fi
-        fi
-        # List signed ZIP
-        if [ ! -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
-        fi
-        if [ -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
-        fi
-        # Wipe unsigned ZIP
-        rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+      # Sign ZIP; Add ZIP token for test release
+      if [ -n "$TESTRELEASE" ]; then
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
+      # Set build API in global environment
+      if [ ! -n "$TESTRELEASE" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
+          echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
+        fi
+      fi
+      if [ -n "$TESTRELEASE" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
+          echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
+        fi
+      fi
+      # List signed ZIP
+      if [ ! -n "$TESTRELEASE" ]; then
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+      fi
+      if [ -n "$TESTRELEASE" ]; then
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
+      fi
+      # Wipe unsigned ZIP
+      rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
     fi
     # API 26
     if [ "$API" == "26" ]; then
@@ -540,11 +590,7 @@ makegapps() {
       cp -f $AOSPSOURCESv26/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -555,7 +601,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V26"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -573,6 +618,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore26
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -657,11 +714,7 @@ makegapps() {
       cp -f $AOSPSOURCESv27/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -672,7 +725,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V27"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -690,6 +742,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore27
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -774,12 +838,7 @@ makegapps() {
       cp -f $AOSPSOURCESv28/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $PM $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -790,7 +849,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V28"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -808,6 +866,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore28
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -890,11 +960,7 @@ makegapps() {
       cp -f $AOSPSOURCESv29/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -905,7 +971,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V29"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -923,6 +988,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore29
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -976,10 +1053,6 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv30/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1009,18 +1082,9 @@ makegapps() {
       cp -f $AOSPSOURCESv30/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-      # Install patched keystore
-      cp -f $API_30_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
-      cp -f $API_30_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SPL $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $USF $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -1031,7 +1095,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V30"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1049,6 +1112,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore30
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1102,10 +1177,6 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv31/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv31/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1135,18 +1206,9 @@ makegapps() {
       cp -f $AOSPSOURCESv31/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-      # Install patched keystore
-      cp -f $API_31_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
-      cp -f $API_31_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SPL $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $USF $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -1157,7 +1219,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V31"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1175,6 +1236,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore31
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1225,239 +1298,123 @@ makegapps() {
       TARGET_ANDROID_SDK_V25='"25"'
       # Build property variable; Do not modify
       sdk_25="25"
+      version_25="7.1.x"
       echo "Generating BiTGApps package for $ARCH with API level $API"
-      if [ "$TARGET_VERSION_N1" == "7.1.1" ]; then
-        # Install variable; Do not modify
-        TARGET_VERSION_ERROR='"7.1.1"'
-        # Build property variable; Do not modify
-        version_N1="7.1.1"
-        # Create release directory
-        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}
-        RELEASEDIR="BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}"
-        # Create package components
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
-        # Install app packages
-        cp -f $SOURCESv25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $AOSPSOURCESv25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
-        # Install etc packages
-        cp -f $SOURCESv25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $AOSPSOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-        # Install framework package
-        cp -f $SOURCESv25/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        # Install lib package
-        cp -f $SOURCESv25/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        # Install priv-app package
-        cp -f $SOURCESv25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $AOSPSOURCESv25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        # Installer components
-        cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-        cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
-        # Create utility script
-        makeutilityscript
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VERSION_ERROR="" TARGET_VERSION_ERROR="$TARGET_VERSION_ERROR"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-        # Create build property file
-        makegprop
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop platform= platform="$platform_64"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop sdk= sdk="$sdk_25"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop version= version="$version_N1"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-        # Create LICENSE
-        makelicense
-        # Add OTA script
-        makeota
-        # Create ZIP
-        cd $BUILDDIR/$ARCH/$RELEASEDIR
-        zip -qr9 ${RELEASEDIR}.zip *
-        cd ../../..
-        mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
-        # Sign ZIP; No token required for official release
-        if [ ! -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-        fi
-        # Sign ZIP; Add ZIP token for test release
-        if [ -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
-        fi
-        # Set build API in global environment
-        if [ ! -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
-            echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
-          fi
-        fi
-        if [ -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
-            echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
-          fi
-        fi
-        # List signed ZIP
-        if [ ! -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
-        fi
-        if [ -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
-        fi
-        # Wipe unsigned ZIP
-        rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+      # Create release directory
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.x-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-7.1.x-${COMMONGAPPSRELEASE}"
+      # Create package components
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      # Install app packages
+      cp -f $SOURCESv25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $AOSPSOURCESv25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      # Install etc packages
+      cp -f $SOURCESv25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $AOSPSOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
+      # Install framework package
+      cp -f $SOURCESv25/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Install lib package
+      cp -f $SOURCESv25/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      # Install priv-app package
+      cp -f $SOURCESv25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $AOSPSOURCESv25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
+      cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
+      cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create utility script
+      makeutilityscript
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
+      # Create build property file
+      makegprop
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop platform= platform="$platform_64"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop sdk= sdk="$sdk_25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop version= version="$version_25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
+      # Create LICENSE
+      makelicense
+      # Add OTA script
+      makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Create ZIP
+      cd $BUILDDIR/$ARCH/$RELEASEDIR
+      zip -qr9 ${RELEASEDIR}.zip *
+      cd ../../..
+      mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
+      # Sign ZIP; No token required for official release
+      if [ ! -n "$TESTRELEASE" ]; then
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       fi
-      if [ "$TARGET_VERSION_N2" == "7.1.2" ]; then
-        # Install variable; Do not modify
-        TARGET_VERSION_ERROR='"7.1.2"'
-        # Build property variable; Do not modify
-        version_N2="7.1.2"
-        # Create release directory
-        mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}
-        RELEASEDIR="BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}"
-        # Create package components
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
-        # Install app packages
-        cp -f $SOURCESv25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $AOSPSOURCESv25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
-        # Install etc packages
-        cp -f $SOURCESv25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $SOURCESv25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        cp -f $AOSPSOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-        # Install framework package
-        cp -f $SOURCESv25/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-        # Install lib package
-        cp -f $SOURCESv25/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        cp -f $SOURCESv25/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-        # Install priv-app package
-        cp -f $SOURCESv25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $SOURCESv25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-        cp -f $AOSPSOURCESv25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        cp -f $AOSPSOURCESv25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-        # Installer components
-        cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-        cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-        cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-        cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
-        # Create utility script
-        makeutilityscript
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VERSION_ERROR="" TARGET_VERSION_ERROR="$TARGET_VERSION_ERROR"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-        # Create build property file
-        makegprop
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop platform= platform="$platform_64"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop sdk= sdk="$sdk_25"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop version= version="$version_N2"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
-        replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-        # Create LICENSE
-        makelicense
-        # Add OTA script
-        makeota
-        # Create ZIP
-        cd $BUILDDIR/$ARCH/$RELEASEDIR
-        zip -qr9 ${RELEASEDIR}.zip *
-        cd ../../..
-        mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
-        # Sign ZIP; No token required for official release
-        if [ ! -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-        fi
-        # Sign ZIP; Add ZIP token for test release
-        if [ -n "$TESTRELEASE" ]; then
-          java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
-        fi
-        # Set build API in global environment
-        if [ ! -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
-            echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
-          fi
-        fi
-        if [ -n "$TESTRELEASE" ]; then
-          if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
-            echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
-          fi
-        fi
-        # List signed ZIP
-        if [ ! -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
-        fi
-        if [ -n "$TESTRELEASE" ]; then
-          ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
-        fi
-        # Wipe unsigned ZIP
-        rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+      # Sign ZIP; Add ZIP token for test release
+      if [ -n "$TESTRELEASE" ]; then
+        java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip 2>/dev/null
       fi
+      # Set build API in global environment
+      if [ ! -n "$TESTRELEASE" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed.zip" ]; then
+          echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
+        fi
+      fi
+      if [ -n "$TESTRELEASE" ]; then
+        if [ -f "$OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip" ]; then
+          echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
+        fi
+      fi
+      # List signed ZIP
+      if [ ! -n "$TESTRELEASE" ]; then
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+      fi
+      if [ -n "$TESTRELEASE" ]; then
+        ls $OUTDIR/$ARCH/${RELEASEDIR}_signed-${TOKEN}.zip
+      fi
+      # Wipe unsigned ZIP
+      rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
     fi
     # API 26
     if [ "$API" == "26" ]; then
@@ -1510,11 +1467,7 @@ makegapps() {
       cp -f $AOSPSOURCESv26/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -1525,7 +1478,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V26"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1543,6 +1495,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore26
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1628,11 +1592,7 @@ makegapps() {
       cp -f $AOSPSOURCESv27/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -1643,7 +1603,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V27"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1661,6 +1620,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore27
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1747,12 +1718,7 @@ makegapps() {
       cp -f $AOSPSOURCESv28/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $PM $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -1763,7 +1729,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V28"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1781,6 +1746,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore28
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1863,11 +1840,7 @@ makegapps() {
       cp -f $AOSPSOURCESv29/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -1878,7 +1851,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V29"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -1896,6 +1868,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore29
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1949,10 +1933,6 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv30/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1982,18 +1962,9 @@ makegapps() {
       cp -f $AOSPSOURCESv30/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-      # Install patched keystore
-      cp -f $API_30_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
-      cp -f $API_30_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SPL $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $USF $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -2004,7 +1975,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V30"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -2022,6 +1992,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore30
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -2075,10 +2057,6 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
-      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Install app packages
       cp -f $SOURCESv31/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv31/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -2108,18 +2086,9 @@ makegapps() {
       cp -f $AOSPSOURCESv31/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-      # Install patched keystore
-      cp -f $API_31_KEYSTORE/keystore $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFBIN
-      cp -f $API_31_KEYSTORE/libkeystore-attestation-application-id.so $BUILDDIR/$ARCH/$RELEASEDIR/$USFD/$USFAPI/$USFLIB
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-      cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $CONFIG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $DATA $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $BOOTLOG $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SPL $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $USF $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
       cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
@@ -2130,7 +2099,6 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V31"
-      remove_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh 'TARGET_VERSION_ERROR'
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
@@ -2148,6 +2116,18 @@ makegapps() {
       makelicense
       # Add OTA script
       makeota
+      # Create OTA property file
+      makeotaprop
+      # Create RTP property file
+      makedataprop
+      # Create logcat script
+      makelogcatscript
+      # Create updater script
+      makeupdaterscript
+      # Add Boot Image Editor
+      makebooteditor
+      # Add patched keystore
+      makekeystore31
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *

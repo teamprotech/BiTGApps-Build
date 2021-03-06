@@ -76,8 +76,7 @@ arm_sources() {
           $TARGET_API_28 && curl -T out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Pie/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_27 && curl -T out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Oreo/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_26 && curl -T out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Oreo/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
-          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Nougat/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
-          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Nougat/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.x-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Nougat/BiTGApps-arm-7.1.x-${COMMONGAPPSRELEASE}_signed.zip"
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
           $TARGET_PLATFORM_ARM && curl -T out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/config/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip"
@@ -91,8 +90,7 @@ arm_sources() {
           $TARGET_API_28 && curl -T out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Pie/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_27 && curl -T out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Oreo/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_26 && curl -T out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Oreo/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
-          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Nougat/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
-          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Nougat/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.x-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Nougat/BiTGApps-arm-7.1.x-${COMMONGAPPSRELEASE}_signed.zip"
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
           $TARGET_PLATFORM_ARM && curl -T out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/config/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip"
@@ -108,8 +106,7 @@ arm_sources() {
           $TARGET_API_28 && curl -T out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm/Pie/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
           $TARGET_API_27 && curl -T out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm/Oreo/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
           $TARGET_API_26 && curl -T out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm/Oreo/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
-          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm/Nougat/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
-          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm/Nougat/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.x-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm/Nougat/BiTGApps-arm-7.1.x-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
           $TARGET_PLATFORM_ARM && curl -T out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/addon/config/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"
@@ -131,8 +128,7 @@ arm64_sources() {
           $TARGET_API_28 && curl -T out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Pie/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_27 && curl -T out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Oreo/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_26 && curl -T out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Oreo/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
-          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Nougat/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
-          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Nougat/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.x-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Nougat/BiTGApps-arm64-7.1.x-${COMMONGAPPSRELEASE}_signed.zip"
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
           $TARGET_PLATFORM_ARM64 && curl -T out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/config/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip"
@@ -146,8 +142,7 @@ arm64_sources() {
           $TARGET_API_28 && curl -T out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Pie/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_27 && curl -T out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Oreo/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
           $TARGET_API_26 && curl -T out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Oreo/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
-          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Nougat/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
-          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Nougat/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
+          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.x-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Nougat/BiTGApps-arm64-7.1.x-${COMMONGAPPSRELEASE}_signed.zip"
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
           $TARGET_PLATFORM_ARM64 && curl -T out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/config/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip"
@@ -163,8 +158,7 @@ arm64_sources() {
           $TARGET_API_28 && curl -T out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm64/Pie/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
           $TARGET_API_27 && curl -T out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm64/Oreo/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
           $TARGET_API_26 && curl -T out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm64/Oreo/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
-          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm64/Nougat/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
-          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm64/Nougat/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
+          $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.x-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/arm64/Nougat/BiTGApps-arm64-7.1.x-${COMMONGAPPSRELEASE}_signed-${TOKEN}.zip"
         fi
         if [ -n "$COMMONADDONRELEASE" ]; then
           $TARGET_PLATFORM_ARM64 && curl -T out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed-${TOKEN}.zip "ftp://${user}:${pass}@${host}/bitgapps.com/release/Test/addon/config/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed-${TOKEN}.zip"

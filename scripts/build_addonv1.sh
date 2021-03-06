@@ -46,7 +46,6 @@ ZIPSIGNER="BiTGApps/tools/zipsigner-resources/zipsigner.jar"
 
 # Set installer sources
 UPDATEBINARY="BiTGApps/scripts/update-binary"
-UPDATESCRIPT="BiTGApps/scripts/updater-script"
 INSTALLER="BiTGApps/scripts/installer.sh"
 BUSYBOX="BiTGApps/tools/busybox-resources/busybox-arm"
 
@@ -115,6 +114,11 @@ Any other intellectual property of this build, like e.g. the file and folder str
 to the GPLv3. The applicable license can be found at https://github.com/BiTGApps/BiTGApps/blob/master/LICENSE" >"$BUILDDIR/$ARCH/$RELEASEDIR/LICENSE"
 }
 
+# Set updater script
+makeupdaterscript() {
+echo '# Dummy file; update-binary is a shell script.' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script"
+}
+
 # Main
 makeaddonv1() {
   # Create build directory
@@ -171,7 +175,6 @@ makeaddonv1() {
     cp -f $SOURCES_ALL/priv-app/WellbeingPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     # Installer components
     cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-    cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
     cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
     # Create utility script
@@ -183,6 +186,8 @@ makeaddonv1() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
     # Create LICENSE
     makelicense
+    # Create updater script
+    makeupdaterscript
     # Create ZIP
     cd $BUILDDIR/$ARCH/$RELEASEDIR
     zip -qr9 ${RELEASEDIR}.zip *
@@ -255,7 +260,6 @@ makeaddonv1() {
     cp -f $SOURCES_ALL/priv-app/WellbeingPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     # Installer components
     cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-    cp -f $UPDATESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
     cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
     # Create utility script
@@ -267,6 +271,8 @@ makeaddonv1() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
     # Create LICENSE
     makelicense
+    # Create updater script
+    makeupdaterscript
     # Create ZIP
     cd $BUILDDIR/$ARCH/$RELEASEDIR
     zip -qr9 ${RELEASEDIR}.zip *
