@@ -423,11 +423,11 @@ makegapps() {
       TARGET_ANDROID_SDK_V25='"25"'
       # Build property variable; Do not modify
       sdk_25="25"
-      version_25="7.1.x"
+      version_25="7.1"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.x-${COMMONGAPPSRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-7.1.x-${COMMONGAPPSRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-7.1-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -1298,11 +1298,11 @@ makegapps() {
       TARGET_ANDROID_SDK_V25='"25"'
       # Build property variable; Do not modify
       sdk_25="25"
-      version_25="7.1.x"
+      version_25="7.1"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.x-${COMMONGAPPSRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-7.1.x-${COMMONGAPPSRELEASE}"
+      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1-${COMMONGAPPSRELEASE}
+      RELEASEDIR="BiTGApps-${ARCH}-7.1-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
