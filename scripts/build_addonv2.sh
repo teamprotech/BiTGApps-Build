@@ -563,10 +563,10 @@ makeaddonv2() {
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     # Install app package
-    cp -f $SOURCES_ARMEABI/app/GboardGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_AARCH64/app/GboardGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ARMEABI/app/GboardGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_AARCH64/app/GboardGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     # Installer components
     cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
