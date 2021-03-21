@@ -230,31 +230,6 @@ echo '#
 # End addon properties' >"$BUILDDIR/$ARCH/$RELEASEDIR/config.prop"
 }
 
-# Set RTP build property
-makedataprop() {
-echo '##############################################################
-# File name       : data.prop
-#
-# Description     : Prevent purging of runtime permissions
-#
-# Copyright       : Copyright (C) 2018-2021 TheHitMan7
-#
-# License         : SPDX-License-Identifier: GPL-3.0-or-later
-##############################################################
-# The BiTGApps scripts are free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation, either version 3 of
-# the License, or (at your option) any later version.
-#
-# These scripts are distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-##############################################################
-
-ro.build.system_data=true' >"$BUILDDIR/$ARCH/$RELEASEDIR/data.prop"
-}
-
 # Set logcat script
 makelogcatscript() {
 echo '##############################################################
@@ -498,8 +473,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -620,8 +593,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -744,8 +715,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -868,8 +837,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -990,8 +957,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -1114,8 +1079,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -1238,8 +1201,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -1374,8 +1335,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -1497,8 +1456,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -1622,8 +1579,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -1748,8 +1703,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -1870,8 +1823,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -1994,8 +1945,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
@@ -2118,8 +2067,6 @@ makegapps() {
       makeota
       # Create OTA property file
       makeotaprop
-      # Create RTP property file
-      makedataprop
       # Create logcat script
       makelogcatscript
       # Create updater script
