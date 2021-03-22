@@ -284,89 +284,68 @@ echo '# Dummy file; update-binary is a shell script.' >"$BUILDDIR/$ARCH/$RELEASE
 
 # Compress and add Boot Image Editor
 makebooteditor() {
-  if [ "$ARCH" == "arm" ]; then
-    cd $AIK_ARMEABI
-    # Only compress in 'xz' format
-    tar -cJf "AIK.tar.xz" *
-    cd ../../../..
-    cp -f $AIK_ARMEABI/AIK.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    rm -rf $AIK_ARMEABI/AIK.tar.xz
-  fi
-  if [ "$ARCH" == "arm64" ]; then
-    cd $AIK_AARCH64
-    # Only compress in 'xz' format
-    tar -cJf "AIK.tar.xz" *
-    cd ../../../..
-    cp -f $AIK_AARCH64/AIK.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    rm -rf $AIK_AARCH64/AIK.tar.xz
-  fi
+  [ "$ARCH" == "arm" ] && cd $AIK_ARMEABI && AIK="$AIK_ARMEABI"
+  [ "$ARCH" == "arm64" ] && cd $AIK_AARCH64 && AIK="$AIK_AARCH64"
+  # Only compress in 'xz' format
+  tar -cJf "AIK.tar.xz" *
+  cd ../../../..
+  cp -f $AIK/AIK.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  rm -rf $AIK/AIK.tar.xz
 }
 
 # Compress and add patched keystore
 makekeystore26() {
-  if [ "$API" == "26" ]; then
-    cd $API_26_KEYSTORE
-    # Only compress in 'xz' format
-    tar -cJf "Keystore.tar.xz" *
-    cd ../../../..
-    cp -f $API_26_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    rm -rf $API_26_KEYSTORE/Keystore.tar.xz
-  fi
+  cd $API_26_KEYSTORE
+  # Only compress in 'xz' format
+  tar -cJf "Keystore.tar.xz" *
+  cd ../../../..
+  cp -f $API_26_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  rm -rf $API_26_KEYSTORE/Keystore.tar.xz
 }
 
 makekeystore27() {
-  if [ "$API" == "27" ]; then
-    cd $API_27_KEYSTORE
-    # Only compress in 'xz' format
-    tar -cJf "Keystore.tar.xz" *
-    cd ../../../..
-    cp -f $API_27_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    rm -rf $API_27_KEYSTORE/Keystore.tar.xz
-  fi
+  cd $API_27_KEYSTORE
+  # Only compress in 'xz' format
+  tar -cJf "Keystore.tar.xz" *
+  cd ../../../..
+  cp -f $API_27_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  rm -rf $API_27_KEYSTORE/Keystore.tar.xz
 }
 
 makekeystore28() {
-  if [ "$API" == "28" ]; then
-    cd $API_28_KEYSTORE
-    # Only compress in 'xz' format
-    tar -cJf "Keystore.tar.xz" *
-    cd ../../../..
-    cp -f $API_28_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    rm -rf $API_28_KEYSTORE/Keystore.tar.xz
-  fi
+  cd $API_28_KEYSTORE
+  # Only compress in 'xz' format
+  tar -cJf "Keystore.tar.xz" *
+  cd ../../../..
+  cp -f $API_28_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  rm -rf $API_28_KEYSTORE/Keystore.tar.xz
 }
 
 makekeystore29() {
-  if [ "$API" == "29" ]; then
-    cd $API_29_KEYSTORE
-    # Only compress in 'xz' format
-    tar -cJf "Keystore.tar.xz" *
-    cd ../../../..
-    cp -f $API_29_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    rm -rf $API_29_KEYSTORE/Keystore.tar.xz
-  fi
+  cd $API_29_KEYSTORE
+  # Only compress in 'xz' format
+  tar -cJf "Keystore.tar.xz" *
+  cd ../../../..
+  cp -f $API_29_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  rm -rf $API_29_KEYSTORE/Keystore.tar.xz
 }
 
 makekeystore30() {
-  if [ "$API" == "30" ]; then
-    cd $API_30_KEYSTORE
-    # Only compress in 'xz' format
-    tar -cJf "Keystore.tar.xz" --exclude="README.md" *
-    cd ../../../..
-    cp -f $API_30_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    rm -rf $API_30_KEYSTORE/Keystore.tar.xz
-  fi
+  cd $API_30_KEYSTORE
+  # Only compress in 'xz' format
+  tar -cJf "Keystore.tar.xz" *
+  cd ../../../..
+  cp -f $API_30_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  rm -rf $API_30_KEYSTORE/Keystore.tar.xz
 }
 
 makekeystore31() {
-  if [ "$API" == "31" ]; then
-    cd $API_31_KEYSTORE
-    # Only compress in 'xz' format
-    tar -cJf "Keystore.tar.xz" --exclude="README.md" *
-    cd ../../../..
-    cp -f $API_31_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    rm -rf $API_31_KEYSTORE/Keystore.tar.xz
-  fi
+  cd $API_31_KEYSTORE
+  # Only compress in 'xz' format
+  tar -cJf "Keystore.tar.xz" --exclude="README.md" *
+  cd ../../../..
+  cp -f $API_31_KEYSTORE/Keystore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  rm -rf $API_31_KEYSTORE/Keystore.tar.xz
 }
 
 # Main
