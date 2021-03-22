@@ -422,8 +422,6 @@ makegapps() {
       cp -f $SOURCESv25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv25/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install lib package
       cp -f $SOURCESv25/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       # Install priv-app package
@@ -543,8 +541,6 @@ makegapps() {
       cp -f $SOURCESv26/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv26/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv26/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv26/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install lib package
       cp -f $SOURCESv26/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       # Install priv-app package
@@ -665,8 +661,6 @@ makegapps() {
       cp -f $SOURCESv27/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv27/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv27/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv27/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install lib package
       cp -f $SOURCESv27/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       # Install priv-app package
@@ -787,8 +781,6 @@ makegapps() {
       cp -f $SOURCESv28/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv28/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv28/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv28/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install lib package
       cp -f $SOURCESv28/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       # Install priv-app package
@@ -908,8 +900,6 @@ makegapps() {
       cp -f $SOURCESv29/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv29/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv29/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv29/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install priv-app package
       cp -f $SOURCESv29/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
@@ -1029,8 +1019,6 @@ makegapps() {
       cp -f $SOURCESv30/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv30/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv30/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv30/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install overlay package
       cp -f $SOURCESv30/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       # Install priv-app package
@@ -1151,8 +1139,6 @@ makegapps() {
       cp -f $SOURCESv31/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv31/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv31/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv31/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install overlay package
       cp -f $SOURCESv31/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       # Install priv-app package
@@ -1283,8 +1269,6 @@ makegapps() {
       cp -f $SOURCESv25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv25/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install lib package
       cp -f $SOURCESv25/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv25/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1405,8 +1389,6 @@ makegapps() {
       cp -f $SOURCESv26/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv26/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv26/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv26/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install lib package
       cp -f $SOURCESv26/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv26/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1528,8 +1510,6 @@ makegapps() {
       cp -f $SOURCESv27/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv27/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv27/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv27/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install lib package
       cp -f $SOURCESv27/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv27/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1651,8 +1631,6 @@ makegapps() {
       cp -f $SOURCESv28/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv28/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv28/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv28/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install lib package
       cp -f $SOURCESv28/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv28/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -1774,8 +1752,6 @@ makegapps() {
       cp -f $SOURCESv29/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv29/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv29/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv29/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install priv-app package
       cp -f $SOURCESv29/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
@@ -1895,8 +1871,6 @@ makegapps() {
       cp -f $SOURCESv30/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv30/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv30/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv30/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install overlay package
       cp -f $SOURCESv30/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       # Install priv-app package
@@ -2017,8 +1991,6 @@ makegapps() {
       cp -f $SOURCESv31/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv31/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $AOSPSOURCESv31/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install framework package
-      cp -f $SOURCESv31/framework/Framework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       # Install overlay package
       cp -f $SOURCESv31/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       # Install priv-app package
