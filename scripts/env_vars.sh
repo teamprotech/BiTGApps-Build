@@ -79,3 +79,6 @@ export TARGET_CONFIG_CTS="false"
 
 # Set SetupWizard config for upload
 export TARGET_CONFIG_SETUP="false"
+
+# Set Uninstall config for upload
+export TARGET_CONFIG_WIPE="false"

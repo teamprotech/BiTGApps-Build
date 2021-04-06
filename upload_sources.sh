@@ -238,12 +238,14 @@ config_sources() {
         $TARGET_CONFIG_BOOT && curl -T BiTGApps/configs/boot-config.prop "ftp://${user}:${pass}@${host}/config/Bootlog/boot-config.prop"
         $TARGET_CONFIG_CTS && curl -T BiTGApps/configs/cts-config.prop "ftp://${user}:${pass}@${host}/config/Safetynet/cts-config.prop"
         $TARGET_CONFIG_SETUP && curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${pass}@${host}/config/SetupWizard/setup-config.prop"
+        $TARGET_CONFIG_WIPE && curl -T BiTGApps/configs/wipe-config.prop "ftp://${user}:${pass}@${host}/config/Uninstall/wipe-config.prop"
       fi
       if [ "$SERVER" == "dh" ]; then
         $TARGET_CONFIG_ADDON && curl -T BiTGApps/configs/addon-config.prop "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/config/Addon/addon-config.prop"
         $TARGET_CONFIG_BOOT && curl -T BiTGApps/configs/boot-config.prop "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/config/Bootlog/boot-config.prop"
         $TARGET_CONFIG_CTS && curl -T BiTGApps/configs/cts-config.prop "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/config/Safetynet/cts-config.prop"
         $TARGET_CONFIG_SETUP && curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/config/SetupWizard/setup-config.prop"
+        $TARGET_CONFIG_WIPE && curl -T BiTGApps/configs/wipe-config.prop "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/config/Uninstall/wipe-config.prop"
       fi
     fi
     if [ -n "$TESTRELEASE" ]; then
@@ -252,6 +254,7 @@ config_sources() {
         $TARGET_CONFIG_BOOT && curl -T BiTGApps/configs/boot-config.prop "ftp://${user}:${pass}@${host}/bitgapps.org/release/Test/config/Bootlog/boot-config.prop"
         $TARGET_CONFIG_CTS && curl -T BiTGApps/configs/cts-config.prop "ftp://${user}:${pass}@${host}/bitgapps.org/release/Test/config/Safetynet/cts-config.prop"
         $TARGET_CONFIG_SETUP && curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${pass}@${host}/bitgapps.org/release/Test/config/SetupWizard/setup-config.prop"
+        $TARGET_CONFIG_WIPE && curl -T BiTGApps/configs/wipe-config.prop "ftp://${user}:${pass}@${host}/bitgapps.org/release/Test/config/Uninstall/wipe-config.prop"
       fi
     fi
   fi
