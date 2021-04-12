@@ -693,6 +693,7 @@ makegapps() {
       # Install lib package
       cp -f $SOURCESv28/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       # Install priv-app package
+      cp -f $SOURCESv28/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
@@ -1403,6 +1404,7 @@ makegapps() {
       cp -f $SOURCESv28/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv28/lib64/setupwizardprebuilt_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install priv-app package
+      cp -f $SOURCESv28/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
