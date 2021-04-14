@@ -29,6 +29,9 @@ export COMMONGAPPSRELEASE=""
 # Set release tag in all Addons build file
 export COMMONADDONRELEASE=""
 
+# Set release tag in all Patch build file
+export COMMONPATCHRELEASE=""
+
 # Set GApps package release tag; Used by installer
 export GAPPS_RELEASE='""'
 
@@ -64,12 +67,6 @@ export APKRELEASE=""
 
 # Set Addon config for upload
 export TARGET_CONFIG_ADDON="false"
-
-# Set Boot log config for upload
-export TARGET_CONFIG_BOOT="false"
-
-# Set CTS config for upload
-export TARGET_CONFIG_CTS="false"
 
 # Set SetupWizard config for upload
 export TARGET_CONFIG_SETUP="false"

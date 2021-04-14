@@ -16,6 +16,7 @@
 TOPDIR := .
 BUILD_SYSTEM := $(TOPDIR)/scripts
 BUILD_GAPPS := $(BUILD_SYSTEM)/build_gapps.sh
+BUILD_PATCH := $(BUILD_SYSTEM)/build_patch.sh
 BUILD_ADDON_V1 := $(BUILD_SYSTEM)/build_addonv1.sh
 BUILD_ADDON_V2 := $(BUILD_SYSTEM)/build_addonv2.sh
 APIS := 25 26 27 28 29 30 31
@@ -23,6 +24,7 @@ PLATFORMS := arm arm64
 LOWEST_API_arm := 25
 LOWEST_API_arm64 := 25
 VARIANTS := assistant calculator calendar contacts deskclock dialer gboard markup messages photos soundpicker vanced wellbeing
+PATCH := bootlog safetynet whitelist
 BUILDDIR := $(TOPDIR)/build
 OUTDIR := $(TOPDIR)/out
 
@@ -75,6 +77,22 @@ $1:
 	exit 0
 endef
 
+define make-patch
+# We first define 'all' so that this is the primary make target
+all:: $1
+
+# It will execute the build script with the patch as parameter,
+# API and Platform independent
+$1:
+	$(patch = $(firstword $(subst -, ,$1)))
+	@if [ -n "$(patch)" ] ; then\
+		$(BUILD_PATCH) $(patch) 2>&1;\
+	else\
+		echo "Illegal Patch";\
+	fi;\
+	exit 0
+endef
+
 $(foreach platform,$(PLATFORMS),\
 $(foreach api,$(APIS),\
 $(eval $(call make-gapps,$(platform)-$(api)))\
@@ -86,6 +104,10 @@ $(eval $(call make-addons,$(platform)))\
 
 $(foreach variant,$(VARIANTS),\
 $(eval $(call make-variants,$(variant)))\
+)
+
+$(foreach patch,$(PATCH),\
+$(eval $(call make-patch,$(patch)))\
 )
 
 clean:

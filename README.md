@@ -46,7 +46,7 @@ After setting environmental variables:
 . scripts/env_vars.sh
 ```
 
-To build BiTGApps/Addons for all platforms and all Android releases:
+To build BiTGApps/Addons/Patch for all platforms and all Android releases:
 
 ```shellscript
 make
@@ -75,6 +75,12 @@ To build specific BiTGApps Additional package variant for both platforms
 make assistant
 ```
 
+To build specific BiTGApps Patch for all platforms and all Android releases
+
+```shellscript
+make safetynet
+```
+
 **For contributors, updated sources can be uploaded.**
 
 Before uploading, set server credentials:
@@ -95,6 +101,12 @@ After setting server credentials:
 
 ```shellscript
 ./upload_sources.sh common
+```
+
+* For all BiTGApps Patches
+
+```shellscript
+./upload_sources.sh generic
 ```
 
 * For BiTGApps configuration files
