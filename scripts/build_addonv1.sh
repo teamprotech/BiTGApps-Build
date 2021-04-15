@@ -165,6 +165,10 @@ makeaddonv1() {
     cp -f $SOURCES_ARMEABI/app/PhotosGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/$PHOTOS_NO_ARCH
     cp -f $SOURCES_ALL/app/SoundPickerPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     cp -f $SOURCES_ALL/app/YouTube.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    # Install etc package
+    cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    # Install framework package
+    cp -f $SOURCES_ALL/framework/DialerFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install lib package
     cp -f $SOURCES_ARMEABI/lib/markup_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install priv-app package
@@ -230,6 +234,10 @@ makeaddonv1() {
     cp -f $SOURCES_AARCH64/app/PhotosGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/$PHOTOS_NO_ARCH
     cp -f $SOURCES_ALL/app/SoundPickerPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     cp -f $SOURCES_ALL/app/YouTube.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    # Install etc package
+    cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    # Install framework package
+    cp -f $SOURCES_ALL/framework/DialerFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install lib package
     cp -f $SOURCES_AARCH64/lib64/markup_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install priv-app package

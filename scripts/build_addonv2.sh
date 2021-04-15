@@ -399,6 +399,10 @@ makeaddonv2() {
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    # Install etc package
+    cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    # Install framework package
+    cp -f $SOURCES_ALL/framework/DialerFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install priv-app package
     cp -f $SOURCES_ARMEABI/priv-app/DialerGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_AARCH64/priv-app/DialerGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
