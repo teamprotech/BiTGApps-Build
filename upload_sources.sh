@@ -177,14 +177,14 @@ common_sources() {
 patch_sources() {
   if [ "$PATCH" == "generic" ]; then
     if [ "$SERVER" == "ga" ]; then
-      $TARGET_BOOTLOG_PACKAGE && curl -T out/generic/BiTGApps-bootlog-patch_signed.zip "ftp://${user}:${pass}@${host}/patch/BiTGApps-bootlog-patch_signed.zip"
-      $TARGET_SAFETYNET_PACKAGE && curl -T out/generic/BiTGApps-safetynet-patch_signed.zip "ftp://${user}:${pass}@${host}/patch/BiTGApps-safetynet-patch_signed.zip"
-      $TARGET_WHITELIST_PACKAGE && curl -T out/generic/BiTGApps-whitelist-patch_signed.zip "ftp://${user}:${pass}@${host}/patch/BiTGApps-whitelist-patch_signed.zip"
+      $TARGET_BOOTLOG_PACKAGE && curl -T out/generic/BiTGApps-bootlog-patch-${COMMONPATCHRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/patch/BiTGApps-bootlog-patch-${COMMONPATCHRELEASE}_signed.zip"
+      $TARGET_SAFETYNET_PACKAGE && curl -T out/generic/BiTGApps-safetynet-patch-${COMMONPATCHRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/patch/BiTGApps-safetynet-patch-${COMMONPATCHRELEASE}_signed.zip"
+      $TARGET_WHITELIST_PACKAGE && curl -T out/generic/BiTGApps-whitelist-patch-${COMMONPATCHRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/patch/BiTGApps-whitelist-patch-${COMMONPATCHRELEASE}_signed.zip"
     fi
     if [ "$SERVER" == "dh" ]; then
-      $TARGET_BOOTLOG_PACKAGE && curl -T out/generic/BiTGApps-bootlog-patch_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/patch/BiTGApps-bootlog-patch_signed.zip"
-      $TARGET_SAFETYNET_PACKAGE && curl -T out/generic/BiTGApps-safetynet-patch_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/patch/BiTGApps-safetynet-patch_signed.zip"
-      $TARGET_WHITELIST_PACKAGE && curl -T out/generic/BiTGApps-whitelist-patch_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/patch/BiTGApps-whitelist-patch_signed.zip"
+      $TARGET_BOOTLOG_PACKAGE && curl -T out/generic/BiTGApps-bootlog-patch-${COMMONPATCHRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/patch/BiTGApps-bootlog-patch-${COMMONPATCHRELEASE}_signed.zip"
+      $TARGET_SAFETYNET_PACKAGE && curl -T out/generic/BiTGApps-safetynet-patch-${COMMONPATCHRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/patch/BiTGApps-safetynet-patch-${COMMONPATCHRELEASE}_signed.zip"
+      $TARGET_WHITELIST_PACKAGE && curl -T out/generic/BiTGApps-whitelist-patch-${COMMONPATCHRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.org/downloads/patch/BiTGApps-whitelist-patch-${COMMONPATCHRELEASE}_signed.zip"
     fi
   fi
 }
