@@ -76,7 +76,8 @@ arm_sources() {
         $TARGET_API_28 && curl -T out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Pie/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_27 && curl -T out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Oreo/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_26 && curl -T out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Oreo/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
-        $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Nougat/BiTGApps-arm-7.1-${COMMONGAPPSRELEASE}_signed.zip"
+        $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Nougat/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+        $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm/Nougat/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
       fi
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_PLATFORM_ARM && curl -T out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/config/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip"
@@ -90,7 +91,8 @@ arm_sources() {
         $TARGET_API_28 && curl -T out/arm/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Pie/BiTGApps-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_27 && curl -T out/arm/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Oreo/BiTGApps-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_26 && curl -T out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Oreo/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
-        $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Nougat/BiTGApps-arm-7.1-${COMMONGAPPSRELEASE}_signed.zip"
+        $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Nougat/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+        $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm/Nougat/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
       fi
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_PLATFORM_ARM && curl -T out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/config/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip"
@@ -110,7 +112,8 @@ arm64_sources() {
         $TARGET_API_28 && curl -T out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Pie/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_27 && curl -T out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Oreo/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_26 && curl -T out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Oreo/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
-        $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Nougat/BiTGApps-arm64-7.1-${COMMONGAPPSRELEASE}_signed.zip"
+        $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Nougat/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+        $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/arm64/Nougat/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
       fi
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_PLATFORM_ARM64 && curl -T out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/config/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip"
@@ -124,7 +127,8 @@ arm64_sources() {
         $TARGET_API_28 && curl -T out/arm64/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Pie/BiTGApps-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_27 && curl -T out/arm64/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Oreo/BiTGApps-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_26 && curl -T out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Oreo/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
-        $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Nougat/BiTGApps-arm64-7.1-${COMMONGAPPSRELEASE}_signed.zip"
+        $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Nougat/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+        $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/arm64/Nougat/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
       fi
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_PLATFORM_ARM64 && curl -T out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/config/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip"
@@ -192,36 +196,16 @@ patch_sources() {
 # CONFIG sources
 config_sources() {
   if [ "$CONFIG" == "config" ]; then
-    if [ "$SERVER" == "ga" ]; then
-      $TARGET_CONFIG_ADDON && curl -T BiTGApps/configs/addon-config.prop "ftp://${user}:${pass}@${host}/config/Addon/addon-config.prop"
-      $TARGET_CONFIG_SETUP && curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${pass}@${host}/config/SetupWizard/setup-config.prop"
-      $TARGET_CONFIG_WIPE && curl -T BiTGApps/configs/wipe-config.prop "ftp://${user}:${pass}@${host}/config/Uninstall/wipe-config.prop"
-    fi
-    if [ "$SERVER" == "dh" ]; then
-      $TARGET_CONFIG_ADDON && curl -T BiTGApps/configs/addon-config.prop "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/config/Addon/addon-config.prop"
-      $TARGET_CONFIG_SETUP && curl -T BiTGApps/configs/setup-config.prop "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/config/SetupWizard/setup-config.prop"
-      $TARGET_CONFIG_WIPE && curl -T BiTGApps/configs/wipe-config.prop "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/config/Uninstall/wipe-config.prop"
-    fi
+    if [ "$SERVER" == "ga" ]; then $BITGAPPS_CONFIG && curl -T BiTGApps/config/bitgapps-config.prop "ftp://${user}:${pass}@${host}/config/bitgapps-config.prop"; fi
+    if [ "$SERVER" == "dh" ]; then $BITGAPPS_CONFIG && curl -T BiTGApps/config/bitgapps-config.prop "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/config/bitgapps-config.prop"; fi
   fi
 }
 
 # APK sources
 apk_sources() {
   if [ "$APK" == "apk" ]; then
-    if [ "$SERVER" == "ga" ]; then
-      if [ -n "$APKRELEASE" ]; then
-        curl -T BiTGApps-v${APKRELEASE}.apk "ftp://${user}:${pass}@${host}/APK/BiTGApps-v${APKRELEASE}.apk"
-      else
-        echo "! APKRELEASE environmental variable not set. Aborting..."
-      fi
-    fi
-    if [ "$SERVER" == "dh" ]; then
-      if [ -n "$APKRELEASE" ]; then
-        curl -T BiTGApps-v${APKRELEASE}.apk "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/APK/BiTGApps-v${APKRELEASE}.apk"
-      else
-        echo "! APKRELEASE environmental variable not set. Aborting..."
-      fi
-    fi
+    if [ "$SERVER" == "ga" ]; then if [ -n "$APKRELEASE" ]; then curl -T BiTGApps-v${APKRELEASE}.apk "ftp://${user}:${pass}@${host}/APK/BiTGApps-v${APKRELEASE}.apk"; fi; fi
+    if [ "$SERVER" == "dh" ]; then if [ -n "$APKRELEASE" ]; then curl -T BiTGApps-v${APKRELEASE}.apk "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/APK/BiTGApps-v${APKRELEASE}.apk"; fi; fi
   fi
 }
 

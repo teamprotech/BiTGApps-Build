@@ -20,7 +20,6 @@
 # GNU General Public License for more details.
 ##############################################################
 
-# Set non-config based Addons target; Used by installer
 export TARGET_ASSISTANT_GOOGLE='"true"'
 export TARGET_CALCULATOR_GOOGLE='"true"'
 export TARGET_CALENDAR_GOOGLE='"true"'

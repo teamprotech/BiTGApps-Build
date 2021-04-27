@@ -20,14 +20,20 @@
 # GNU General Public License for more details.
 ##############################################################
 
+# Check existance of required tools and notify user of missing tools
+command -v grep >/dev/null 2>&1 || { echo "! GREP is required but it's not installed. Aborting..." >&2; exit 1; }
+command -v install >/dev/null 2>&1 || { echo "! Coreutils is required but it's not installed. Aborting..." >&2; exit 1; }
+command -v java >/dev/null 2>&1 || { echo "! JAVA is required but it's not installed. Aborting..." >&2; exit 1; }
+command -v tar >/dev/null 2>&1 || { echo "! TAR is required but it's not installed. Aborting..." >&2; exit 1; }
+command -v zip >/dev/null 2>&1 || { echo "! ZIP is required but it's not installed. Aborting..." >&2; exit 1; }
+
 # Check availability of environmental variables
 if { [ ! -n "$COMMONGAPPSRELEASE" ] ||
      [ ! -n "$GAPPS_RELEASE" ] ||
-     [ ! -n "$TARGET_GAPPS_RELEASE" ] ||
      [ ! -n "$TARGET_DIRTY_INSTALL" ] ||
+     [ ! -n "$TARGET_GAPPS_RELEASE" ] ||
      [ ! -n "$TARGET_RELEASE_TAG" ] ||
      [ ! -n "$GAPPS_RELEASE_TAG" ] ||
-     [ ! -n "$COMMON_SYSTEM_LAYOUT" ] ||
      [ ! -n "$BuildDate" ] ||
      [ ! -n "$BuildID" ]; }; then
      echo "! Environmental variables not set. Aborting..."
@@ -40,22 +46,11 @@ if [ ! -d "sources/aosp-sources" ]; then
   exit 1
 fi
 
-# Check architecture
-if { [ "$1" != "arm" ] && [ "$1" != "arm64" ]; } || [ -z "$2" ]; then
-  echo "Usage: $0 (arm|arm64) API_LEVEL"
+# Check availability of SetupWizard sources
+if [ ! -d "sources/setup-sources" ]; then
+  echo "! SetupWizard sources not found. Aborting..."
   exit 1
 fi
-
-# Check API
-case "$API" in
-  25) PLATFORM="7.1" ;;
-  26) PLATFORM="8.0" ;;
-  27) PLATFORM="8.1" ;;
-  28) PLATFORM="9.0" ;;
-  29) PLATFORM="10.0" ;;
-  30) PLATFORM="11.0" ;;
-  31) PLATFORM="12.0" ;;
-esac
 
 # Set defaults
 ARCH="$1"
@@ -87,15 +82,19 @@ AOSPSOURCESv29="sources/aosp-sources/$ARCH/29"
 AOSPSOURCESv30="sources/aosp-sources/$ARCH/30"
 AOSPSOURCESv31="sources/aosp-sources/$ARCH/31"
 
+# Set SetupWizard package sources
+SETUPSOURCESv25="sources/setup-sources/$ARCH/25"
+SETUPSOURCESv26="sources/setup-sources/$ARCH/26"
+SETUPSOURCESv27="sources/setup-sources/$ARCH/27"
+SETUPSOURCESv28="sources/setup-sources/$ARCH/28"
+SETUPSOURCESv29="sources/setup-sources/$ARCH/29"
+SETUPSOURCESv30="sources/setup-sources/$ARCH/30"
+SETUPSOURCESv31="sources/setup-sources/$ARCH/31"
+
 # Set installer sources
-UPDATEBINARY="BiTGApps/scripts/update-binary"
 INSTALLER="BiTGApps/scripts/installer.sh"
 OTA="BiTGApps/scripts/90-bitgapps.sh"
 BUSYBOX="BiTGApps/tools/busybox-resources/busybox-arm"
-SQLITE_ARMEABI="BiTGApps/tools/sqlite-resources/armeabi-v7a/sqlite-static"
-SQLITE_AARCH64="BiTGApps/tools/sqlite-resources/arm64-v8a/sqlite-static"
-ZIPALIGN_ARMEABI="BiTGApps/tools/zipalign-resources/armeabi-v7a/zipalign-static"
-ZIPALIGN_AARCH64="BiTGApps/tools/zipalign-resources/arm64-v8a/zipalign-static"
 
 # Set ZIP structure
 METADIR="META-INF/com/google/android"
@@ -121,6 +120,54 @@ remove_line() {
     local line=$(grep -n "$2" $1 | head -n1 | cut -d: -f1)
     sed -i "${line}d" $1
   fi
+}
+
+# Set updater script
+makeupdaterscript() {
+echo '# Dummy file; update-binary is a shell script.' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script"
+}
+
+# Set update binary
+makeupdatebinary() {
+echo '#!/sbin/sh
+#
+##############################################################
+# File name       : update-binary
+#
+# Description     : Setup installation, environmental variables
+#                   and helper functions
+#
+# Copyright       : Copyright (C) 2018-2021 TheHitMan7
+#
+# License         : GPL-3.0-or-later
+##############################################################
+# The BiTGApps scripts are free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# These scripts are distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+##############################################################
+
+# Set environmental variables in the global environment
+export ZIPFILE="$3"
+export OUTFD="$2"
+export TMP="/tmp"
+
+# Extract installer script
+unzip -o "$ZIPFILE" "installer.sh" -d "$TMP"
+chmod +x "$TMP/installer.sh"
+
+# Extract utility script
+unzip -o "$ZIPFILE" "util_functions.sh" -d "$TMP"
+chmod +x "$TMP/util_functions.sh"
+
+# Execute installer script
+source "$TMP/installer.sh" "$@"
+exit "$?"' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary"
 }
 
 # Set utility script
@@ -155,7 +202,10 @@ TARGET_ANDROID_SDK=""
 TARGET_ANDROID_ARCH=""
 ARMEABI=""
 AARCH64=""
-TARGET_RELEASE_TAG=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
+TARGET_RELEASE_TAG=""
+TARGET_BOOTLOG_PATCH="false"
+TARGET_SAFETYNET_PATCH="false"
+TARGET_WHITELIST_PATCH="false"' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
 }
 
 # Set build property
@@ -169,40 +219,13 @@ BuildID=
 Developer=' >"$BUILDDIR/$ARCH/$RELEASEDIR/g.prop"
 }
 
-# Set license for pre-built package
-makelicense() {
-echo "This BiTGApps build is provided ONLY as courtesy by BiTGApps.com and is without warranty of ANY kind.
-
-This build is authored by the TheHitMan7 and is as such protected by BiTGApps.com's copyright.
-This build is provided under the terms that it can be freely used for personal use only and is not allowed to be mirrored to the public other than BiTGApps.com.
-You are not allowed to modify this build for further (re)distribution.
-
-The APKs found in this build are developed and owned by Google Inc.
-They are included only for your convenience, neither BiTGApps.com and The BiTGApps Project have no ownership over them.
-The user self is responsible for obtaining the proper licenses for the APKs, e.g. via Google's Play Store.
-To use Google's applications you accept to Google's license agreement and further distribution of Google's application
-are subject of Google's terms and conditions, these can be found at http://www.google.com/policies/
-
-BusyBox is subject to the GPLv2, its license can be found at https://www.busybox.net/license.html
-
-Sqlite is in the public domain. The source code and license can be found at https://www.sqlite.org/
-
-Zipalign is subject to the Apache License, Version 2.0 developed and owned by Google Inc.
-
-Any other intellectual property of this build, like e.g. the file and folder structure and the installation scripts are part of The BiTGApps Project and are subject
-to the GPLv3. The applicable license can be found at https://github.com/BiTGApps/BiTGApps/blob/master/LICENSE" >"$BUILDDIR/$ARCH/$RELEASEDIR/LICENSE"
-}
-
 # Compress and add OTA survival script
 makeota() {
-  cp -f $OTA $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-  cd $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-  # Change Release Tag string before compressing
+  cp -f $OTA $BUILDDIR/$ARCH/$RELEASEDIR
+  cd $BUILDDIR/$ARCH/$RELEASEDIR
+  # Change Release Tag string
   replace_line "90-bitgapps.sh" 'ro.gapps.release_tag' "  insert_line $COMMON_SYSTEM_LAYOUT/build.prop 'ro.gapps.release_tag=$GAPPS_RELEASE_TAG' after 'net.bt.name=Android' 'ro.gapps.release_tag=$GAPPS_RELEASE_TAG'"
-  # Only compress in 'xz' format
-  tar -cJf "Addon.tar.xz" 90-bitgapps.sh
-  rm -rf 90-bitgapps.sh
-  cd ../../../..
+  cd ../../..
 }
 
 # Set OTA build property
@@ -218,9 +241,24 @@ echo '#
 # End addon properties' >"$BUILDDIR/$ARCH/$RELEASEDIR/config.prop"
 }
 
-# Set updater script
-makeupdaterscript() {
-echo '# Dummy file; update-binary is a shell script.' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script"
+# Set license for pre-built package
+makelicense() {
+echo "This BiTGApps build is provided ONLY as courtesy by BiTGApps.org and is without warranty of ANY kind.
+
+This build is authored by the TheHitMan7 and is as such protected by BiTGApps.org's copyright.
+This build is provided under the terms that it can be freely used for personal use only and is not allowed to be mirrored to the public other than BiTGApps.org.
+You are not allowed to modify this build for further (re)distribution.
+
+The APKs found in this build are developed and owned by Google Inc.
+They are included only for your convenience, neither BiTGApps.org and The BiTGApps Project have no ownership over them.
+The user self is responsible for obtaining the proper licenses for the APKs, e.g. via Google's Play Store.
+To use Google's applications you accept to Google's license agreement and further distribution of Google's application
+are subject of Google's terms and conditions, these can be found at http://www.google.com/policies/
+
+BusyBox is subject to the GPLv2, its license can be found at https://www.busybox.net/license.html
+
+Any other intellectual property of this build, like e.g. the file and folder structure and the installation scripts are part of The BiTGApps Project and are subject
+to the GPLv3. The applicable license can be found at https://github.com/BiTGApps/BiTGApps/blob/master/LICENSE" >"$BUILDDIR/$ARCH/$RELEASEDIR/LICENSE"
 }
 
 # Main
@@ -252,11 +290,11 @@ makegapps() {
       TARGET_ANDROID_SDK_V25='"25"'
       # Build property variable; Do not modify
       sdk_25="25"
-      version_25="7.1"
+      version_25="7.1.1"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1-${COMMONGAPPSRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-7.1-${COMMONGAPPSRELEASE}"
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}"
+      RELEASEDIR="BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -265,40 +303,40 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install app packages
-      cp -f $SOURCESv25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $SOURCESv25/$version_25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       # Install etc packages
-      cp -f $SOURCESv25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $SOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $SOURCESv25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $SOURCESv25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install lib package
-      cp -f $SOURCESv25/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      # Install priv-app package
-      cp -f $SOURCESv25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $AOSPSOURCESv25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-      cp -f $AOSPSOURCESv25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-      cp -f $AOSPSOURCESv25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-      cp -f $AOSPSOURCESv25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $SOURCESv25/$version_25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Install priv-app packages
+      cp -f $SOURCESv25/$version_25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv25/$version_25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -319,14 +357,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -335,7 +371,100 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_25 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
+      # List signed ZIP
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+      # Wipe unsigned ZIP
+      rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+    fi
+    # API 25
+    if [ "$API" == "25" ]; then
+      # Install variable; Do not modify
+      TARGET_ANDROID_SDK_V25='"25"'
+      # Build property variable; Do not modify
+      sdk_25="25"
+      version_25="7.1.2"
+      echo "Generating BiTGApps package for $ARCH with API level $API"
+      # Create release directory
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}"
+      RELEASEDIR="BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}"
+      # Create package components
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      # Install app packages
+      cp -f $SOURCESv25/$version_25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      # Install etc packages
+      cp -f $SOURCESv25/$version_25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Install priv-app packages
+      cp -f $SOURCESv25/$version_25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv25/$version_25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Installer components
+      cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
+      # Create utility script
+      makeutilityscript
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_32"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
+      # Create build property file
+      makegprop
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop platform= platform="$platform_32"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop sdk= sdk="$sdk_25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop version= version="$version_25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
+      # Add OTA script
+      makeota
+      # Create OTA property file
+      makeotaprop
+      # Create LICENSE
+      makelicense
+      # Create ZIP
+      cd $BUILDDIR/$ARCH/$RELEASEDIR
+      zip -qr9 ${RELEASEDIR}.zip *
+      cd ../../..
+      mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
+      # Sign ZIP
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+      # Set build API in global environment
+      [ "$(grep -w -o TARGET_API_25 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -350,7 +479,7 @@ makegapps() {
       version_26="8.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.0.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.0.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-8.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -364,35 +493,35 @@ makegapps() {
       cp -f $SOURCESv26/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv26/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv26/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv26/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv26/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv26/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv26/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv26/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv26/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install lib package
-      cp -f $SOURCESv26/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      # Install priv-app package
+      # Install priv-app packages
       cp -f $SOURCESv26/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv26/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv26/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/PrebuiltGmsCorePix.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv26/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv26/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv26/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv26/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv26/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv26/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -413,14 +542,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -429,7 +556,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_26" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_26 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_26" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -444,7 +571,7 @@ makegapps() {
       version_27="8.1.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.1.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.1.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-8.1.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -458,35 +585,35 @@ makegapps() {
       cp -f $SOURCESv27/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv27/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv27/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv27/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv27/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv27/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv27/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv27/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv27/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install lib package
-      cp -f $SOURCESv27/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      # Install priv-app package
+      # Install priv-app packages
       cp -f $SOURCESv27/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv27/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv27/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/PrebuiltGmsCorePix.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv27/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv27/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv27/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv27/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv27/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv27/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -507,14 +634,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -523,7 +648,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_27" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_27 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_27" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -538,7 +663,7 @@ makegapps() {
       version_28="9.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-9.0.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-9.0.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-9.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -552,36 +677,35 @@ makegapps() {
       cp -f $SOURCESv28/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv28/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv28/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv28/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv28/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv28/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv28/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv28/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv28/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install lib package
-      cp -f $SOURCESv28/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      # Install priv-app package
-      cp -f $SOURCESv28/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install priv-app packages
       cp -f $SOURCESv28/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv28/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv28/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv28/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/PrebuiltGmsCorePi.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv28/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv28/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv28/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv28/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv28/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv28/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv28/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -602,14 +726,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -618,7 +740,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_28" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_28 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_28" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -633,7 +755,7 @@ makegapps() {
       version_29="10.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-10.0.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-10.0.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-10.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -646,34 +768,34 @@ makegapps() {
       cp -f $SOURCESv29/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv29/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv29/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv29/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv29/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv29/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv29/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv29/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv29/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install priv-app package
-      cp -f $SOURCESv29/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install priv-app packages
       cp -f $SOURCESv29/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv29/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv29/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv29/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/PrebuiltGmsCoreQt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv29/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv29/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv29/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv29/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv29/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv29/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -694,14 +816,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -710,7 +830,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_29" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_29 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_29" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -725,7 +845,7 @@ makegapps() {
       version_30="11.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-11.0.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-11.0.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-11.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -739,35 +859,35 @@ makegapps() {
       cp -f $SOURCESv30/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv30/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv30/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv30/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv30/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv30/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv30/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       # Install overlay package
       cp -f $SOURCESv30/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      # Install priv-app package
-      cp -f $SOURCESv30/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install priv-app packages
       cp -f $SOURCESv30/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv30/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv30/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv30/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/PrebuiltGmsCoreRvc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv30/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv30/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv30/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv30/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv30/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv30/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -788,14 +908,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -804,7 +922,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_30" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_30 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_30" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -819,7 +937,7 @@ makegapps() {
       version_31="12.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-12.0.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-12.0.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-12.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -833,35 +951,35 @@ makegapps() {
       cp -f $SOURCESv31/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv31/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv31/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv31/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv31/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv31/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv31/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv31/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv31/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       # Install overlay package
       cp -f $SOURCESv31/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      # Install priv-app package
-      cp -f $SOURCESv31/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install priv-app packages
       cp -f $SOURCESv31/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv31/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv31/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv31/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/PrebuiltGmsCoreSvc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv31/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv31/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv31/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv31/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv31/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv31/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -882,14 +1000,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -898,7 +1014,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_31" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_31 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_31" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -920,11 +1036,11 @@ makegapps() {
       TARGET_ANDROID_SDK_V25='"25"'
       # Build property variable; Do not modify
       sdk_25="25"
-      version_25="7.1"
+      version_25="7.1.1"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1-${COMMONGAPPSRELEASE}
-      RELEASEDIR="BiTGApps-${ARCH}-7.1-${COMMONGAPPSRELEASE}"
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}"
+      RELEASEDIR="BiTGApps-${ARCH}-7.1.1-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -933,41 +1049,40 @@ makegapps() {
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install app packages
-      cp -f $SOURCESv25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $SOURCESv25/$version_25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       # Install etc packages
-      cp -f $SOURCESv25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $SOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $SOURCESv25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $SOURCESv25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install lib package
-      cp -f $SOURCESv25/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv25/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      # Install priv-app package
-      cp -f $SOURCESv25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $AOSPSOURCESv25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-      cp -f $AOSPSOURCESv25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-      cp -f $AOSPSOURCESv25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
-      cp -f $AOSPSOURCESv25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $SOURCESv25/$version_25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Install priv-app packages
+      cp -f $SOURCESv25/$version_25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv25/$version_25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -988,14 +1103,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1004,7 +1117,100 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_25 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
+      # List signed ZIP
+      ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+      # Wipe unsigned ZIP
+      rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+    fi
+    # API 25
+    if [ "$API" == "25" ]; then
+      # Install variable; Do not modify
+      TARGET_ANDROID_SDK_V25='"25"'
+      # Build property variable; Do not modify
+      sdk_25="25"
+      version_25="7.1.2"
+      echo "Generating BiTGApps package for $ARCH with API level $API"
+      # Create release directory
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}"
+      RELEASEDIR="BiTGApps-${ARCH}-7.1.2-${COMMONGAPPSRELEASE}"
+      # Create package components
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      # Install app packages
+      cp -f $SOURCESv25/$version_25/app/FaceLock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      cp -f $SOURCESv25/$version_25/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+      # Install etc packages
+      cp -f $SOURCESv25/$version_25/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $SOURCESv25/$version_25/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Install priv-app packages
+      cp -f $SOURCESv25/$version_25/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleLoginService.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv25/$version_25/priv-app/PrebuiltGmsCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv25/$version_25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Installer components
+      cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
+      # Create utility script
+      makeutilityscript
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_SDK="" TARGET_ANDROID_SDK="$TARGET_ANDROID_SDK_V25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ANDROID_ARCH="" TARGET_ANDROID_ARCH="$TARGET_ANDROID_ARCH_64"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
+      # Create build property file
+      makegprop
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop platform= platform="$platform_64"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop sdk= sdk="$sdk_25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop version= version="$version_25"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
+      # Add OTA script
+      makeota
+      # Create OTA property file
+      makeotaprop
+      # Create LICENSE
+      makelicense
+      # Create ZIP
+      cd $BUILDDIR/$ARCH/$RELEASEDIR
+      zip -qr9 ${RELEASEDIR}.zip *
+      cd ../../..
+      mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
+      # Sign ZIP
+      java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+      # Set build API in global environment
+      [ "$(grep -w -o TARGET_API_25 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_25" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -1019,7 +1225,7 @@ makegapps() {
       version_26="8.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.0.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.0.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-8.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -1033,36 +1239,35 @@ makegapps() {
       cp -f $SOURCESv26/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv26/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv26/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv26/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv26/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv26/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv26/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv26/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv26/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install lib package
-      cp -f $SOURCESv26/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv26/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      # Install priv-app package
+      # Install priv-app packages
       cp -f $SOURCESv26/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv26/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv26/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/PrebuiltGmsCorePix.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv26/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv26/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv26/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv26/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv26/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv26/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1083,14 +1288,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1099,7 +1302,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_26" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_26 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_26" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -1114,7 +1317,7 @@ makegapps() {
       version_27="8.1.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.1.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-8.1.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-8.1.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -1128,36 +1331,35 @@ makegapps() {
       cp -f $SOURCESv27/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv27/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv27/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv27/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv27/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv27/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv27/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv27/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv27/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install lib package
-      cp -f $SOURCESv27/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv27/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      # Install priv-app package
+      # Install priv-app packages
       cp -f $SOURCESv27/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv27/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv27/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/GmsCoreSetupPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/PrebuiltGmsCorePix.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv27/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv27/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv27/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv27/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv27/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv27/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1178,14 +1380,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1194,7 +1394,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_27" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_27 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_27" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -1209,7 +1409,7 @@ makegapps() {
       version_28="9.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-9.0.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-9.0.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-9.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -1223,38 +1423,35 @@ makegapps() {
       cp -f $SOURCESv28/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv28/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv28/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv28/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv28/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv28/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv28/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv28/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv28/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install lib package
-      cp -f $SOURCESv28/lib/facelock_lib32.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv28/lib64/facelock_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $SOURCESv28/lib64/setupwizardprebuilt_lib64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      # Install priv-app package
-      cp -f $SOURCESv28/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install priv-app packages
       cp -f $SOURCESv28/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv28/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv28/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv28/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/PrebuiltGmsCorePi.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv28/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv28/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv28/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv28/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv28/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv28/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv28/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1275,14 +1472,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1291,7 +1486,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_28" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_28 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_28" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -1306,7 +1501,7 @@ makegapps() {
       version_29="10.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-10.0.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-10.0.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-10.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -1319,34 +1514,34 @@ makegapps() {
       cp -f $SOURCESv29/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv29/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv29/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv29/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv29/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv29/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv29/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv29/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv29/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
-      # Install priv-app package
-      cp -f $SOURCESv29/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install priv-app packages
       cp -f $SOURCESv29/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv29/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv29/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv29/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/PrebuiltGmsCoreQt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv29/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv29/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv29/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv29/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv29/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv29/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1367,14 +1562,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1383,7 +1576,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_29" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_29 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_29" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -1398,7 +1591,7 @@ makegapps() {
       version_30="11.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-11.0.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-11.0.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-11.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -1412,35 +1605,35 @@ makegapps() {
       cp -f $SOURCESv30/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv30/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv30/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv30/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv30/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv30/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv30/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv30/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       # Install overlay package
       cp -f $SOURCESv30/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      # Install priv-app package
-      cp -f $SOURCESv30/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install priv-app packages
       cp -f $SOURCESv30/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv30/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv30/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv30/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/PrebuiltGmsCoreRvc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv30/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv30/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv30/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv30/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv30/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv30/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_AARCH64 $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1461,14 +1654,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1477,7 +1668,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_30" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_30 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_30" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP
@@ -1492,7 +1683,7 @@ makegapps() {
       version_31="12.0.0"
       echo "Generating BiTGApps package for $ARCH with API level $API"
       # Create release directory
-      mkdir $BUILDDIR/$ARCH/BiTGApps-${ARCH}-12.0.0-${COMMONGAPPSRELEASE}
+      mkdir "$BUILDDIR/$ARCH/BiTGApps-${ARCH}-12.0.0-${COMMONGAPPSRELEASE}"
       RELEASEDIR="BiTGApps-${ARCH}-12.0.0-${COMMONGAPPSRELEASE}"
       # Create package components
       mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
@@ -1506,35 +1697,35 @@ makegapps() {
       cp -f $SOURCESv31/app/GoogleCalendarSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv31/app/GoogleContactsSyncAdapter.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
       cp -f $SOURCESv31/app/GoogleExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-      cp -f $AOSPSOURCESv31/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       # Install etc packages
       cp -f $SOURCESv31/etc/Default.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv31/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv31/etc/Preferred.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $SOURCESv31/etc/Sysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      cp -f $AOSPSOURCESv31/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       # Install overlay package
       cp -f $SOURCESv31/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-      # Install priv-app package
-      cp -f $SOURCESv31/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install priv-app packages
       cp -f $SOURCESv31/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv31/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv31/priv-app/GoogleOneTimeInitializer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv31/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/PrebuiltGmsCoreSvc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SOURCESv31/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      # Install AOSP packages
+      cp -f $AOSPSOURCESv31/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
+      cp -f $AOSPSOURCESv31/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv31/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      # Install SetupWizard packages
+      cp -f $SETUPSOURCESv31/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv31/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
-      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      cp -f $SQLITE_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/sqlite3
-      cp -f $ZIPALIGN_ARMEABI $BUILDDIR/$ARCH/$RELEASEDIR/zipalign
+      # Create updater script
+      makeupdaterscript
+      # Create update binary
+      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1555,14 +1746,12 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildDate= BuildDate="$BuildDate"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
-      # Create LICENSE
-      makelicense
       # Add OTA script
       makeota
       # Create OTA property file
       makeotaprop
-      # Create updater script
-      makeupdaterscript
+      # Create LICENSE
+      makelicense
       # Create ZIP
       cd $BUILDDIR/$ARCH/$RELEASEDIR
       zip -qr9 ${RELEASEDIR}.zip *
@@ -1571,7 +1760,7 @@ makegapps() {
       # Sign ZIP
       java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
       # Set build API in global environment
-      echo "TARGET_API_31" >> $OUTDIR/ENV/env_api.sh
+      [ "$(grep -w -o TARGET_API_31 $OUTDIR/ENV/env_api.sh 2>/dev/null)" ] || echo "TARGET_API_31" >> $OUTDIR/ENV/env_api.sh
       # List signed ZIP
       ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
       # Wipe unsigned ZIP

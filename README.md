@@ -7,7 +7,7 @@ If you want to build your own version of BiTGApps, you'll need to fetch the git 
 * Create initial path
 
 ```shellscript
-mkdir -p BiTGApps
+mkdir BiTGApps
 ```
 
 * Clone build sources
@@ -29,6 +29,7 @@ mkdir BiTGApps/sources
 git clone https://github.com/BiTGApps/arm-sources BiTGApps/sources/arm-sources
 git clone https://github.com/BiTGApps/arm64-sources BiTGApps/sources/arm64-sources
 git clone https://github.com/BiTGApps/aosp-sources BiTGApps/sources/aosp-sources
+git clone https://github.com/BiTGApps/setup-sources BiTGApps/sources/setup-sources
 git clone https://github.com/BiTGApps/addon-sources BiTGApps/sources/addon-sources
 ```
 
@@ -44,6 +45,12 @@ After setting environmental variables:
 
 ```shellscript
 . scripts/env_vars.sh
+```
+
+Get build configuration using:
+
+```shellscript
+make help
 ```
 
 To build BiTGApps/Addons/Patch for all platforms and all Android releases:

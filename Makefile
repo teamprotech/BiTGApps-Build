@@ -113,3 +113,23 @@ $(eval $(call make-patch,$(patch)))\
 clean:
 	@-rm -fr "$(BUILDDIR)"
 	@-rm -fr "$(OUTDIR)"
+	@echo 'Build & Output directory removed'
+
+help:
+	@echo 'Buildable Platforms : arm, arm64'
+	@echo 'Buildable APIs      : 25, 26, 27, 28, 29, 30, 31'
+	@echo 'Buildable Variants  : assistant'
+	@echo '                      calculator'
+	@echo '                      calendar'
+	@echo '                      contacts'
+	@echo '                      deskclock'
+	@echo '                      dialer'
+	@echo '                      gboard'
+	@echo '                      markup'
+	@echo '                      messages'
+	@echo '                      photos'
+	@echo '                      soundpicker'
+	@echo '                      vanced'
+	@echo '                      wellbeing'
+	@echo 'Buildable Patches   : Bootlog, Safetynet, Whitelist'
+	@echo ''
