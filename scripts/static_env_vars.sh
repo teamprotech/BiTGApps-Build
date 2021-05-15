@@ -23,6 +23,7 @@
 export TARGET_ASSISTANT_GOOGLE='"true"'
 export TARGET_CALCULATOR_GOOGLE='"true"'
 export TARGET_CALENDAR_GOOGLE='"true"'
+export TARGET_CHROME_GOOGLE='"true"'
 export TARGET_CONTACTS_GOOGLE='"true"'
 export TARGET_DESKCLOCK_GOOGLE='"true"'
 export TARGET_DIALER_GOOGLE='"true"'

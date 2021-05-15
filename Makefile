@@ -23,7 +23,7 @@ APIS := 25 26 27 28 29 30 31
 PLATFORMS := arm arm64
 LOWEST_API_arm := 25
 LOWEST_API_arm64 := 25
-VARIANTS := assistant calculator calendar contacts deskclock dialer gboard gearhead markup messages photos soundpicker vanced wellbeing
+VARIANTS := assistant calculator calendar chrome contacts deskclock dialer gboard gearhead markup messages photos soundpicker vanced wellbeing
 PATCH := bootlog safetynet whitelist
 BUILDDIR := $(TOPDIR)/build
 OUTDIR := $(TOPDIR)/out
@@ -121,6 +121,7 @@ help:
 	@echo 'Buildable Variants  : assistant'
 	@echo '                      calculator'
 	@echo '                      calendar'
+	@echo '                      chrome'
 	@echo '                      contacts'
 	@echo '                      deskclock'
 	@echo '                      dialer'

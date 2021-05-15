@@ -37,6 +37,11 @@ set_env_variant() {
     else
       export TARGET_VARIANT_CALENDAR="false"
     fi
+    if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_CHROME)" ]; then
+      export TARGET_VARIANT_CHROME="true"
+    else
+      export TARGET_VARIANT_CHROME="false"
+    fi
     if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_CONTACTS)" ]; then
       export TARGET_VARIANT_CONTACTS="true"
     else
