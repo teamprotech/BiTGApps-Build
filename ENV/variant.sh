@@ -57,6 +57,11 @@ set_env_variant() {
     else
       export TARGET_VARIANT_GBOARD="false"
     fi
+    if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_GEARHEAD)" ]; then
+      export TARGET_VARIANT_GEARHEAD="true"
+    else
+      export TARGET_VARIANT_GEARHEAD="false"
+    fi
     if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_MARKUP)" ]; then
       export TARGET_VARIANT_MARKUP="true"
     else

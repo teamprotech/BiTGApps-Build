@@ -154,6 +154,7 @@ TARGET_CONTACTS_GOOGLE="false"
 TARGET_DESKCLOCK_GOOGLE="false"
 TARGET_DIALER_GOOGLE="false"
 TARGET_GBOARD_GOOGLE="false"
+TARGET_GEARHEAD_GOOGLE="false"
 TARGET_MARKUP_GOOGLE="false"
 TARGET_MESSAGES_GOOGLE="false"
 TARGET_PHOTOS_GOOGLE="false"
@@ -512,6 +513,52 @@ makeaddonv2() {
     java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
     # Set build VARIANT in global environment
     echo "TARGET_VARIANT_GBOARD" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+  fi
+  # Gearhead
+  if [ "$VARIANT" == "gearhead" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps Gearhead Addon package"
+    # Create release directory
+    mkdir "$BUILDDIR/$ARCH/BiTGApps-addon-gearhead-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-gearhead-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    # Install app packages
+    cp -f $SOURCES_ARMEABI/priv-app/GearheadGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_AARCH64/priv-app/GearheadGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    # Installer components
+    cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+    # Create updater script
+    makeupdaterscript
+    # Create update binary
+    makeupdatebinary
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GEARHEAD_GOOGLE="" TARGET_GEARHEAD_GOOGLE="$TARGET_GEARHEAD_GOOGLE"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../..
+    mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    echo "TARGET_VARIANT_GEARHEAD" >> $OUTDIR/ENV/env_variant.sh
     # List signed ZIP
     ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     # Wipe unsigned ZIP
