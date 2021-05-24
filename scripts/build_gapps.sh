@@ -152,6 +152,9 @@ echo '#!/sbin/sh
 # GNU General Public License for more details.
 ##############################################################
 
+# Default permissions
+umask 022
+
 # Set environmental variables in the global environment
 export ZIPFILE="$3"
 export OUTFD="$2"
