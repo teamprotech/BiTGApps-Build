@@ -156,6 +156,12 @@ echo '#!/sbin/sh
 export ZIPFILE="$3"
 export OUTFD="$2"
 export TMP="/tmp"
+export ASH_STANDALONE=1
+
+# Check unsupported architecture and abort installation
+# without any error message
+ARCH=$(uname -m)
+if [ "$ARCH" == "x86" ] || [ "$ARCH" == "x86_64" ]; then exit 1; fi
 
 # Extract installer script
 unzip -o "$ZIPFILE" "installer.sh" -d "$TMP"
@@ -166,7 +172,7 @@ unzip -o "$ZIPFILE" "util_functions.sh" -d "$TMP"
 chmod +x "$TMP/util_functions.sh"
 
 # Execute installer script
-source "$TMP/installer.sh" "$@"
+exec $TMP/busybox-arm sh "$TMP/installer.sh" "$@"
 exit "$?"' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary"
 }
 
