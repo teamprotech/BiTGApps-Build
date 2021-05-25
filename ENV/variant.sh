@@ -67,6 +67,11 @@ set_env_variant() {
     else
       export TARGET_VARIANT_GEARHEAD="false"
     fi
+    if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_LAUNCHER)" ]; then
+      export TARGET_VARIANT_LAUNCHER="true"
+    else
+      export TARGET_VARIANT_LAUNCHER="false"
+    fi
     if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_MARKUP)" ]; then
       export TARGET_VARIANT_MARKUP="true"
     else
