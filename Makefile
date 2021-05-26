@@ -23,7 +23,7 @@ APIS := 25 26 27 28 29 30 31
 PLATFORMS := arm arm64
 LOWEST_API_arm := 25
 LOWEST_API_arm64 := 25
-VARIANTS := assistant calculator calendar chrome contacts deskclock dialer gboard gearhead launcher markup messages photos soundpicker vanced wellbeing
+VARIANTS := assistant bromite calculator calendar chrome contacts deskclock dialer gboard gearhead launcher markup messages photos soundpicker vanced wellbeing
 PATCH := bootlog safetynet whitelist
 BUILDDIR := $(TOPDIR)/build
 OUTDIR := $(TOPDIR)/out
@@ -119,6 +119,7 @@ help:
 	@echo 'Buildable Platforms : arm, arm64'
 	@echo 'Buildable APIs      : 25, 26, 27, 28, 29, 30, 31'
 	@echo 'Buildable Variants  : assistant'
+	@echo '                      bromite'
 	@echo '                      calculator'
 	@echo '                      calendar'
 	@echo '                      chrome'

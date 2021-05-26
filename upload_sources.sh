@@ -143,6 +143,7 @@ common_sources() {
     if [ "$SERVER" == "ga" ]; then
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_VARIANT_ASSISTANT && curl -T out/common/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_BROMITE && curl -T out/common/BiTGApps-addon-bromite-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-bromite-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_CALCULATOR && curl -T out/common/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_CALENDAR && curl -T out/common/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_CHROME && curl -T out/common/BiTGApps-addon-chrome-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-chrome-${COMMONADDONRELEASE}_signed.zip"
@@ -163,6 +164,7 @@ common_sources() {
     if [ "$SERVER" == "dh" ]; then
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_VARIANT_ASSISTANT && curl -T out/common/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-assistant-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_BROMITE && curl -T out/common/BiTGApps-addon-bromite-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-bromite-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_CALCULATOR && curl -T out/common/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-calculator-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_CALENDAR && curl -T out/common/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-calendar-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_CHROME && curl -T out/common/BiTGApps-addon-chrome-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-chrome-${COMMONADDONRELEASE}_signed.zip"

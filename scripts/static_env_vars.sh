@@ -21,6 +21,7 @@
 ##############################################################
 
 export TARGET_ASSISTANT_GOOGLE='"true"'
+export TARGET_BROMITE_GOOGLE='"true"'
 export TARGET_CALCULATOR_GOOGLE='"true"'
 export TARGET_CALENDAR_GOOGLE='"true"'
 export TARGET_CHROME_GOOGLE='"true"'

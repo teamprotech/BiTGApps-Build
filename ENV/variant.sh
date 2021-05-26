@@ -27,6 +27,11 @@ set_env_variant() {
     else
       export TARGET_VARIANT_ASSISTANT="false"
     fi
+    if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_BROMITE)" ]; then
+      export TARGET_VARIANT_BROMITE="true"
+    else
+      export TARGET_VARIANT_BROMITE="false"
+    fi
     if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_CALCULATOR)" ]; then
       export TARGET_VARIANT_CALCULATOR="true"
     else
