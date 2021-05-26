@@ -97,6 +97,11 @@ set_env_variant() {
     else
       export TARGET_VARIANT_SOUNDPICKER="false"
     fi
+    if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_TTS)" ]; then
+      export TARGET_VARIANT_TTS="true"
+    else
+      export TARGET_VARIANT_TTS="false"
+    fi
     if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_VANCED)" ]; then
       export TARGET_VARIANT_VANCED="true"
     else

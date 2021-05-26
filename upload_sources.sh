@@ -157,6 +157,7 @@ common_sources() {
         $TARGET_VARIANT_MESSAGES && curl -T out/common/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_PHOTOS && curl -T out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_SOUNDPICKER && curl -T out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_TTS && curl -T out/common/BiTGApps-addon-tts-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-tts-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_VANCED && curl -T out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_WELLBEING && curl -T out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/addon/non-config/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip"
       fi
@@ -178,6 +179,7 @@ common_sources() {
         $TARGET_VARIANT_MESSAGES && curl -T out/common/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-messages-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_PHOTOS && curl -T out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_SOUNDPICKER && curl -T out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_TTS && curl -T out/common/BiTGApps-addon-tts-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-tts-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_VANCED && curl -T out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_WELLBEING && curl -T out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/bitgapps.com/downloads/addon/non-config/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip"
       fi
