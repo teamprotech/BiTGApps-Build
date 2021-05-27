@@ -124,7 +124,8 @@ remove_line() {
 
 # Set updater script
 makeupdaterscript() {
-echo '# Dummy file; update-binary is a shell script.' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script"
+echo '# Default permissions
+umask 022' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script"
 }
 
 # Set update binary
@@ -152,9 +153,6 @@ echo '#!/sbin/sh
 # GNU General Public License for more details.
 ##############################################################
 
-# Default permissions
-umask 022
-
 # Set environmental variables in the global environment
 export ZIPFILE="$3"
 export OUTFD="$2"
@@ -162,9 +160,10 @@ export TMP="/tmp"
 export ASH_STANDALONE=1
 
 # Check unsupported architecture and abort installation
-# without any error message
 ARCH=$(uname -m)
-if [ "$ARCH" == "x86" ] || [ "$ARCH" == "x86_64" ]; then exit 1; fi
+if [ "$ARCH" == "x86" ] || [ "$ARCH" == "x86_64" ]; then
+  exit 1
+fi
 
 # Extract installer script
 unzip -o "$ZIPFILE" "installer.sh" -d "$TMP"
@@ -175,7 +174,11 @@ unzip -o "$ZIPFILE" "util_functions.sh" -d "$TMP"
 chmod +x "$TMP/util_functions.sh"
 
 # Execute installer script
-exec $TMP/busybox-arm sh "$TMP/installer.sh" "$@"
+if [ -e "$TMP/busybox-arm" ]; then
+  exec $TMP/busybox-arm sh "$TMP/installer.sh" "$@"
+else
+  source "$TMP/installer.sh" "$@"
+fi
 exit "$?"' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary"
 }
 
