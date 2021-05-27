@@ -62,6 +62,11 @@ set_env_variant() {
     else
       export TARGET_VARIANT_DIALER="false"
     fi
+    if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_DPS)" ]; then
+      export TARGET_VARIANT_DPS="true"
+    else
+      export TARGET_VARIANT_DPS="false"
+    fi
     if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_GBOARD)" ]; then
       export TARGET_VARIANT_GBOARD="true"
     else
