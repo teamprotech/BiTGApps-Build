@@ -92,8 +92,12 @@ SETUPSOURCESv30="sources/setup-sources/$ARCH/30"
 SETUPSOURCESv31="sources/setup-sources/$ARCH/31"
 
 # Set installer sources
+UPDATEBINARY="BiTGApps/scripts/update-binary.sh"
+UPDATERSCRIPT="BiTGApps/scripts/updater-script.sh"
 INSTALLER="BiTGApps/scripts/installer.sh"
-OTA="BiTGApps/scripts/90-bitgapps.sh"
+OTASCRIPT="BiTGApps/scripts/bitgapps.sh"
+BACKUPSCRIPT="BiTGApps/scripts/backup.sh"
+RESTORESCRIPT="BiTGApps/scripts/restore.sh"
 BUSYBOX="BiTGApps/tools/busybox-resources/busybox-arm"
 
 # Set ZIP structure
@@ -120,66 +124,6 @@ remove_line() {
     local line=$(grep -n "$2" $1 | head -n1 | cut -d: -f1)
     sed -i "${line}d" $1
   fi
-}
-
-# Set updater script
-makeupdaterscript() {
-echo '# Default permissions
-umask 022' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script"
-}
-
-# Set update binary
-makeupdatebinary() {
-echo '#!/sbin/sh
-#
-##############################################################
-# File name       : update-binary
-#
-# Description     : Setup installation, environmental variables
-#                   and helper functions
-#
-# Copyright       : Copyright (C) 2018-2021 TheHitMan7
-#
-# License         : GPL-3.0-or-later
-##############################################################
-# The BiTGApps scripts are free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation, either version 3 of
-# the License, or (at your option) any later version.
-#
-# These scripts are distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-##############################################################
-
-# Set environmental variables in the global environment
-export ZIPFILE="$3"
-export OUTFD="$2"
-export TMP="/tmp"
-export ASH_STANDALONE=1
-
-# Check unsupported architecture and abort installation
-ARCH=$(uname -m)
-if [ "$ARCH" == "x86" ] || [ "$ARCH" == "x86_64" ]; then
-  exit 1
-fi
-
-# Extract installer script
-unzip -o "$ZIPFILE" "installer.sh" -d "$TMP"
-chmod +x "$TMP/installer.sh"
-
-# Extract utility script
-unzip -o "$ZIPFILE" "util_functions.sh" -d "$TMP"
-chmod +x "$TMP/util_functions.sh"
-
-# Execute installer script
-if [ -e "$TMP/busybox-arm" ]; then
-  exec $TMP/busybox-arm sh "$TMP/installer.sh" "$@"
-else
-  source "$TMP/installer.sh" "$@"
-fi
-exit "$?"' >"$BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary"
 }
 
 # Set utility script
@@ -233,11 +177,20 @@ Developer=' >"$BUILDDIR/$ARCH/$RELEASEDIR/g.prop"
 
 # Compress and add OTA survival script
 makeota() {
-  cp -f $OTA $BUILDDIR/$ARCH/$RELEASEDIR
-  cd $BUILDDIR/$ARCH/$RELEASEDIR
+  cp -f $OTASCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  cp -f $BACKUPSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  cp -f $RESTORESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  cd $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
   # Change Release Tag string
-  replace_line "90-bitgapps.sh" 'ro.gapps.release_tag' "  insert_line $COMMON_SYSTEM_LAYOUT/build.prop 'ro.gapps.release_tag=$GAPPS_RELEASE_TAG' after 'net.bt.name=Android' 'ro.gapps.release_tag=$GAPPS_RELEASE_TAG'"
-  cd ../../..
+  replace_line "restore.sh" 'ro.gapps.release_tag' "  insert_line $COMMON_SYSTEM_LAYOUT/build.prop 'ro.gapps.release_tag=$GAPPS_RELEASE_TAG' after 'net.bt.name=Android' 'ro.gapps.release_tag=$GAPPS_RELEASE_TAG'"
+  # Only compress in 'xz' format
+  tar -cJf "Addon.tar.xz" bitgapps.sh backup.sh restore.sh
+  for f in bitgapps.sh backup.sh restore.sh
+  do
+    rm -rf $f
+  done
+  # Checkout path
+  cd ../../../..
 }
 
 # Set OTA build property
@@ -343,12 +296,10 @@ makegapps() {
       cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -436,12 +387,10 @@ makegapps() {
       cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -528,12 +477,10 @@ makegapps() {
       cp -f $SETUPSOURCESv26/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv26/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -620,12 +567,10 @@ makegapps() {
       cp -f $SETUPSOURCESv27/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv27/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -712,12 +657,10 @@ makegapps() {
       cp -f $SETUPSOURCESv28/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv28/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -802,12 +745,10 @@ makegapps() {
       cp -f $SETUPSOURCESv29/priv-app/GoogleRestore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv29/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -894,12 +835,10 @@ makegapps() {
       cp -f $SETUPSOURCESv30/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv30/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -986,12 +925,10 @@ makegapps() {
       cp -f $SETUPSOURCESv31/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv31/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1089,12 +1026,10 @@ makegapps() {
       cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1182,12 +1117,10 @@ makegapps() {
       cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1274,12 +1207,10 @@ makegapps() {
       cp -f $SETUPSOURCESv26/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv26/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1366,12 +1297,10 @@ makegapps() {
       cp -f $SETUPSOURCESv27/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv27/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1458,12 +1387,10 @@ makegapps() {
       cp -f $SETUPSOURCESv28/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv28/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1548,12 +1475,10 @@ makegapps() {
       cp -f $SETUPSOURCESv29/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv29/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1640,12 +1565,10 @@ makegapps() {
       cp -f $SETUPSOURCESv30/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv30/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1732,12 +1655,10 @@ makegapps() {
       cp -f $SETUPSOURCESv31/priv-app/AndroidMigratePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SETUPSOURCESv31/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
+      cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+      cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-      # Create updater script
-      makeupdaterscript
-      # Create update binary
-      makeupdatebinary
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
