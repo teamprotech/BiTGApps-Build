@@ -597,7 +597,8 @@ makeaddonv2() {
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    # Install etc package
+    # Install etc packages
+    cp -f $SOURCES_ALL/etc/DPSFirmware.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/DPSPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install priv-app packages
     cp -f $SOURCES_ARMEABI/priv-app/DPSGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
@@ -740,7 +741,7 @@ makeaddonv2() {
     # Install etc packages
     cp -f $SOURCES_ALL/etc/LauncherPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    # Install priv-app package
+    # Install priv-app packages
     cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ALL/priv-app/QuickAccessWallet.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     # Installer components
