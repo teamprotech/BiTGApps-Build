@@ -56,6 +56,7 @@ METADIR="META-INF/com/google/android"
 ZIP="zip"
 CORE="$ZIP/core"
 SYS="$ZIP/sys"
+OVERLAY="$ZIP/overlay"
 
 # replace_line <file> <line replace string> <replacement line>
 replace_line() {
@@ -146,6 +147,7 @@ makeaddonv1() {
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     # Install app packages
     cp -f $SOURCES_ARMEABI/app/BromitePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/BromitePrebuilt.tar.xz
     cp -f $SOURCES_ALL/app/CalculatorGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -170,6 +172,8 @@ makeaddonv1() {
     cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install framework package
     cp -f $SOURCES_ALL/framework/DialerFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    # Install overlay package
+    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     # Install priv-app packages
     cp -f $SOURCES_ALL/priv-app/CarrierServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ALL/priv-app/ContactsGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
@@ -225,6 +229,7 @@ makeaddonv1() {
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     # Install app packages
     cp -f $SOURCES_AARCH64/app/BromitePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/BromitePrebuilt.tar.xz
     cp -f $SOURCES_ALL/app/CalculatorGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
@@ -249,6 +254,8 @@ makeaddonv1() {
     cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install framework package
     cp -f $SOURCES_ALL/framework/DialerFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    # Install overlay package
+    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     # Install priv-app packages
     cp -f $SOURCES_ALL/priv-app/CarrierServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ALL/priv-app/ContactsGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE

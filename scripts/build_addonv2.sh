@@ -57,6 +57,7 @@ METADIR="META-INF/com/google/android"
 ZIP="zip"
 CORE="$ZIP/core"
 SYS="$ZIP/sys"
+OVERLAY="$ZIP/overlay"
 
 # replace_line <file> <line replace string> <replacement line>
 replace_line() {
@@ -658,9 +659,12 @@ makeaddonv2() {
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     # Install etc packages
     cp -f $SOURCES_ALL/etc/LauncherPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    # Install overlay package
+    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     # Install priv-app packages
     cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWallet.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
