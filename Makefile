@@ -23,7 +23,7 @@ APIS := 25 26 27 28 29 30 31
 PLATFORMS := arm arm64
 LOWEST_API_arm := 25
 LOWEST_API_arm64 := 25
-VARIANTS := assistant bromite calculator calendar chrome contacts deskclock dialer dps gboard gearhead launcher markup messages photos soundpicker tts vanced wellbeing
+VARIANTS := assistant bromite calculator calendar chrome contacts deskclock dialer dps gboard gearhead launcher maps markup messages photos soundpicker tts vanced wellbeing
 PATCH := bootlog safetynet whitelist
 BUILDDIR := $(TOPDIR)/build
 OUTDIR := $(TOPDIR)/out
@@ -122,7 +122,7 @@ help:
 	@echo '                      calendar, chrome, contacts,'
 	@echo '                      deskclock, dialer, dps,'
 	@echo '                      gboard, gearhead, launcher,'
-	@echo '                      markup, messages, photos,'
+	@echo '                      maps, markup, messages, photos,'
 	@echo '                      soundpicker, tts, vanced, wellbeing'
 	@echo 'Buildable Patches   : Bootlog, Safetynet, Whitelist'
 	@echo ''

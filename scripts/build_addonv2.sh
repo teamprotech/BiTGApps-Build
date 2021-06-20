@@ -114,6 +114,7 @@ TARGET_DPS_GOOGLE="false"
 TARGET_GBOARD_GOOGLE="false"
 TARGET_GEARHEAD_GOOGLE="false"
 TARGET_LAUNCHER_GOOGLE="false"
+TARGET_MAPS_GOOGLE="false"
 TARGET_MARKUP_GOOGLE="false"
 TARGET_MESSAGES_GOOGLE="false"
 TARGET_PHOTOS_GOOGLE="false"
@@ -690,6 +691,54 @@ makeaddonv2() {
     java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
     # Set build VARIANT in global environment
     echo "TARGET_VARIANT_LAUNCHER" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+  fi
+  # Maps
+  if [ "$VARIANT" == "maps" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps Maps Addon package"
+    # Create release directory
+    mkdir "$BUILDDIR/$ARCH/BiTGApps-addon-maps-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-maps-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    # Install etc package
+    cp -f $SOURCES_ALL/etc/MapsPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    # Install framework package
+    cp -f $SOURCES_ALL/framework/MapsFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    # Install app packages
+    cp -f $SOURCES_ARMEABI/app/MapsGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_AARCH64/app/MapsGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_MAPS_GOOGLE="" TARGET_MAPS_GOOGLE="$TARGET_MAPS_GOOGLE"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../..
+    mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    echo "TARGET_VARIANT_MAPS" >> $OUTDIR/ENV/env_variant.sh
     # List signed ZIP
     ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     # Wipe unsigned ZIP

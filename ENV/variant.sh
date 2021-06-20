@@ -82,6 +82,11 @@ set_env_variant() {
     else
       export TARGET_VARIANT_LAUNCHER="false"
     fi
+    if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_MAPS)" ]; then
+      export TARGET_VARIANT_MAPS="true"
+    else
+      export TARGET_VARIANT_MAPS="false"
+    fi
     if [ -n "$(cat out/ENV/env_variant.sh | grep TARGET_VARIANT_MARKUP)" ]; then
       export TARGET_VARIANT_MARKUP="true"
     else
