@@ -575,6 +575,9 @@ makeaddonv2() {
     # Install app packages
     cp -f $SOURCES_ARMEABI/app/GboardGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     cp -f $SOURCES_AARCH64/app/GboardGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    # Install usr packages
+    cp -f $SOURCES_ALL/usr/usr_share.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/usr/usr_srec.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Installer components
     cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
     cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
