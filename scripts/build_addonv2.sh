@@ -126,14 +126,20 @@ TARGET_WELLBEING_GOOGLE="false"' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh
 
 # Set license for pre-built package
 makelicense() {
-echo "This BiTGApps build is provided ONLY as courtesy by BiTGApps.org and is without warranty of ANY kind.
+echo "Sources used for distributing pre-built packages of BiTGApps:
 
-This build is authored by the TheHitMan7 and is as such protected by BiTGApps.org's copyright.
-This build is provided under the terms that it can be freely used for personal use only and is not allowed to be mirrored to the public other than BiTGApps.org.
+[1] BiTGApps.github.io
+[2] BiTGApps.com
+[3] BiTGApps.org
+
+This BiTGApps build is provided ONLY as courtesy by [1],[2],[3] and is without warranty of ANY kind.
+
+This build is authored by the TheHitMan7 and is as such protected by [1],[2],[3]'s copyright.
+This build is provided under the terms that it can be freely used for personal use only and is not allowed to be mirrored to the public other than [1],[2],[3].
 You are not allowed to modify this build for further (re)distribution.
 
 The APKs found in this build are developed and owned by Google Inc.
-They are included only for your convenience, neither BiTGApps.org and The BiTGApps Project have no ownership over them.
+They are included only for your convenience, neither [1],[2],[3] and The BiTGApps Project have no ownership over them.
 The user self is responsible for obtaining the proper licenses for the APKs, e.g. via Google's Play Store.
 To use Google's applications you accept to Google's license agreement and further distribution of Google's application
 are subject of Google's terms and conditions, these can be found at http://www.google.com/policies/
