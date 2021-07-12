@@ -58,6 +58,7 @@ API_27_KEYSTORE="BiTGApps/tools/safetynet-resources/27"
 API_28_KEYSTORE="BiTGApps/tools/safetynet-resources/28"
 API_29_KEYSTORE="BiTGApps/tools/safetynet-resources/29"
 API_30_KEYSTORE="BiTGApps/tools/safetynet-resources/30"
+API_31_KEYSTORE="BiTGApps/tools/safetynet-resources/31"
 
 # Set Boot Image Editor sources
 AIK_ARMEABI="BiTGApps/tools/aik-resources/armeabi-v7a"
@@ -245,6 +246,15 @@ makekeystore30() {
   rm -rf $API_30_KEYSTORE/Keystore30.tar.xz
 }
 
+makekeystore31() {
+  cd $API_31_KEYSTORE
+  # Only compress in 'xz' format
+  tar -cJf "Keystore31.tar.xz" *
+  cd ../../../..
+  cp -f $API_31_KEYSTORE/Keystore31.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  rm -rf $API_31_KEYSTORE/Keystore31.tar.xz
+}
+
 # Main
 makepatch() {
   # Create build directory
@@ -341,6 +351,7 @@ makepatch() {
     makekeystore28
     makekeystore29
     makekeystore30
+    makekeystore31
     # Create ZIP
     cd $BUILDDIR/$ARCH/$RELEASEDIR
     zip -qr9 ${RELEASEDIR}.zip *
