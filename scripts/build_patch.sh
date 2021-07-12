@@ -29,7 +29,8 @@ command -v zip >/dev/null 2>&1 || { echo "! ZIP is required but it's not install
 
 # Check availability of environmental variables
 if { [ ! -n "$COMMONPATCHRELEASE" ] ||
-     [ ! -n "$PATCH_RELEASE" ]; }; then
+     [ ! -n "$PATCH_RELEASE" ] ||
+     [ ! -n "$TARGET_PATCH_CONFIG" ]; }; then
      echo "! Environmental variables not set. Aborting..."
   exit 1
 fi
@@ -102,7 +103,8 @@ REL=""
 ZIPTYPE=""
 TARGET_BOOTLOG_PATCH=""
 TARGET_SAFETYNET_PATCH=""
-TARGET_WHITELIST_PATCH=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
+TARGET_WHITELIST_PATCH=""
+TARGET_PATCH_CONFIG=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
 }
 
 # Set logcat script
@@ -280,6 +282,7 @@ makepatch() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_BOOTLOG_PATCH="" TARGET_BOOTLOG_PATCH="$TARGET_BOOTLOG_PATCH"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_SAFETYNET_PATCH="" TARGET_SAFETYNET_PATCH="$TARGET_SAFETYNET_PATCH"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_WHITELIST_PATCH="" TARGET_WHITELIST_PATCH="$TARGET_WHITELIST_PATCH"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_PATCH_CONFIG="" TARGET_PATCH_CONFIG="$TARGET_PATCH_CONFIG"
     # Create logcat script
     makelogcatscript
     # Create LICENSE
@@ -326,6 +329,7 @@ makepatch() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_BOOTLOG_PATCH="" TARGET_BOOTLOG_PATCH="$TARGET_BOOTLOG_PATCH"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_SAFETYNET_PATCH="" TARGET_SAFETYNET_PATCH="$TARGET_SAFETYNET_PATCH"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_WHITELIST_PATCH="" TARGET_WHITELIST_PATCH="$TARGET_WHITELIST_PATCH"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_PATCH_CONFIG="" TARGET_PATCH_CONFIG="$TARGET_PATCH_CONFIG"
     # Create LICENSE
     makelicense
     # Add Boot Image Editor
@@ -376,6 +380,7 @@ makepatch() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_BOOTLOG_PATCH="" TARGET_BOOTLOG_PATCH="$TARGET_BOOTLOG_PATCH"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_SAFETYNET_PATCH="" TARGET_SAFETYNET_PATCH="$TARGET_SAFETYNET_PATCH"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_WHITELIST_PATCH="" TARGET_WHITELIST_PATCH="$TARGET_WHITELIST_PATCH"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_PATCH_CONFIG="" TARGET_PATCH_CONFIG="$TARGET_PATCH_CONFIG"
     # Create LICENSE
     makelicense
     # Add Boot Image Editor
