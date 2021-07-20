@@ -41,5 +41,3 @@ export TARGET_PATCH_CONFIG='""'
 export BuildDate=""
 export BuildID=""
 export SERVER=""
-export APKRELEASE=""
-export BITGAPPS_CONFIG="false"
