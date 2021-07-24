@@ -30,7 +30,7 @@ command -v zip >/dev/null 2>&1 || { echo "! ZIP is required but it's not install
 # Check availability of environmental variables
 if { [ ! -n "$COMMONADDONRELEASE" ] ||
      [ ! -n "$ADDON_RELEASE" ] ||
-     [ ! -n "$TARGET_ADDON_CONFIG" ]; }; then
+     [ ! -n "$TARGET_CONFIG_VERSION" ]; }; then
      echo "! Environmental variables not set. Aborting..."
   exit 1
 fi
@@ -123,7 +123,7 @@ TARGET_SOUNDPICKER_GOOGLE="false"
 TARGET_TTS_GOOGLE="false"
 TARGET_VANCED_GOOGLE="false"
 TARGET_WELLBEING_GOOGLE="false"
-TARGET_ADDON_CONFIG=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
+TARGET_CONFIG_VERSION=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
 }
 
 # Set license for pre-built package
@@ -193,7 +193,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ASSISTANT_GOOGLE="" TARGET_ASSISTANT_GOOGLE="$TARGET_ASSISTANT_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -240,7 +240,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_BROMITE_GOOGLE="" TARGET_BROMITE_GOOGLE="$TARGET_BROMITE_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -284,7 +284,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CALCULATOR_GOOGLE="" TARGET_CALCULATOR_GOOGLE="$TARGET_CALCULATOR_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -328,7 +328,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CALENDAR_GOOGLE="" TARGET_CALENDAR_GOOGLE="$TARGET_CALENDAR_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -373,7 +373,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CHROME_GOOGLE="" TARGET_CHROME_GOOGLE="$TARGET_CHROME_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -417,7 +417,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONTACTS_GOOGLE="" TARGET_CONTACTS_GOOGLE="$TARGET_CONTACTS_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -461,7 +461,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DESKCLOCK_GOOGLE="" TARGET_DESKCLOCK_GOOGLE="$TARGET_DESKCLOCK_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -510,7 +510,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIALER_GOOGLE="" TARGET_DIALER_GOOGLE="$TARGET_DIALER_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -560,7 +560,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DPS_GOOGLE="" TARGET_DPS_GOOGLE="$TARGET_DPS_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -608,7 +608,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GBOARD_GOOGLE="" TARGET_GBOARD_GOOGLE="$TARGET_GBOARD_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -653,7 +653,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GEARHEAD_GOOGLE="" TARGET_GEARHEAD_GOOGLE="$TARGET_GEARHEAD_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -704,7 +704,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_LAUNCHER_GOOGLE="" TARGET_LAUNCHER_GOOGLE="$TARGET_LAUNCHER_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -753,7 +753,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_MAPS_GOOGLE="" TARGET_MAPS_GOOGLE="$TARGET_MAPS_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -798,7 +798,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_MARKUP_GOOGLE="" TARGET_MARKUP_GOOGLE="$TARGET_MARKUP_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -845,7 +845,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_MESSAGES_GOOGLE="" TARGET_MESSAGES_GOOGLE="$TARGET_MESSAGES_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -890,7 +890,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_PHOTOS_GOOGLE="" TARGET_PHOTOS_GOOGLE="$TARGET_PHOTOS_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -934,7 +934,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_SOUNDPICKER_GOOGLE="" TARGET_SOUNDPICKER_GOOGLE="$TARGET_SOUNDPICKER_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -979,7 +979,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_TTS_GOOGLE="" TARGET_TTS_GOOGLE="$TARGET_TTS_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -1024,7 +1024,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VANCED_GOOGLE="" TARGET_VANCED_GOOGLE="$TARGET_VANCED_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -1068,7 +1068,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_WELLBEING_GOOGLE="" TARGET_WELLBEING_GOOGLE="$TARGET_WELLBEING_GOOGLE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP

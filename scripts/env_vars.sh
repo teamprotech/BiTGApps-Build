@@ -26,18 +26,14 @@
 # Set runtime environmental variables
 export COMMONGAPPSRELEASE=""
 export COMMONADDONRELEASE=""
-export COMMONPATCHRELEASE=""
 export GAPPS_RELEASE='""'
 export ADDON_RELEASE='""'
-export PATCH_RELEASE='""'
 export TARGET_DIRTY_INSTALL='""'
 export TARGET_GAPPS_RELEASE='""'
 export TARGET_RELEASE_TAG='""'
 export GAPPS_RELEASE_TAG=""
 export COMMON_SYSTEM_LAYOUT='$S'
-export TARGET_GAPPS_CONFIG='""'
-export TARGET_ADDON_CONFIG='""'
-export TARGET_PATCH_CONFIG='""'
+export TARGET_CONFIG_VERSION='""'
 export BuildDate=""
 export BuildID=""
 export SERVER=""

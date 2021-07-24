@@ -30,7 +30,7 @@ command -v zip >/dev/null 2>&1 || { echo "! ZIP is required but it's not install
 # Check availability of environmental variables
 if { [ ! -n "$COMMONADDONRELEASE" ] ||
      [ ! -n "$ADDON_RELEASE" ] ||
-     [ ! -n "$TARGET_ADDON_CONFIG" ]; }; then
+     [ ! -n "$TARGET_CONFIG_VERSION" ]; }; then
      echo "! Environmental variables not set. Aborting..."
   exit 1
 fi
@@ -96,7 +96,7 @@ ZIPTYPE=""
 ADDON=""
 ARMEABI=""
 AARCH64=""
-TARGET_ADDON_CONFIG=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
+TARGET_CONFIG_VERSION=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
 }
 
 # Set license for pre-built package
@@ -211,7 +211,7 @@ makeaddonv1() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$CONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -301,7 +301,7 @@ makeaddonv1() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$CONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ADDON_CONFIG="" TARGET_ADDON_CONFIG="$TARGET_ADDON_CONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
     # Create ZIP

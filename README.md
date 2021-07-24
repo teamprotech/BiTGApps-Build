@@ -17,6 +17,12 @@ git clone https://github.com/BiTGApps/BiTGApps-Build BiTGApps
 git clone https://github.com/BiTGApps/BiTGApps BiTGApps/BiTGApps
 ```
 
+* Clone build tools
+
+```shellscript
+git clone https://github.com/BiTGApps/Build-Tools BiTGApps/Build-Tools
+```
+
 * Create sources path
 
 ```shellscript
@@ -82,12 +88,6 @@ To build specific BiTGApps Additional package variant for both platforms
 make assistant
 ```
 
-To build specific BiTGApps Patch for all platforms and all Android releases
-
-```shellscript
-make safetynet
-```
-
 **For contributors, updated sources can be uploaded.**
 
 Before uploading, set server credentials:
@@ -108,24 +108,6 @@ After setting server credentials:
 
 ```shellscript
 ./upload_sources.sh common
-```
-
-* For all BiTGApps Patches
-
-```shellscript
-./upload_sources.sh generic
-```
-
-* For BiTGApps configuration files
-
-```shellscript
-./upload_sources.sh config
-```
-
-* For BiTGApps APK
-
-```shellscript
-./upload_sources.sh apk
 ```
 
 ## License

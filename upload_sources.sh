@@ -22,7 +22,6 @@
 
 # Set environmental variables (Auto-generated)
 . ENV/api.sh      # For GApps release
-. ENV/patch.sh    # For Patch based release
 . ENV/platform.sh # For Platform based Addon release
 . ENV/variant.sh  # For Variant based Addon release
 
@@ -37,7 +36,6 @@ export CREDENTIALS="$1"
 export ARMEABI="$1"
 export AARCH64="$1"
 export COMMON="$1"
-export PATCH="$1"
 
 # Server credentials
 set_credentials() {
@@ -255,31 +253,9 @@ common_sources() {
   fi
 }
 
-# PATCH Sources
-patch_sources() {
-  if [ "$PATCH" == "generic" ]; then
-    if [ "$SERVER" == "ga" ]; then
-      $TARGET_BOOTLOG_PACKAGE && curl -T out/generic/BiTGApps-bootlog-patch-${COMMONPATCHRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Patch/BiTGApps-bootlog-patch-${COMMONPATCHRELEASE}_signed.zip"
-      $TARGET_SAFETYNET_PACKAGE && curl -T out/generic/BiTGApps-safetynet-patch-${COMMONPATCHRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Patch/BiTGApps-safetynet-patch-${COMMONPATCHRELEASE}_signed.zip"
-      $TARGET_WHITELIST_PACKAGE && curl -T out/generic/BiTGApps-whitelist-patch-${COMMONPATCHRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Patch/BiTGApps-whitelist-patch-${COMMONPATCHRELEASE}_signed.zip"
-    fi
-    if [ "$SERVER" == "dh" ]; then
-      $TARGET_BOOTLOG_PACKAGE && rsync -a -v out/generic/BiTGApps-bootlog-patch-${COMMONPATCHRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Patch/BiTGApps-bootlog-patch-${COMMONPATCHRELEASE}_signed.zip"
-      $TARGET_SAFETYNET_PACKAGE && rsync -a -v out/generic/BiTGApps-safetynet-patch-${COMMONPATCHRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Patch/BiTGApps-safetynet-patch-${COMMONPATCHRELEASE}_signed.zip"
-      $TARGET_WHITELIST_PACKAGE && rsync -a -v out/generic/BiTGApps-whitelist-patch-${COMMONPATCHRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Patch/BiTGApps-whitelist-patch-${COMMONPATCHRELEASE}_signed.zip"
-    fi
-    if [ "$SERVER" == "sps" ]; then
-      $TARGET_BOOTLOG_PACKAGE && rsync -a -v out/generic/BiTGApps-bootlog-patch-${COMMONPATCHRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Patch/BiTGApps-bootlog-patch-${COMMONPATCHRELEASE}_signed.zip"
-      $TARGET_SAFETYNET_PACKAGE && rsync -a -v out/generic/BiTGApps-safetynet-patch-${COMMONPATCHRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Patch/BiTGApps-safetynet-patch-${COMMONPATCHRELEASE}_signed.zip"
-      $TARGET_WHITELIST_PACKAGE && rsync -a -v out/generic/BiTGApps-whitelist-patch-${COMMONPATCHRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Patch/BiTGApps-whitelist-patch-${COMMONPATCHRELEASE}_signed.zip"
-    fi
-  fi
-}
-
 # Execute functions
 set_credentials
 check_credentials
 arm_sources
 arm64_sources
 common_sources
-patch_sources

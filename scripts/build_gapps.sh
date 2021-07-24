@@ -34,9 +34,9 @@ if { [ ! -n "$COMMONGAPPSRELEASE" ] ||
      [ ! -n "$TARGET_GAPPS_RELEASE" ] ||
      [ ! -n "$TARGET_RELEASE_TAG" ] ||
      [ ! -n "$GAPPS_RELEASE_TAG" ] ||
+     [ ! -n "$TARGET_CONFIG_VERSION" ] ||
      [ ! -n "$BuildDate" ] ||
-     [ ! -n "$BuildID" ] ||
-     [ ! -n "$TARGET_GAPPS_CONFIG" ]; }; then
+     [ ! -n "$BuildID" ]; }; then
      echo "! Environmental variables not set. Aborting..."
   exit 1
 fi
@@ -50,6 +50,12 @@ fi
 # Check availability of SetupWizard sources
 if [ ! -d "sources/setup-sources" ]; then
   echo "! SetupWizard sources not found. Aborting..."
+  exit 1
+fi
+
+# Check availability of build tools
+if [ ! -d "BiTGApps/Build-Tools" ]; then
+  echo "! Build tools not found. Aborting..."
   exit 1
 fi
 
@@ -91,6 +97,64 @@ SETUPSOURCESv28="sources/setup-sources/$ARCH/28"
 SETUPSOURCESv29="sources/setup-sources/$ARCH/29"
 SETUPSOURCESv30="sources/setup-sources/$ARCH/30"
 SETUPSOURCESv31="sources/setup-sources/$ARCH/31"
+
+# Set patched keystore sources
+API_26_KEYSTORE="BiTGApps/Build-Tools/Keystore/26/Keystore26.tar.xz"
+API_27_KEYSTORE="BiTGApps/Build-Tools/Keystore/27/Keystore27.tar.xz"
+API_28_KEYSTORE="BiTGApps/Build-Tools/Keystore/28/Keystore28.tar.xz"
+API_29_KEYSTORE="BiTGApps/Build-Tools/Keystore/29/Keystore29.tar.xz"
+API_30_KEYSTORE="BiTGApps/Build-Tools/Keystore/30/Keystore30.tar.xz"
+API_31_KEYSTORE="BiTGApps/Build-Tools/Keystore/31/Keystore31.tar.xz"
+
+# Set Boot Image Editor sources
+AIK="BiTGApps/Build-Tools/AIK/AIK.tar.xz"
+
+# Set logcat script
+makelogcatscript() {
+echo '##############################################################
+# File name       : init.logcat.rc
+#
+# Description     : Generate boot logs
+#
+# Copyright       : Copyright (C) 2018-2021 TheHitMan7
+#
+# License         : GPL-3.0-or-later
+##############################################################
+# The BiTGApps scripts are free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# These scripts are distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+##############################################################
+
+service boot_lc_main /system/bin/logcat -f /cache/boot_lc_main.txt
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+
+service boot_dmesg /system/bin/sh -c "dmesg -w > /cache/boot_dmesg.txt"
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+
+on fs
+    rm /cache/boot_lc_main.txt
+    rm /cache/boot_dmesg.txt
+    start boot_lc_main
+    start boot_dmesg
+
+on property:sys.boot_completed=1
+    stop boot_lc_main
+    stop boot_dmesg' >"$BUILDDIR/$ARCH/$RELEASEDIR/init.logcat.rc"
+}
 
 # Set installer sources
 UPDATEBINARY="BiTGApps/scripts/update-binary.sh"
@@ -160,10 +224,7 @@ TARGET_ANDROID_ARCH=""
 ARMEABI=""
 AARCH64=""
 TARGET_RELEASE_TAG=""
-TARGET_BOOTLOG_PATCH="false"
-TARGET_SAFETYNET_PATCH="false"
-TARGET_WHITELIST_PATCH="false"
-TARGET_GAPPS_CONFIG=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
+TARGET_CONFIG_VERSION=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
 }
 
 # Set build property
@@ -308,6 +369,9 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -319,7 +383,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -400,6 +464,9 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -411,7 +478,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -491,6 +558,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_26_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -502,7 +573,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -582,6 +653,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_27_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -593,7 +668,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -673,6 +748,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_28_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -684,7 +763,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -762,6 +841,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_29_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -773,7 +856,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -853,6 +936,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_30_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -864,7 +951,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -944,6 +1031,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_31_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -955,7 +1046,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -1046,6 +1137,9 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1057,7 +1151,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -1138,6 +1232,9 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1149,7 +1246,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -1229,6 +1326,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_26_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1240,7 +1341,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -1320,6 +1421,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_27_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1331,7 +1436,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -1411,6 +1516,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_28_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1422,7 +1531,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -1500,6 +1609,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_29_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1511,7 +1624,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -1591,6 +1704,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_30_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1602,7 +1719,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
@@ -1682,6 +1799,10 @@ makegapps() {
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $API_31_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+      # Create logcat script
+      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1693,7 +1814,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_RELEASE_TAG="" TARGET_RELEASE_TAG="$TARGET_RELEASE_TAG"
-      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_CONFIG="" TARGET_GAPPS_CONFIG="$TARGET_GAPPS_CONFIG"
+      replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
       # Create build property file
       makegprop
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop CustomGAppsPackage= CustomGAppsPackage="$CustomGAppsPackage"
