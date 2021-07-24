@@ -54,7 +54,7 @@ if [ ! -d "sources/setup-sources" ]; then
 fi
 
 # Check availability of build tools
-if [ ! -d "BiTGApps/Build-Tools" ]; then
+if [ ! -d "Build-Tools" ]; then
   echo "! Build tools not found. Aborting..."
   exit 1
 fi
@@ -99,15 +99,15 @@ SETUPSOURCESv30="sources/setup-sources/$ARCH/30"
 SETUPSOURCESv31="sources/setup-sources/$ARCH/31"
 
 # Set patched keystore sources
-API_26_KEYSTORE="BiTGApps/Build-Tools/Keystore/26/Keystore26.tar.xz"
-API_27_KEYSTORE="BiTGApps/Build-Tools/Keystore/27/Keystore27.tar.xz"
-API_28_KEYSTORE="BiTGApps/Build-Tools/Keystore/28/Keystore28.tar.xz"
-API_29_KEYSTORE="BiTGApps/Build-Tools/Keystore/29/Keystore29.tar.xz"
-API_30_KEYSTORE="BiTGApps/Build-Tools/Keystore/30/Keystore30.tar.xz"
-API_31_KEYSTORE="BiTGApps/Build-Tools/Keystore/31/Keystore31.tar.xz"
+API_26_KEYSTORE="Build-Tools/Keystore/Keystore26.tar.xz"
+API_27_KEYSTORE="Build-Tools/Keystore/Keystore27.tar.xz"
+API_28_KEYSTORE="Build-Tools/Keystore/Keystore28.tar.xz"
+API_29_KEYSTORE="Build-Tools/Keystore/Keystore29.tar.xz"
+API_30_KEYSTORE="Build-Tools/Keystore/Keystore30.tar.xz"
+API_31_KEYSTORE="Build-Tools/Keystore/Keystore31.tar.xz"
 
 # Set Boot Image Editor sources
-AIK="BiTGApps/Build-Tools/AIK/AIK.tar.xz"
+AIK="Build-Tools/AIK/AIK.tar.xz"
 
 # Set logcat script
 makelogcatscript() {
