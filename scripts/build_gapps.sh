@@ -918,6 +918,7 @@ makegapps() {
       cp -f $SOURCESv30/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       # Install priv-app packages
       cp -f $SOURCESv30/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv30/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/PrebuiltGmsCoreRvc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
@@ -1013,6 +1014,7 @@ makegapps() {
       cp -f $SOURCESv31/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       # Install priv-app packages
       cp -f $SOURCESv31/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv31/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/PrebuiltGmsCoreSvc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
@@ -1686,6 +1688,7 @@ makegapps() {
       cp -f $SOURCESv30/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       # Install priv-app packages
       cp -f $SOURCESv30/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv30/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/PrebuiltGmsCoreRvc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
@@ -1781,6 +1784,7 @@ makegapps() {
       cp -f $SOURCESv31/overlay/PlayStoreOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
       # Install priv-app packages
       cp -f $SOURCESv31/priv-app/ConfigUpdater.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SOURCESv31/priv-app/GoogleExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/GoogleServicesFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/PrebuiltGmsCoreSvc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
