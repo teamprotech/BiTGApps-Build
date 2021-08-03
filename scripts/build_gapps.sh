@@ -109,53 +109,6 @@ API_31_KEYSTORE="Build-Tools/Keystore/Keystore31.tar.xz"
 # Set Boot Image Editor sources
 AIK="Build-Tools/AIK/AIK.tar.xz"
 
-# Set logcat script
-makelogcatscript() {
-echo '##############################################################
-# File name       : init.logcat.rc
-#
-# Description     : Generate boot logs
-#
-# Copyright       : Copyright (C) 2018-2021 TheHitMan7
-#
-# License         : GPL-3.0-or-later
-##############################################################
-# The BiTGApps scripts are free software: you can redistribute it
-# and/or modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation, either version 3 of
-# the License, or (at your option) any later version.
-#
-# These scripts are distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-##############################################################
-
-service boot_lc_main /system/bin/logcat -f /cache/boot_lc_main.txt
-    class main
-    user root
-    group root system
-    disabled
-    oneshot
-
-service boot_dmesg /system/bin/sh -c "dmesg -w > /cache/boot_dmesg.txt"
-    class main
-    user root
-    group root system
-    disabled
-    oneshot
-
-on fs
-    rm /cache/boot_lc_main.txt
-    rm /cache/boot_dmesg.txt
-    start boot_lc_main
-    start boot_dmesg
-
-on property:sys.boot_completed=1
-    stop boot_lc_main
-    stop boot_dmesg' >"$BUILDDIR/$ARCH/$RELEASEDIR/init.logcat.rc"
-}
-
 # Set installer sources
 UPDATEBINARY="BiTGApps/scripts/update-binary.sh"
 UPDATERSCRIPT="BiTGApps/scripts/updater-script.sh"
@@ -163,6 +116,7 @@ INSTALLER="BiTGApps/scripts/installer.sh"
 OTASCRIPT="BiTGApps/scripts/bitgapps.sh"
 BACKUPSCRIPT="BiTGApps/scripts/backup.sh"
 RESTORESCRIPT="BiTGApps/scripts/restore.sh"
+LOGCATSCRIPT="BiTGApps/scripts/init.logcat.rc"
 BUSYBOX="BiTGApps/tools/busybox-resources/busybox-arm"
 
 # Set ZIP structure
@@ -248,10 +202,7 @@ makeota() {
   replace_line "restore.sh" 'ro.gapps.release_tag' "  insert_line $COMMON_SYSTEM_LAYOUT/build.prop 'ro.gapps.release_tag=$GAPPS_RELEASE_TAG' after 'net.bt.name=Android' 'ro.gapps.release_tag=$GAPPS_RELEASE_TAG'"
   # Only compress in 'xz' format
   tar -cJf "Addon.tar.xz" bitgapps.sh backup.sh restore.sh
-  for f in bitgapps.sh backup.sh restore.sh
-  do
-    rm -rf $f
-  done
+  rm -rf bitgapps.sh backup.sh restore.sh
   # Checkout path
   cd ../../../..
 }
@@ -368,10 +319,9 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -463,10 +413,9 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -557,11 +506,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_26_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -652,11 +600,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_27_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -747,11 +694,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_28_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -840,11 +786,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_29_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -936,11 +881,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_30_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1032,11 +976,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_31_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1138,10 +1081,9 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1233,10 +1175,9 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1327,11 +1268,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_26_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1422,11 +1362,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_27_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1517,11 +1456,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_28_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1610,11 +1548,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_29_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1706,11 +1643,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_30_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1802,11 +1738,10 @@ makegapps() {
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
       cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+      cp -f $LOGCATSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_31_KEYSTORE $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-      # Create logcat script
-      makelogcatscript
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"

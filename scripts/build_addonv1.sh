@@ -46,10 +46,16 @@ OUTDIR="out"
 # Signing tool
 ZIPSIGNER="BiTGApps/tools/zipsigner-resources/zipsigner.jar"
 
+# Set Boot Image Editor sources
+AIK="Build-Tools/AIK/AIK.tar.xz"
+
 # Set installer sources
 UPDATEBINARY="BiTGApps/scripts/update-binary.sh"
 UPDATERSCRIPT="BiTGApps/scripts/updater-script.sh"
 INSTALLER="BiTGApps/scripts/installer.sh"
+BROMITESCRIPT="BiTGApps/scripts/bromite.sh"
+VANCEDINIT="BiTGApps/scripts/init.vanced.rc"
+VANCEDSCRIPT="BiTGApps/scripts/vanced.sh"
 BUSYBOX="BiTGApps/tools/busybox-resources/busybox-arm"
 
 # Set ZIP structure
@@ -93,10 +99,35 @@ echo '#!/sbin/sh
 
 REL=""
 ZIPTYPE=""
+TARGET_GAPPS_RELEASE=""
+TARGET_DIRTY_INSTALL=""
 ADDON=""
 ARMEABI=""
 AARCH64=""
 TARGET_CONFIG_VERSION=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
+}
+
+# Compress and add Bromite OTA survival script
+makeotabromite() {
+  cp -f $BROMITESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  cd $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  # Only compress in 'xz' format
+  tar -cJf "Addon.tar.xz" bromite.sh
+  rm -rf bromite.sh
+  # Checkout path
+  cd ../../../..
+}
+
+# Compress and add YouTube Vanced boot scripts
+makevanced() {
+  cp -f $VANCEDINIT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  cp -f $VANCEDSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  cd $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  # Only compress in 'xz' format
+  tar -cJf "Vanced.tar.xz" init.vanced.rc vanced.sh
+  rm -rf init.vanced.rc vanced.sh
+  # Checkout path
+  cd ../../../..
 }
 
 # Set license for pre-built package
@@ -173,6 +204,8 @@ makeaddonv1() {
     cp -f $SOURCES_ALL/app/TrichromeLibrary.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     cp -f $SOURCES_ARMEABI/app/WebViewBromite_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/WebViewBromite.tar.xz
     cp -f $SOURCES_ALL/app/WebViewGoogle.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/YouTubeStock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/YouTubeVanced.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     cp -f $SOURCES_ARMEABI/app/YouTube_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/YouTube.tar.xz
     # Install etc packages
     cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -205,14 +238,21 @@ makeaddonv1() {
     cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
     cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
     cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+    cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Create utility script
     makeutilityscript
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$CONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Add OTA script
+    makeotabromite
+    # Add YouTube Vanced boot scripts
+    makevanced
     # Create LICENSE
     makelicense
     # Create ZIP
@@ -264,6 +304,8 @@ makeaddonv1() {
     cp -f $SOURCES_ALL/app/TrichromeLibrary.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     cp -f $SOURCES_AARCH64/app/WebViewBromite_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/WebViewBromite.tar.xz
     cp -f $SOURCES_ALL/app/WebViewGoogle.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/YouTubeStock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/YouTubeVanced.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     cp -f $SOURCES_AARCH64/app/YouTube_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/YouTube.tar.xz
     # Install etc packages
     cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -296,14 +338,21 @@ makeaddonv1() {
     cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
     cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
     cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+    cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Create utility script
     makeutilityscript
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$CONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Add OTA script
+    makeotabromite
+    # Add YouTube Vanced boot scripts
+    makevanced
     # Create LICENSE
     makelicense
     # Create ZIP
