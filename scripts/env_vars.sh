@@ -24,16 +24,16 @@
 . scripts/static_env_vars.sh
 
 # Set runtime environmental variables
-export COMMONGAPPSRELEASE="R30"
-export COMMONADDONRELEASE="R18"
-export GAPPS_RELEASE='"R30"'
-export ADDON_RELEASE='"R18"'
-export TARGET_DIRTY_INSTALL='"false"'
-export TARGET_GAPPS_RELEASE='"30"'
-export TARGET_RELEASE_TAG='"30"'
-export GAPPS_RELEASE_TAG="30"
+export COMMONGAPPSRELEASE="R31"
+export COMMONADDONRELEASE="R19"
+export GAPPS_RELEASE='"R31"'
+export ADDON_RELEASE='"R19"'
+export TARGET_DIRTY_INSTALL='"true"'
+export TARGET_GAPPS_RELEASE='"31"'
+export TARGET_RELEASE_TAG='"31"'
+export GAPPS_RELEASE_TAG="31"
 export COMMON_SYSTEM_LAYOUT='$S'
 export TARGET_CONFIG_VERSION='"00"'
 export BuildDate=`date +"%Y%m%d"`
-export BuildID="R30"
+export BuildID="R31"
 export SERVER="ga"
