@@ -134,17 +134,6 @@ TARGET_WELLBEING_GOOGLE="false"
 TARGET_CONFIG_VERSION=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
 }
 
-# Compress and add Bromite OTA survival script
-makeotabromite() {
-  cp -f $BROMITESCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-  cd $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-  # Only compress in 'xz' format
-  tar -cJf "Addon.tar.xz" bromite.sh
-  rm -rf bromite.sh
-  # Checkout path
-  cd ../../../..
-}
-
 # Compress and add YouTube Vanced boot scripts
 makevanced() {
   cp -f $VANCEDINIT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -276,8 +265,6 @@ makeaddonv2() {
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_BROMITE_GOOGLE="" TARGET_BROMITE_GOOGLE="$TARGET_BROMITE_GOOGLE"
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
-    # Add OTA script
-    makeotabromite
     # Create LICENSE
     makelicense
     # Create ZIP
