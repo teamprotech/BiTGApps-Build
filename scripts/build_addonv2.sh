@@ -1080,7 +1080,6 @@ makeaddonv2() {
     cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
     cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
     cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-    cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Create utility script
     makeutilityscript
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
@@ -1128,7 +1127,6 @@ makeaddonv2() {
     cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
     cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
     cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-    cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Create utility script
     makeutilityscript
     replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
