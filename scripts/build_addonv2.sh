@@ -57,6 +57,7 @@ INSTALLER="BiTGApps/scripts/installer.sh"
 BROMITESCRIPT="BiTGApps/scripts/bromite.sh"
 VANCEDINIT="BiTGApps/scripts/init.vanced.rc"
 VANCEDSCRIPT="BiTGApps/scripts/vanced.sh"
+VANCEDROOT="BiTGApps/scripts/vanced-root.sh"
 BUSYBOX="BiTGApps/tools/busybox-resources/busybox-arm"
 
 # Set ZIP structure
@@ -138,10 +139,11 @@ TARGET_CONFIG_VERSION=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
 makevanced() {
   cp -f $VANCEDINIT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
   cp -f $VANCEDSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  cp -f $VANCEDROOT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
   cd $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
   # Only compress in 'xz' format
-  tar -cJf "Vanced.tar.xz" init.vanced.rc vanced.sh
-  rm -rf init.vanced.rc vanced.sh
+  tar -cJf "Vanced.tar.xz" init.vanced.rc vanced.sh vanced-root.sh
+  rm -rf init.vanced.rc vanced.sh vanced-root.sh
   # Checkout path
   cd ../../../..
 }
