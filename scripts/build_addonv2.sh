@@ -1055,16 +1055,65 @@ makeaddonv2() {
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
   fi
-  # YouTube Vanced
-  if [ "$VARIANT" == "vanced" ]; then
+  # YouTube Vanced MicroG Version
+  if [ "$VARIANT" == "vancedmicrog" ]; then
     # Set Addon package sources
     SOURCES_ALL="sources/addon-sources/all"
     SOURCES_ARMEABI="sources/addon-sources/arm"
     SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps YouTube Vanced Addon package"
+    echo "Generating BiTGApps YouTube Vanced MicroG Addon package"
     # Create release directory
-    mkdir "$BUILDDIR/$ARCH/BiTGApps-addon-vanced-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-vanced-${COMMONADDONRELEASE}"
+    mkdir "$BUILDDIR/$ARCH/BiTGApps-addon-vanced-microg-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-vanced-microg-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    # Install app packages
+    cp -f $SOURCES_ALL/app/MicroGGMSCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ARMEABI/app/YouTube_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_AARCH64/app/YouTube_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+    cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VANCED_GOOGLE="" TARGET_VANCED_GOOGLE="$TARGET_VANCED_GOOGLE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../..
+    mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    echo "TARGET_VARIANT_VANCED_MICROG" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+  fi
+  # YouTube Vanced Root Version
+  if [ "$VARIANT" == "vancedroot" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps YouTube Vanced Root Addon package"
+    # Create release directory
+    mkdir "$BUILDDIR/$ARCH/BiTGApps-addon-vanced-root-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-vanced-root-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -1072,9 +1121,6 @@ makeaddonv2() {
     # Install app packages
     cp -f $SOURCES_ALL/app/YouTubeStock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     cp -f $SOURCES_ALL/app/YouTubeVanced.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/MicroGGMSCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ARMEABI/app/YouTube_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_AARCH64/app/YouTube_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
     # Installer components
     cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
     cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
@@ -1102,7 +1148,57 @@ makeaddonv2() {
     # Sign ZIP
     java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
     # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_VANCED" >> $OUTDIR/ENV/env_variant.sh
+    echo "TARGET_VARIANT_VANCED_ROOT" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+  fi
+  # YouTube Vanced Non-Root Version
+  if [ "$VARIANT" == "vancednonroot" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps YouTube Vanced Non-Root Addon package"
+    # Create release directory
+    mkdir "$BUILDDIR/$ARCH/BiTGApps-addon-vanced-nonroot-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-vanced-nonroot-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    # Install app packages
+    cp -f $SOURCES_ALL/app/YouTubeStock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/YouTubeVanced.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
+    cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VANCED_GOOGLE="" TARGET_VANCED_GOOGLE="$TARGET_VANCED_GOOGLE"
+    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Add YouTube Vanced boot scripts
+    makevanced
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../..
+    mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    echo "TARGET_VARIANT_VANCED_NONROOT" >> $OUTDIR/ENV/env_variant.sh
     # List signed ZIP
     ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
     # Wipe unsigned ZIP

@@ -198,7 +198,9 @@ common_sources() {
         $TARGET_VARIANT_PHOTOS && curl -T out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Addon/non-config/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_SOUNDPICKER && curl -T out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Addon/non-config/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_TTS && curl -T out/common/BiTGApps-addon-tts-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Addon/non-config/BiTGApps-addon-tts-${COMMONADDONRELEASE}_signed.zip"
-        $TARGET_VARIANT_VANCED && curl -T out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Addon/non-config/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_VANCED_MICROG && curl -T out/common/BiTGApps-addon-vanced-microg-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Addon/non-config/BiTGApps-addon-vanced-microg-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_VANCED_ROOT && curl -T out/common/BiTGApps-addon-vanced-root-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Addon/non-config/BiTGApps-addon-vanced-root-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_VANCED_NONROOT && curl -T out/common/BiTGApps-addon-vanced-nonroot-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Addon/non-config/BiTGApps-addon-vanced-nonroot-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_WELLBEING && curl -T out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Addon/non-config/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip"
       fi
     fi
@@ -222,7 +224,9 @@ common_sources() {
         $TARGET_VARIANT_PHOTOS && rsync -a -v out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Addon/non-config/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_SOUNDPICKER && rsync -a -v out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Addon/non-config/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_TTS && rsync -a -v out/common/BiTGApps-addon-tts-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Addon/non-config/BiTGApps-addon-tts-${COMMONADDONRELEASE}_signed.zip"
-        $TARGET_VARIANT_VANCED && rsync -a -v out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Addon/non-config/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_VANCED_MICROG && rsync -a -v out/common/BiTGApps-addon-vanced-microg-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Addon/non-config/BiTGApps-addon-vanced-microg-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_VANCED_ROOT && rsync -a -v out/common/BiTGApps-addon-vanced-root-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Addon/non-config/BiTGApps-addon-vanced-root-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_VANCED_NONROOT && rsync -a -v out/common/BiTGApps-addon-vanced-nonroot-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Addon/non-config/BiTGApps-addon-vanced-nonroot-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_WELLBEING && rsync -a -v out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Addon/non-config/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip"
       fi
     fi
@@ -246,7 +250,9 @@ common_sources() {
         $TARGET_VARIANT_PHOTOS && rsync -a -v out/common/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Addon/non-config/BiTGApps-addon-photos-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_SOUNDPICKER && rsync -a -v out/common/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Addon/non-config/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_TTS && rsync -a -v out/common/BiTGApps-addon-tts-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Addon/non-config/BiTGApps-addon-tts-${COMMONADDONRELEASE}_signed.zip"
-        $TARGET_VARIANT_VANCED && rsync -a -v out/common/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Addon/non-config/BiTGApps-addon-vanced-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_VANCED_MICROG && rsync -a -v out/common/BiTGApps-addon-vanced-microg-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Addon/non-config/BiTGApps-addon-vanced-microg-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_VANCED_ROOT && rsync -a -v out/common/BiTGApps-addon-vanced-root-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Addon/non-config/BiTGApps-addon-vanced-root-${COMMONADDONRELEASE}_signed.zip"
+        $TARGET_VARIANT_VANCED_NONROOT && rsync -a -v out/common/BiTGApps-addon-vanced-nonroot-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Addon/non-config/BiTGApps-addon-vanced-nonroot-${COMMONADDONRELEASE}_signed.zip"
         $TARGET_VARIANT_WELLBEING && rsync -a -v out/common/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Addon/non-config/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}_signed.zip"
       fi
     fi

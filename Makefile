@@ -22,7 +22,7 @@ APIS := 25 26 27 28 29 30 31
 PLATFORMS := arm arm64
 LOWEST_API_arm := 25
 LOWEST_API_arm64 := 25
-VARIANTS := assistant bromite calculator calendar chrome contacts deskclock dialer dps gboard gearhead launcher maps markup messages photos soundpicker tts vanced wellbeing
+VARIANTS := assistant bromite calculator calendar chrome contacts deskclock dialer dps gboard gearhead launcher maps markup messages photos soundpicker tts vancedmicrog vancedroot vancednonroot wellbeing
 BUILDDIR := $(TOPDIR)/build
 OUTDIR := $(TOPDIR)/out
 
