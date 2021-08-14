@@ -22,6 +22,7 @@
 
 # Set environmental variables (Auto-generated)
 . ENV/api.sh      # For GApps release
+. ENV/microg.sh   # For MicroG release
 . ENV/platform.sh # For Platform based Addon release
 . ENV/variant.sh  # For Variant based Addon release
 
@@ -87,6 +88,16 @@ arm_sources() {
         $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/GApps/arm/Nougat/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_25 && curl -T out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/GApps/arm/Nougat/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
       fi
+      if [ -n "$COMMONGAPPSRELEASE" ]; then
+        $MICROG_API_31 && curl -T out/arm/MicroG-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm/S/MicroG-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_30 && curl -T out/arm/MicroG-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm/R/MicroG-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_29 && curl -T out/arm/MicroG-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm/Q/MicroG-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_28 && curl -T out/arm/MicroG-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm/Pie/MicroG-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_27 && curl -T out/arm/MicroG-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm/Oreo/MicroG-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_26 && curl -T out/arm/MicroG-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm/Oreo/MicroG-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && curl -T out/arm/MicroG-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm/Nougat/MicroG-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && curl -T out/arm/MicroG-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm/Nougat/MicroG-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
+      fi
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_PLATFORM_ARM && curl -T out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Addon/config/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip"
       fi
@@ -102,6 +113,16 @@ arm_sources() {
         $TARGET_API_25 && rsync -a -v out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/GApps/arm/Nougat/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_25 && rsync -a -v out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/GApps/arm/Nougat/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
       fi
+      if [ -n "$COMMONGAPPSRELEASE" ]; then
+        $MICROG_API_31 && rsync -a -v out/arm/MicroG-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm/S/MicroG-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_30 && rsync -a -v out/arm/MicroG-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm/R/MicroG-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_29 && rsync -a -v out/arm/MicroG-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm/Q/MicroG-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_28 && rsync -a -v out/arm/MicroG-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm/Pie/MicroG-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_27 && rsync -a -v out/arm/MicroG-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm/Oreo/MicroG-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_26 && rsync -a -v out/arm/MicroG-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm/Oreo/MicroG-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && rsync -a -v out/arm/MicroG-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm/Nougat/MicroG-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && rsync -a -v out/arm/MicroG-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm/Nougat/MicroG-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
+      fi
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_PLATFORM_ARM && rsync -a -v out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Addon/config/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip"
       fi
@@ -116,6 +137,16 @@ arm_sources() {
         $TARGET_API_26 && rsync -a -v out/arm/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/GApps/arm/Oreo/BiTGApps-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_25 && rsync -a -v out/arm/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/GApps/arm/Nougat/BiTGApps-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_25 && rsync -a -v out/arm/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/GApps/arm/Nougat/BiTGApps-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
+      fi
+      if [ -n "$COMMONGAPPSRELEASE" ]; then
+        $MICROG_API_31 && rsync -a -v out/arm/MicroG-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm/S/MicroG-arm-12.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_30 && rsync -a -v out/arm/MicroG-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm/R/MicroG-arm-11.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_29 && rsync -a -v out/arm/MicroG-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm/Q/MicroG-arm-10.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_28 && rsync -a -v out/arm/MicroG-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm/Pie/MicroG-arm-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_27 && rsync -a -v out/arm/MicroG-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm/Oreo/MicroG-arm-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_26 && rsync -a -v out/arm/MicroG-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm/Oreo/MicroG-arm-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && rsync -a -v out/arm/MicroG-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm/Nougat/MicroG-arm-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && rsync -a -v out/arm/MicroG-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm/Nougat/MicroG-arm-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
       fi
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_PLATFORM_ARM && rsync -a -v out/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Addon/config/arm/BiTGApps-addon-arm-${COMMONADDONRELEASE}_signed.zip"
@@ -138,6 +169,16 @@ arm64_sources() {
         $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/GApps/arm64/Nougat/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_25 && curl -T out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/GApps/arm64/Nougat/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
       fi
+      if [ -n "$COMMONGAPPSRELEASE" ]; then
+        $MICROG_API_31 && curl -T out/arm64/MicroG-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm64/S/MicroG-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_30 && curl -T out/arm64/MicroG-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm64/R/MicroG-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_29 && curl -T out/arm64/MicroG-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm64/Q/MicroG-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_28 && curl -T out/arm64/MicroG-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm64/Pie/MicroG-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_27 && curl -T out/arm64/MicroG-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm64/Oreo/MicroG-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_26 && curl -T out/arm64/MicroG-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm64/Oreo/MicroG-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && curl -T out/arm64/MicroG-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm64/Nougat/MicroG-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && curl -T out/arm64/MicroG-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/MicroG/arm64/Nougat/MicroG-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
+      fi
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_PLATFORM_ARM64 && curl -T out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip "ftp://${user}:${pass}@${host}/Addon/config/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip"
       fi
@@ -153,6 +194,16 @@ arm64_sources() {
         $TARGET_API_25 && rsync -a -v out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/GApps/arm64/Nougat/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_25 && rsync -a -v out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/GApps/arm64/Nougat/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
       fi
+      if [ -n "$COMMONGAPPSRELEASE" ]; then
+        $MICROG_API_31 && rsync -a -v out/arm64/MicroG-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm64/S/MicroG-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_30 && rsync -a -v out/arm64/MicroG-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm64/R/MicroG-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_29 && rsync -a -v out/arm64/MicroG-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm64/Q/MicroG-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_28 && rsync -a -v out/arm64/MicroG-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm64/Pie/MicroG-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_27 && rsync -a -v out/arm64/MicroG-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm64/Oreo/MicroG-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_26 && rsync -a -v out/arm64/MicroG-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm64/Oreo/MicroG-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && rsync -a -v out/arm64/MicroG-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm64/Nougat/MicroG-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && rsync -a -v out/arm64/MicroG-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/MicroG/arm64/Nougat/MicroG-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
+      fi
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_PLATFORM_ARM64 && rsync -a -v out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home/bitgapps/bitgapps.com/downloads/Addon/config/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip"
       fi
@@ -167,6 +218,16 @@ arm64_sources() {
         $TARGET_API_26 && rsync -a -v out/arm64/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/GApps/arm64/Oreo/BiTGApps-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_25 && rsync -a -v out/arm64/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/GApps/arm64/Nougat/BiTGApps-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
         $TARGET_API_25 && rsync -a -v out/arm64/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/GApps/arm64/Nougat/BiTGApps-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
+      fi
+      if [ -n "$COMMONGAPPSRELEASE" ]; then
+        $MICROG_API_31 && rsync -a -v out/arm64/MicroG-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm64/S/MicroG-arm64-12.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_30 && rsync -a -v out/arm64/MicroG-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm64/R/MicroG-arm64-11.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_29 && rsync -a -v out/arm64/MicroG-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm64/Q/MicroG-arm64-10.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_28 && rsync -a -v out/arm64/MicroG-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm64/Pie/MicroG-arm64-9.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_27 && rsync -a -v out/arm64/MicroG-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm64/Oreo/MicroG-arm64-8.1.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_26 && rsync -a -v out/arm64/MicroG-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm64/Oreo/MicroG-arm64-8.0.0-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && rsync -a -v out/arm64/MicroG-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm64/Nougat/MicroG-arm64-7.1.2-${COMMONGAPPSRELEASE}_signed.zip"
+        $MICROG_API_25 && rsync -a -v out/arm64/MicroG-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/MicroG/arm64/Nougat/MicroG-arm64-7.1.1-${COMMONGAPPSRELEASE}_signed.zip"
       fi
       if [ -n "$COMMONADDONRELEASE" ]; then
         $TARGET_PLATFORM_ARM64 && rsync -a -v out/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip "${user}@${host}:/home2/hitman/sites/downloads/Addon/config/arm64/BiTGApps-addon-arm64-${COMMONADDONRELEASE}_signed.zip"

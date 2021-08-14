@@ -16,12 +16,14 @@
 TOPDIR := .
 BUILD_SYSTEM := $(TOPDIR)/scripts
 BUILD_GAPPS := $(BUILD_SYSTEM)/build_gapps.sh
+BUILD_MICROG := $(BUILD_SYSTEM)/build_microg.sh
 BUILD_ADDON_V1 := $(BUILD_SYSTEM)/build_addonv1.sh
 BUILD_ADDON_V2 := $(BUILD_SYSTEM)/build_addonv2.sh
 APIS := 25 26 27 28 29 30 31
 PLATFORMS := arm arm64
 LOWEST_API_arm := 25
 LOWEST_API_arm64 := 25
+MICROG := microg
 VARIANTS := assistant bromite calculator calendar chrome contacts deskclock dialer dps gboard gearhead launcher maps markup messages photos soundpicker tts vancedmicrog vancedroot vancednonroot wellbeing
 BUILDDIR := $(TOPDIR)/build
 OUTDIR := $(TOPDIR)/out
@@ -37,6 +39,24 @@ $1:
 	$(api = $(word 2, $(subst -, ,$1)))
 	@if [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] ; then\
 		$(BUILD_GAPPS) $(platform) $(api) 2>&1;\
+	else\
+		echo "Illegal combination of Platform and API";\
+	fi;\
+	exit 0
+endef
+
+define make-microg
+# We first define 'all' so that this is the primary make target
+all:: $1
+
+# It will execute the build script with the platform, api as parameter,
+# meanwhile ensuring the minimum api for the platform that is selected
+$1:
+	$(platform = $(firstword $(subst -, ,$1)))
+	$(api = $(word 2, $(subst -, ,$1)))
+	$(microg = $(word 3, $(subst -, ,$1)))
+	@if [ "$(api)" -ge "$(LOWEST_API_$(platform))" ] ; then\
+		$(BUILD_MICROG) $(platform) $(api) $(microg) 2>&1;\
 	else\
 		echo "Illegal combination of Platform and API";\
 	fi;\
@@ -81,6 +101,12 @@ $(eval $(call make-gapps,$(platform)-$(api)))\
 ))
 
 $(foreach platform,$(PLATFORMS),\
+$(foreach api,$(APIS),\
+$(foreach microg,$(MICROG),\
+$(eval $(call make-microg,$(platform)-$(api)-$(microg)))\
+)))
+
+$(foreach platform,$(PLATFORMS),\
 $(eval $(call make-addons,$(platform)))\
 )
 
@@ -94,6 +120,7 @@ clean:
 	@echo 'Build & Output directory removed'
 
 help:
+	@echo 'Buildable Packages  : BiTGApps, MicroG'
 	@echo 'Buildable Platforms : arm, arm64'
 	@echo 'Buildable APIs      : 25, 26, 27, 28, 29, 30, 31'
 	@echo 'Buildable Variants  : assistant, bromite, calculator,'

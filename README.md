@@ -37,6 +37,7 @@ git clone https://github.com/BiTGApps/arm64-sources BiTGApps/sources/arm64-sourc
 git clone https://github.com/BiTGApps/aosp-sources BiTGApps/sources/aosp-sources
 git clone https://github.com/BiTGApps/setup-sources BiTGApps/sources/setup-sources
 git clone https://github.com/BiTGApps/addon-sources BiTGApps/sources/addon-sources
+git clone https://github.com/BiTGApps/microG-sources BiTGApps/sources/microG-sources
 ```
 
 **To build BiTGApps you'll need the Android build tools installed and set-up in your $PATH. If you use Ubuntu you can check out [@mfonville's Android build tools for Ubuntu](http://mfonville.github.io/android-build-tools/).**
@@ -53,19 +54,28 @@ Get build configuration using:
 make help
 ```
 
-To build BiTGApps/Addons/Patch for all platforms and all Android releases:
+To build BiTGApps/MicroG/Addons for all platforms and all Android releases:
 
 ```shellscript
 make
 ```
 
 To build BiTGApps for a specific Android release on a specific platform, define both the platform and the API
-level of that release, seperated by a dash and optionally add the variant with another dash.
+level of that release, seperated by a dash.
 
 Examples (for building for Android 7.1 on ARM):
 
 ```shellscript
 make arm-25
+```
+
+To build MicroG for a specific Android release on a specific platform, define both the platform and the API
+level of that release, seperated by a dash. Along with this add the microg tag with another dash.
+
+Examples (for building for Android 7.1 on ARM):
+
+```shellscript
+make arm-25-microg
 ```
 
 To build BiTGApps Additional package for a specific platform
