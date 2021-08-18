@@ -298,10 +298,12 @@ makegapps() {
       cp -f $SOURCESv25/$version_25/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv25/$version_25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv25/$version_25/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv25/$version_25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -394,10 +396,12 @@ makegapps() {
       cp -f $SOURCESv25/$version_25/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv25/$version_25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv25/$version_25/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv25/$version_25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -490,10 +494,12 @@ makegapps() {
       cp -f $SOURCESv26/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv26/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv26/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv26/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv26/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv26/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -587,10 +593,12 @@ makegapps() {
       cp -f $SOURCESv27/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv27/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv27/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv27/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv27/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv27/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -684,10 +692,12 @@ makegapps() {
       cp -f $SOURCESv28/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv28/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv28/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv28/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv28/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv28/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -781,10 +791,12 @@ makegapps() {
       cp -f $SOURCESv29/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv29/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv29/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv29/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv29/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv29/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -881,10 +893,12 @@ makegapps() {
       cp -f $SOURCESv30/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv30/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv30/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv30/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv30/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv30/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -981,10 +995,12 @@ makegapps() {
       cp -f $SOURCESv31/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv31/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv31/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv31/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv31/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv31/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -1090,10 +1106,12 @@ makegapps() {
       cp -f $SOURCESv25/$version_25/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv25/$version_25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv25/$version_25/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv25/$version_25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -1186,10 +1204,12 @@ makegapps() {
       cp -f $SOURCESv25/$version_25/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv25/$version_25/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv25/$version_25/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv25/$version_25/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv25/$version_25/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv25/$version_25/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -1282,10 +1302,12 @@ makegapps() {
       cp -f $SOURCESv26/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv26/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv26/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv26/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv26/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv26/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv26/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv26/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -1379,10 +1401,12 @@ makegapps() {
       cp -f $SOURCESv27/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv27/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv27/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv27/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv27/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv27/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv27/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv27/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -1476,10 +1500,12 @@ makegapps() {
       cp -f $SOURCESv28/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv28/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv28/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv28/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv28/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv28/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv28/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv28/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -1573,10 +1599,12 @@ makegapps() {
       cp -f $SOURCESv29/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv29/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv29/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv29/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv29/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv29/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv29/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv29/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -1673,10 +1701,12 @@ makegapps() {
       cp -f $SOURCESv30/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv30/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv30/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv30/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv30/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv30/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv30/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv30/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
@@ -1773,10 +1803,12 @@ makegapps() {
       cp -f $SOURCESv31/priv-app/MicroGGSFProxy.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       cp -f $SOURCESv31/priv-app/Phonesky.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Install AOSP packages
+      cp -f $AOSPSOURCESv31/app/ExtShared.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv31/app/Messaging.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPSYS
       cp -f $AOSPSOURCESv31/etc/Permissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPZIP
       cp -f $AOSPSOURCESv31/priv-app/Contacts.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Dialer.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
+      cp -f $AOSPSOURCESv31/priv-app/ExtServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv31/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Installer components
