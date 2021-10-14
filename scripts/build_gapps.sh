@@ -113,6 +113,7 @@ AIK="Build-Tools/AIK/AIK.tar.xz"
 UPDATEBINARY="BiTGApps/scripts/update-binary.sh"
 UPDATERSCRIPT="BiTGApps/scripts/updater-script.sh"
 INSTALLER="BiTGApps/scripts/installer.sh"
+DUMMYSCRIPT="BiTGApps/scripts/dummy.sh"
 OTASCRIPT="BiTGApps/scripts/bitgapps.sh"
 BACKUPSCRIPT="BiTGApps/scripts/backup.sh"
 RESTORESCRIPT="BiTGApps/scripts/restore.sh"
@@ -203,6 +204,18 @@ makeota() {
   # Only compress in 'xz' format
   tar -cJf "Addon.tar.xz" bitgapps.sh backup.sh restore.sh
   rm -rf bitgapps.sh backup.sh restore.sh
+  # Checkout path
+  cd ../../../..
+}
+
+# TODO: No such volume script aborted
+makedummy() {
+  # Ship non-functional OTA survival script
+  cp -f $DUMMYSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  cd $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  # Only compress in 'xz' format
+  tar -cJf "Addon.tar.xz" dummy.sh
+  rm -rf dummy.sh
   # Checkout path
   cd ../../../..
 }
@@ -344,7 +357,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -438,7 +451,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -532,7 +545,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -626,7 +639,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -720,7 +733,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -812,7 +825,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -907,7 +920,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -1002,7 +1015,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -1106,7 +1119,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -1200,7 +1213,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -1294,7 +1307,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -1388,7 +1401,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -1482,7 +1495,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -1574,7 +1587,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -1669,7 +1682,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
@@ -1764,7 +1777,7 @@ makegapps() {
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop BuildID= BuildID="$BuildID"
       replace_line $BUILDDIR/$ARCH/$RELEASEDIR/g.prop Developer= Developer="$Developer"
       # Add OTA script
-      makeota
+      makedummy
       # Create OTA property file
       makeotaprop
       # Create LICENSE
