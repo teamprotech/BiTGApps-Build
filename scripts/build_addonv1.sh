@@ -198,6 +198,7 @@ makeaddonv1() {
     # Install etc packages
     cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/DPSFirmware.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSFirmwareSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/DPSPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/LauncherPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -207,15 +208,20 @@ makeaddonv1() {
     cp -f $SOURCES_ALL/framework/MapsFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install overlay packages
     cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
+    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlaySc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     cp -f $SOURCES_ALL/overlay/DPSOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     # Install priv-app packages
     cp -f $SOURCES_ALL/priv-app/CarrierServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ALL/priv-app/ContactsGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ARMEABI/priv-app/DialerGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DialerGooglePrebuilt.tar.xz
     cp -f $SOURCES_ARMEABI/priv-app/DPSGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ARMEABI/priv-app/DPSGooglePrebuiltSc_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuiltSc.tar.xz
+    cp -f $SOURCES_ARMEABI/priv-app/DINGooglePrebuiltSc_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DINGooglePrebuiltSc.tar.xz
     cp -f $SOURCES_ARMEABI/priv-app/GearheadGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/GearheadGooglePrebuilt.tar.xz
     cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuiltSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWallet.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWalletSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ARMEABI/priv-app/Velvet_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/Velvet.tar.xz
     cp -f $SOURCES_ALL/priv-app/WellbeingPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     # Install usr packages
@@ -293,6 +299,7 @@ makeaddonv1() {
     # Install etc packages
     cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/DPSFirmware.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSFirmwareSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/DPSPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/LauncherPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
@@ -302,15 +309,20 @@ makeaddonv1() {
     cp -f $SOURCES_ALL/framework/MapsFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install overlay packages
     cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
+    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlaySc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     cp -f $SOURCES_ALL/overlay/DPSOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     # Install priv-app packages
     cp -f $SOURCES_ALL/priv-app/CarrierServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ALL/priv-app/ContactsGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_AARCH64/priv-app/DialerGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DialerGooglePrebuilt.tar.xz
     cp -f $SOURCES_AARCH64/priv-app/DPSGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuilt.tar.xz
+    cp -f $SOURCES_AARCH64/priv-app/DPSGooglePrebuiltSc_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuiltSc.tar.xz
+    cp -f $SOURCES_AARCH64/priv-app/DINGooglePrebuiltSc_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DINGooglePrebuiltSc.tar.xz
     cp -f $SOURCES_AARCH64/priv-app/GearheadGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/GearheadGooglePrebuilt.tar.xz
     cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuiltSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWallet.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWalletSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_AARCH64/priv-app/Velvet_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/Velvet.tar.xz
     cp -f $SOURCES_ALL/priv-app/WellbeingPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     # Install usr packages

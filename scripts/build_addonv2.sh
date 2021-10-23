@@ -582,12 +582,17 @@ makeaddonv2() {
     mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     # Install etc packages
     cp -f $SOURCES_ALL/etc/DPSFirmware.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSFirmwareSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     cp -f $SOURCES_ALL/etc/DPSPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install overlay package
     cp -f $SOURCES_ALL/overlay/DPSOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     # Install priv-app packages
     cp -f $SOURCES_ARMEABI/priv-app/DPSGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ARMEABI/priv-app/DPSGooglePrebuiltSc_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ARMEABI/priv-app/DINGooglePrebuiltSc_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_AARCH64/priv-app/DPSGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_AARCH64/priv-app/DPSGooglePrebuiltSc_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_AARCH64/priv-app/DINGooglePrebuiltSc_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     # Installer components
     cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
     cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
@@ -734,9 +739,12 @@ makeaddonv2() {
     cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
     # Install overlay package
     cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
+    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlaySc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
     # Install priv-app packages
     cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuiltSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWallet.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWalletSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
     # Installer components
     cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
     cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
