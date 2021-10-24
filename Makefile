@@ -128,5 +128,6 @@ help:
 	@echo '                      deskclock, dialer, dps,'
 	@echo '                      gboard, gearhead, launcher,'
 	@echo '                      maps, markup, messages, photos,'
-	@echo '                      soundpicker, tts, vanced, wellbeing'
+	@echo '                      soundpicker, tts, vancedmicrog,'
+	@echo '                      vancedroot, vancednonroot, wellbeing'
 	@echo ''

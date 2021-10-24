@@ -326,8 +326,8 @@ makegapps() {
       cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Install SetupWizard packages
-      cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/priv-app/$version_25/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/priv-app/$version_25/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
@@ -420,8 +420,8 @@ makegapps() {
       cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Install SetupWizard packages
-      cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/priv-app/$version_25/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/priv-app/$version_25/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
@@ -1088,8 +1088,8 @@ makegapps() {
       cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Install SetupWizard packages
-      cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/priv-app/$version_25/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/priv-app/$version_25/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
@@ -1182,8 +1182,8 @@ makegapps() {
       cp -f $AOSPSOURCESv25/$version_25/priv-app/ManagedProvisioning.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       cp -f $AOSPSOURCESv25/$version_25/priv-app/Provision.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$AOSPCORE
       # Install SetupWizard packages
-      cp -f $SETUPSOURCESv25/$version_25/priv-app/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-      cp -f $SETUPSOURCESv25/$version_25/priv-app/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/priv-app/$version_25/GoogleBackupTransport.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+      cp -f $SETUPSOURCESv25/priv-app/$version_25/SetupWizardPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
       # Installer components
       cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
       cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script

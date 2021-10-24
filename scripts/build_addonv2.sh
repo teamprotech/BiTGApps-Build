@@ -35,6 +35,12 @@ if { [ ! -n "$COMMONADDONRELEASE" ] ||
   exit 1
 fi
 
+# Check availability of Additional sources
+if [ ! -d "sources/addon-sources" ]; then
+  echo "! Additional sources not found. Aborting..."
+  exit 1
+fi
+
 # Set defaults
 VARIANT="$1"
 ARCH="common"
@@ -150,6 +156,24 @@ makevanced() {
   cd ../../../..
 }
 
+# Add stock YouTube library
+makeyoutubestock() {
+  # Set APP
+  SOURCES_APP="sources/addon-sources/all/app"
+  # Decompress stock YouTube
+  tar -xf $SOURCES_APP/YouTubeStock.tar.xz -C $SOURCES_APP
+  # Remove stock YouTube library
+  rm -rf $SOURCES_APP/YouTube/lib
+  # Add stock YouTube library
+  tar -xf $SOURCES_APP/YouTubeStockLib.tar.xz -C $SOURCES_APP/YouTube
+  # Remove without library stock YouTube
+  rm -rf $SOURCES_APP/YouTubeStock.tar.xz
+  # Only compress in 'xz' format
+  cd $SOURCES_APP; tar -cJf "YouTubeStock.tar.xz" YouTube; cd ../../../..
+  # Remove decompress stock YouTube
+  rm -rf $SOURCES_APP/YouTube
+}
+
 # Set license for pre-built package
 makelicense() {
 echo "Sources used for distributing pre-built packages of BiTGApps:
@@ -186,6 +210,8 @@ makeaddonv2() {
   test -d $OUTDIR/$ARCH || mkdir $OUTDIR/$ARCH
   # Create ENV directory
   test -d $OUTDIR/ENV || mkdir $OUTDIR/ENV
+  # Repack with stock YouTube library
+  makeyoutubestock
   # Install variable; Do not modify
   ZIPTYPE='"addon"'
   NONCONFIG='"sep"'
