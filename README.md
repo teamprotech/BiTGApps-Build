@@ -66,7 +66,7 @@ level of that release, seperated by a dash.
 Examples (for building for Android 7.1 on ARM):
 
 ```shellscript
-make arm-25
+make arm-25-gapps
 ```
 
 To build MicroG for a specific Android release on a specific platform, define both the platform and the API
@@ -83,7 +83,7 @@ To build BiTGApps Additional package for a specific platform
 Examples (for building for Android platform ARM):
 
 ```shellscript
-make arm
+make arm-addon
 ```
 
 To build specific BiTGApps Additional package variant for both platforms

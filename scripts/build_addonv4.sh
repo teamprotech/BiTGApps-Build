@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 ##############################################################
-# File name       : build_addonv2.sh
+# File name       : build_addonv4.sh
 #
 # Description     : BiTGApps build script
 #
@@ -43,7 +43,7 @@ fi
 
 # Set defaults
 VARIANT="$1"
-ARCH="common"
+ARCH="arm64"
 COMMONADDONRELEASE="$COMMONADDONRELEASE"
 
 # Build defaults
@@ -146,37 +146,6 @@ TARGET_WELLBEING_GOOGLE="false"
 TARGET_CONFIG_VERSION=""' >"$BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh"
 }
 
-# Compress and add YouTube Vanced boot scripts
-makevanced() {
-  cp -f $VANCEDINIT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-  cp -f $VANCEDSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-  cp -f $VANCEDROOT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-  cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-  # Only compress in 'xz' format
-  tar -cJf "Vanced.tar.xz" init.vanced.rc vanced.sh vanced-root.sh
-  rm -rf init.vanced.rc vanced.sh vanced-root.sh
-  # Checkout path
-  cd ../../../../..
-}
-
-# Add stock YouTube library
-makeyoutubestock() {
-  # Set APP
-  SOURCES_APP="sources/addon-sources/all/app"
-  # Decompress stock YouTube
-  tar -xf $SOURCES_APP/YouTubeStock.tar.xz -C $SOURCES_APP
-  # Remove stock YouTube library
-  rm -rf $SOURCES_APP/YouTube/lib
-  # Add stock YouTube library
-  tar -xf $SOURCES_APP/YouTubeStockLib.tar.xz -C $SOURCES_APP/YouTube
-  # Remove without library stock YouTube
-  rm -rf $SOURCES_APP/YouTubeStock.tar.xz
-  # Only compress in 'xz' format
-  cd $SOURCES_APP; tar -cJf "YouTubeStock.tar.xz" YouTube; cd ../../../..
-  # Remove decompress stock YouTube
-  rm -rf $SOURCES_APP/YouTube
-}
-
 # Set license for pre-built package
 makelicense() {
 echo "Sources used for distributing pre-built packages of BiTGApps:
@@ -204,7 +173,7 @@ to the GPLv3. The applicable license can be found at https://github.com/BiTGApps
 }
 
 # Main
-makeaddonv2() {
+makeaddonv4() {
   # Create build directory
   test -d $BUILDDIR || mkdir $BUILDDIR
   test -d $BUILDDIR/$TYPE || mkdir $BUILDDIR/$TYPE
@@ -215,279 +184,29 @@ makeaddonv2() {
   test -d $OUTDIR/$TYPE/$ARCH || mkdir $OUTDIR/$TYPE/$ARCH
   # Create ENV directory
   test -d $OUTDIR/ENV || mkdir $OUTDIR/ENV
-  # Repack with stock YouTube library
-  makeyoutubestock
   # Install variable; Do not modify
   ZIPTYPE='"addon"'
   NONCONFIG='"sep"'
-  ARMEABI='"32"'
-  AARCH64='"64"'
-  # Calculator
-  if [ "$VARIANT" == "calculator" ]; then
+  ARMEABI='"false"'
+  AARCH64='"true"'
+  # Assistant
+  if [ "$VARIANT" == "assistant" ]; then
     # Set Addon package sources
     SOURCES_ALL="sources/addon-sources/all"
     SOURCES_ARMEABI="sources/addon-sources/arm"
     SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps Calculator Addon package"
+    echo "Generating BiTGApps Assistant Addon package for $ARCH"
     # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-calculator-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-calculator-${COMMONADDONRELEASE}"
-    # Create package components
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Install app package
-    cp -f $SOURCES_ALL/app/CalculatorGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Installer components
-    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
-    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
-    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    # Create utility script
-    makeutilityscript
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CALCULATOR_GOOGLE="" TARGET_CALCULATOR_GOOGLE="$TARGET_CALCULATOR_GOOGLE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
-    # Create LICENSE
-    makelicense
-    # Create ZIP
-    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    zip -qr9 ${RELEASEDIR}.zip *
-    cd ../../../..
-    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-    # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-    # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_CALCULATOR" >> $OUTDIR/ENV/env_variant.sh
-    # List signed ZIP
-    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
-    # Wipe unsigned ZIP
-    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-  fi
-  # Calendar
-  if [ "$VARIANT" == "calendar" ]; then
-    # Set Addon package sources
-    SOURCES_ALL="sources/addon-sources/all"
-    SOURCES_ARMEABI="sources/addon-sources/arm"
-    SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps Calendar Addon package"
-    # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-calendar-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-calendar-${COMMONADDONRELEASE}"
-    # Create package components
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Install app package
-    cp -f $SOURCES_ALL/app/CalendarGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Installer components
-    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
-    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
-    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    # Create utility script
-    makeutilityscript
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CALENDAR_GOOGLE="" TARGET_CALENDAR_GOOGLE="$TARGET_CALENDAR_GOOGLE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
-    # Create LICENSE
-    makelicense
-    # Create ZIP
-    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    zip -qr9 ${RELEASEDIR}.zip *
-    cd ../../../..
-    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-    # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-    # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_CALENDAR" >> $OUTDIR/ENV/env_variant.sh
-    # List signed ZIP
-    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
-    # Wipe unsigned ZIP
-    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-  fi
-  # Chrome
-  if [ "$VARIANT" == "chrome" ]; then
-    # Set Addon package sources
-    SOURCES_ALL="sources/addon-sources/all"
-    SOURCES_ARMEABI="sources/addon-sources/arm"
-    SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps Chrome Addon package"
-    # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-chrome-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-chrome-${COMMONADDONRELEASE}"
-    # Create package components
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Install app package
-    cp -f $SOURCES_ALL/app/ChromeGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Installer components
-    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
-    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
-    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    # Create utility script
-    makeutilityscript
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CHROME_GOOGLE="" TARGET_CHROME_GOOGLE="$TARGET_CHROME_GOOGLE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
-    # Create LICENSE
-    makelicense
-    # Create ZIP
-    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    zip -qr9 ${RELEASEDIR}.zip *
-    cd ../../../..
-    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-    # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-    # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_CHROME" >> $OUTDIR/ENV/env_variant.sh
-    # List signed ZIP
-    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
-    # Wipe unsigned ZIP
-    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-  fi
-  # Contacts
-  if [ "$VARIANT" == "contacts" ]; then
-    # Set Addon package sources
-    SOURCES_ALL="sources/addon-sources/all"
-    SOURCES_ARMEABI="sources/addon-sources/arm"
-    SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps Contacts Addon package"
-    # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-contacts-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-contacts-${COMMONADDONRELEASE}"
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-assistant-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-assistant-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
-    # Install priv-app package
-    cp -f $SOURCES_ALL/priv-app/ContactsGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
-    # Installer components
-    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
-    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
-    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    # Create utility script
-    makeutilityscript
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONTACTS_GOOGLE="" TARGET_CONTACTS_GOOGLE="$TARGET_CONTACTS_GOOGLE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
-    # Create LICENSE
-    makelicense
-    # Create ZIP
-    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    zip -qr9 ${RELEASEDIR}.zip *
-    cd ../../../..
-    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-    # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-    # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_CONTACTS" >> $OUTDIR/ENV/env_variant.sh
-    # List signed ZIP
-    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
-    # Wipe unsigned ZIP
-    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-  fi
-  # DeskClock
-  if [ "$VARIANT" == "deskclock" ]; then
-    # Set Addon package sources
-    SOURCES_ALL="sources/addon-sources/all"
-    SOURCES_ARMEABI="sources/addon-sources/arm"
-    SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps DeskClock Addon package"
-    # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-deskclock-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-deskclock-${COMMONADDONRELEASE}"
-    # Create package components
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Install app package
-    cp -f $SOURCES_ALL/app/DeskClockGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Installer components
-    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
-    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
-    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    # Create utility script
-    makeutilityscript
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DESKCLOCK_GOOGLE="" TARGET_DESKCLOCK_GOOGLE="$TARGET_DESKCLOCK_GOOGLE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
-    # Create LICENSE
-    makelicense
-    # Create ZIP
-    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    zip -qr9 ${RELEASEDIR}.zip *
-    cd ../../../..
-    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-    # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-    # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_DESKCLOCK" >> $OUTDIR/ENV/env_variant.sh
-    # List signed ZIP
-    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
-    # Wipe unsigned ZIP
-    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-  fi
-  # Launcher
-  if [ "$VARIANT" == "launcher" ]; then
-    # Set Addon package sources
-    SOURCES_ALL="sources/addon-sources/all"
-    SOURCES_ARMEABI="sources/addon-sources/arm"
-    SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps Launcher Addon package"
-    # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-launcher-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-launcher-${COMMONADDONRELEASE}"
-    # Create package components
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
-    # Install etc packages
-    cp -f $SOURCES_ALL/etc/LauncherPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    # Install overlay package
-    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
-    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlaySc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
     # Install priv-app packages
-    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuiltSc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWallet.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWalletSc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_AARCH64/priv-app/Velvet_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    # Install usr package
+    cp -f $SOURCES_ALL/usr/usr_srec.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     # Installer components
     cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
     cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
@@ -502,7 +221,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_LAUNCHER_GOOGLE="" TARGET_LAUNCHER_GOOGLE="$TARGET_LAUNCHER_GOOGLE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_ASSISTANT_GOOGLE="" TARGET_ASSISTANT_GOOGLE="$TARGET_ASSISTANT_GOOGLE"
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
@@ -514,79 +233,28 @@ makeaddonv2() {
     # Sign ZIP
     java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
     # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_LAUNCHER" >> $OUTDIR/ENV/env_variant.sh
+    [ "$(grep -w -o TARGET_VARIANT_ASSISTANT $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_ASSISTANT" >> $OUTDIR/ENV/env_variant.sh
     # List signed ZIP
     ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
   fi
-  # Messages
-  if [ "$VARIANT" == "messages" ]; then
+  # Bromite
+  if [ "$VARIANT" == "bromite" ]; then
     # Set Addon package sources
     SOURCES_ALL="sources/addon-sources/all"
     SOURCES_ARMEABI="sources/addon-sources/arm"
     SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps Messages Addon package"
+    echo "Generating BiTGApps Bromite Addon package for $ARCH"
     # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-messages-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-messages-${COMMONADDONRELEASE}"
-    # Create package components
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Install app package
-    cp -f $SOURCES_ALL/app/MessagesGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Install priv-app package
-    cp -f $SOURCES_ALL/priv-app/CarrierServices.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
-    # Installer components
-    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
-    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
-    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    # Create utility script
-    makeutilityscript
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_MESSAGES_GOOGLE="" TARGET_MESSAGES_GOOGLE="$TARGET_MESSAGES_GOOGLE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
-    # Create LICENSE
-    makelicense
-    # Create ZIP
-    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    zip -qr9 ${RELEASEDIR}.zip *
-    cd ../../../..
-    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-    # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-    # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_MESSAGES" >> $OUTDIR/ENV/env_variant.sh
-    # List signed ZIP
-    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
-    # Wipe unsigned ZIP
-    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-  fi
-  # SoundPicker
-  if [ "$VARIANT" == "soundpicker" ]; then
-    # Set Addon package sources
-    SOURCES_ALL="sources/addon-sources/all"
-    SOURCES_ARMEABI="sources/addon-sources/arm"
-    SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps SoundPicker Addon package"
-    # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-soundpicker-${COMMONADDONRELEASE}"
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-bromite-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-bromite-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
     # Install app package
-    cp -f $SOURCES_ALL/app/SoundPickerPrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_AARCH64/app/BromitePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
     # Installer components
     cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
     cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
@@ -601,7 +269,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_SOUNDPICKER_GOOGLE="" TARGET_SOUNDPICKER_GOOGLE="$TARGET_SOUNDPICKER_GOOGLE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_BROMITE_GOOGLE="" TARGET_BROMITE_GOOGLE="$TARGET_BROMITE_GOOGLE"
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
@@ -613,131 +281,32 @@ makeaddonv2() {
     # Sign ZIP
     java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
     # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_SOUNDPICKER" >> $OUTDIR/ENV/env_variant.sh
+    [ "$(grep -w -o TARGET_VARIANT_BROMITE $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_BROMITE" >> $OUTDIR/ENV/env_variant.sh
     # List signed ZIP
     ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
     # Wipe unsigned ZIP
     rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
   fi
-  # YouTube Vanced Root Version
-  if [ "$VARIANT" == "vancedroot" ]; then
+  # Dialer
+  if [ "$VARIANT" == "dialer" ]; then
     # Set Addon package sources
     SOURCES_ALL="sources/addon-sources/all"
     SOURCES_ARMEABI="sources/addon-sources/arm"
     SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps YouTube Vanced Root Addon package"
+    echo "Generating BiTGApps Dialer Addon package for $ARCH"
     # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-vanced-root-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-vanced-root-${COMMONADDONRELEASE}"
-    # Create package components
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Install app packages
-    cp -f $SOURCES_ALL/app/YouTubeStock.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/YouTubeVanced.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Installer components
-    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
-    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
-    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    # Create utility script
-    makeutilityscript
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VANCED_ROOT="" TARGET_VANCED_ROOT="$TARGET_VANCED_ROOT"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
-    # Add YouTube Vanced boot scripts
-    makevanced
-    # Create LICENSE
-    makelicense
-    # Create ZIP
-    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    zip -qr9 ${RELEASEDIR}.zip *
-    cd ../../../..
-    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-    # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-    # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_VANCED_ROOT" >> $OUTDIR/ENV/env_variant.sh
-    # List signed ZIP
-    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
-    # Wipe unsigned ZIP
-    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-  fi
-  # YouTube Vanced Non-Root Version
-  if [ "$VARIANT" == "vancednonroot" ]; then
-    # Set Addon package sources
-    SOURCES_ALL="sources/addon-sources/all"
-    SOURCES_ARMEABI="sources/addon-sources/arm"
-    SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps YouTube Vanced Non-Root Addon package"
-    # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-vanced-nonroot-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-vanced-nonroot-${COMMONADDONRELEASE}"
-    # Create package components
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Install app packages
-    cp -f $SOURCES_ALL/app/YouTubeStock.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/YouTubeVanced.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
-    # Installer components
-    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
-    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
-    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
-    # Create utility script
-    makeutilityscript
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VANCED_NONROOT="" TARGET_VANCED_NONROOT="$TARGET_VANCED_NONROOT"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
-    # Add YouTube Vanced boot scripts
-    makevanced
-    # Create LICENSE
-    makelicense
-    # Create ZIP
-    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
-    zip -qr9 ${RELEASEDIR}.zip *
-    cd ../../../..
-    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-    # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
-    # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_VANCED_NONROOT" >> $OUTDIR/ENV/env_variant.sh
-    # List signed ZIP
-    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
-    # Wipe unsigned ZIP
-    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
-  fi
-  # Wellbeing
-  if [ "$VARIANT" == "wellbeing" ]; then
-    # Set Addon package sources
-    SOURCES_ALL="sources/addon-sources/all"
-    SOURCES_ARMEABI="sources/addon-sources/arm"
-    SOURCES_AARCH64="sources/addon-sources/arm64"
-    echo "Generating BiTGApps Wellbeing Addon package"
-    # Create release directory
-    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}"
-    RELEASEDIR="BiTGApps-addon-wellbeing-${COMMONADDONRELEASE}"
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-dialer-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-dialer-${COMMONADDONRELEASE}"
     # Create package components
     mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
     mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
-    # Install priv-app package
-    cp -f $SOURCES_ALL/priv-app/WellbeingPrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    # Install etc package
+    cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    # Install framework package
+    cp -f $SOURCES_ALL/framework/DialerFramework.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    # Install priv-app packages
+    cp -f $SOURCES_AARCH64/priv-app/DialerGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
     # Installer components
     cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
     cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
@@ -752,7 +321,7 @@ makeaddonv2() {
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_WELLBEING_GOOGLE="" TARGET_WELLBEING_GOOGLE="$TARGET_WELLBEING_GOOGLE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIALER_GOOGLE="" TARGET_DIALER_GOOGLE="$TARGET_DIALER_GOOGLE"
     replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Create LICENSE
     makelicense
@@ -764,7 +333,408 @@ makeaddonv2() {
     # Sign ZIP
     java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
     # Set build VARIANT in global environment
-    echo "TARGET_VARIANT_WELLBEING" >> $OUTDIR/ENV/env_variant.sh
+    [ "$(grep -w -o TARGET_VARIANT_DIALER $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_DIALER" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+  fi
+  # DPS
+  if [ "$VARIANT" == "dps" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps DPS Addon package for $ARCH"
+    # Create release directory
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-dps-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-dps-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    # Install etc packages
+    cp -f $SOURCES_ALL/etc/DPSFirmware.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSFirmwareSc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    # Install overlay package
+    cp -f $SOURCES_ALL/overlay/DPSOverlay.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
+    # Install priv-app packages
+    cp -f $SOURCES_AARCH64/priv-app/DPSGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_AARCH64/priv-app/DPSGooglePrebuiltSc_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_AARCH64/priv-app/DINGooglePrebuiltSc_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DPS_GOOGLE="" TARGET_DPS_GOOGLE="$TARGET_DPS_GOOGLE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../../..
+    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    [ "$(grep -w -o TARGET_VARIANT_DPS $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_DPS" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+  fi
+  # Gboard
+  if [ "$VARIANT" == "gboard" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps Gboard Addon package for $ARCH"
+    # Create release directory
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-gboard-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-gboard-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Install app packages
+    cp -f $SOURCES_AARCH64/app/GboardGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Install usr package
+    cp -f $SOURCES_ALL/usr/usr_share.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GBOARD_GOOGLE="" TARGET_GBOARD_GOOGLE="$TARGET_GBOARD_GOOGLE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../../..
+    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    [ "$(grep -w -o TARGET_VARIANT_GBOARD $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_GBOARD" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+  fi
+  # Gearhead
+  if [ "$VARIANT" == "gearhead" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps Gearhead Addon package for $ARCH"
+    # Create release directory
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-gearhead-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-gearhead-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    # Install priv-app packages
+    cp -f $SOURCES_AARCH64/priv-app/GearheadGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GEARHEAD_GOOGLE="" TARGET_GEARHEAD_GOOGLE="$TARGET_GEARHEAD_GOOGLE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../../..
+    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    [ "$(grep -w -o TARGET_VARIANT_GEARHEAD $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_GEARHEAD" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+  fi
+  # Maps
+  if [ "$VARIANT" == "maps" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps Maps Addon package for $ARCH"
+    # Create release directory
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-maps-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-maps-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Install etc package
+    cp -f $SOURCES_ALL/etc/MapsPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    # Install framework package
+    cp -f $SOURCES_ALL/framework/MapsFramework.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    # Install app packages
+    cp -f $SOURCES_AARCH64/app/MapsGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_MAPS_GOOGLE="" TARGET_MAPS_GOOGLE="$TARGET_MAPS_GOOGLE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../../..
+    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    [ "$(grep -w -o TARGET_VARIANT_MAPS $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_MAPS" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+  fi
+  # Markup
+  if [ "$VARIANT" == "markup" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps Markup Addon package for $ARCH"
+    # Create release directory
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-markup-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-markup-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Install app packages
+    cp -f $SOURCES_AARCH64/app/MarkupGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_MARKUP_GOOGLE="" TARGET_MARKUP_GOOGLE="$TARGET_MARKUP_GOOGLE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../../..
+    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    [ "$(grep -w -o TARGET_VARIANT_MARKUP $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_MARKUP" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+  fi
+  # Photos
+  if [ "$VARIANT" == "photos" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps Photos Addon package for $ARCH"
+    # Create release directory
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-photos-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-photos-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Install app packages
+    cp -f $SOURCES_AARCH64/app/PhotosGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_PHOTOS_GOOGLE="" TARGET_PHOTOS_GOOGLE="$TARGET_PHOTOS_GOOGLE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../../..
+    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    [ "$(grep -w -o TARGET_VARIANT_PHOTOS $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_PHOTOS" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+  fi
+  # TTS
+  if [ "$VARIANT" == "tts" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps TTS Addon package for $ARCH"
+    # Create release directory
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-tts-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-tts-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Install app packages
+    cp -f $SOURCES_AARCH64/app/GoogleTTSPrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Install usr package
+    cp -f $SOURCES_ALL/usr/usr_srec.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_TTS_GOOGLE="" TARGET_TTS_GOOGLE="$TARGET_TTS_GOOGLE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../../..
+    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    [ "$(grep -w -o TARGET_VARIANT_TTS $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_TTS" >> $OUTDIR/ENV/env_variant.sh
+    # List signed ZIP
+    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
+    # Wipe unsigned ZIP
+    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+  fi
+  # YouTube Vanced MicroG Version
+  if [ "$VARIANT" == "vancedmicrog" ]; then
+    # Set Addon package sources
+    SOURCES_ALL="sources/addon-sources/all"
+    SOURCES_ARMEABI="sources/addon-sources/arm"
+    SOURCES_AARCH64="sources/addon-sources/arm64"
+    echo "Generating BiTGApps YouTube Vanced MicroG Addon package for $ARCH"
+    # Create release directory
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-vanced-microg-${COMMONADDONRELEASE}"
+    RELEASEDIR="BiTGApps-addon-vanced-microg-${COMMONADDONRELEASE}"
+    # Create package components
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Install app packages
+    cp -f $SOURCES_ALL/app/MicroGGMSCore.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_AARCH64/app/YouTube_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    # Installer components
+    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    # Create utility script
+    makeutilityscript
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$NONCONFIG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_VANCED_MICROG="" TARGET_VANCED_MICROG="$TARGET_VANCED_MICROG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    # Create LICENSE
+    makelicense
+    # Create ZIP
+    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    zip -qr9 ${RELEASEDIR}.zip *
+    cd ../../../..
+    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
+    # Sign ZIP
+    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    # Set build VARIANT in global environment
+    [ "$(grep -w -o TARGET_VARIANT_VANCED_MICROG $OUTDIR/ENV/env_variant.sh 2>/dev/null)" ] || echo "TARGET_VARIANT_VANCED_MICROG" >> $OUTDIR/ENV/env_variant.sh
     # List signed ZIP
     ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
     # Wipe unsigned ZIP
@@ -773,4 +743,4 @@ makeaddonv2() {
 }
 
 # Build
-makeaddonv2
+makeaddonv4

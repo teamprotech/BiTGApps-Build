@@ -48,6 +48,7 @@ COMMONADDONRELEASE="$COMMONADDONRELEASE"
 # Build defaults
 BUILDDIR="build"
 OUTDIR="out"
+TYPE="Addon"
 
 # Signing tool
 ZIPSIGNER="BiTGApps/tools/zipsigner-resources/zipsigner.jar"
@@ -111,20 +112,20 @@ TARGET_DIRTY_INSTALL=""
 ADDON=""
 ARMEABI=""
 AARCH64=""
-TARGET_CONFIG_VERSION=""' >"$BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh"
+TARGET_CONFIG_VERSION=""' >"$BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh"
 }
 
 # Compress and add YouTube Vanced boot scripts
 makevanced() {
-  cp -f $VANCEDINIT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-  cp -f $VANCEDSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-  cp -f $VANCEDROOT $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-  cd $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+  cp -f $VANCEDINIT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+  cp -f $VANCEDSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+  cp -f $VANCEDROOT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+  cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
   # Only compress in 'xz' format
   tar -cJf "Vanced.tar.xz" init.vanced.rc vanced.sh vanced-root.sh
   rm -rf init.vanced.rc vanced.sh vanced-root.sh
   # Checkout path
-  cd ../../../..
+  cd ../../../../..
 }
 
 # Add stock YouTube library
@@ -166,17 +167,19 @@ are subject of Google's terms and conditions, these can be found at http://www.g
 BusyBox is subject to the GPLv2, its license can be found at https://www.busybox.net/license.html
 
 Any other intellectual property of this build, like e.g. the file and folder structure and the installation scripts are part of The BiTGApps Project and are subject
-to the GPLv3. The applicable license can be found at https://github.com/BiTGApps/BiTGApps/blob/master/LICENSE" >"$BUILDDIR/$ARCH/$RELEASEDIR/LICENSE"
+to the GPLv3. The applicable license can be found at https://github.com/BiTGApps/BiTGApps/blob/master/LICENSE" >"$BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/LICENSE"
 }
 
 # Main
 makeaddonv1() {
   # Create build directory
   test -d $BUILDDIR || mkdir $BUILDDIR
-  test -d $BUILDDIR/$ARCH || mkdir $BUILDDIR/$ARCH
+  test -d $BUILDDIR/$TYPE || mkdir $BUILDDIR/$TYPE
+  test -d $BUILDDIR/$TYPE/$ARCH || mkdir $BUILDDIR/$TYPE/$ARCH
   # Create out directory
   test -d $OUTDIR || mkdir $OUTDIR
-  test -d $OUTDIR/$ARCH || mkdir $OUTDIR/$ARCH
+  test -d $OUTDIR/$TYPE || mkdir $OUTDIR/$TYPE
+  test -d $OUTDIR/$TYPE/$ARCH || mkdir $OUTDIR/$TYPE/$ARCH
   # Create ENV directory
   test -d $OUTDIR/ENV || mkdir $OUTDIR/ENV
   # Repack with stock YouTube library
@@ -194,96 +197,96 @@ makeaddonv1() {
     SOURCES_ARMEABI="sources/addon-sources/$ARCH"
     echo "Generating BiTGApps Addon package for $ARCH architecture"
     # Create release directory
-    mkdir "$BUILDDIR/$ARCH/BiTGApps-addon-${ARCH}-${COMMONADDONRELEASE}"
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-${ARCH}-${COMMONADDONRELEASE}"
     RELEASEDIR="BiTGApps-addon-${ARCH}-${COMMONADDONRELEASE}"
     # Create package components
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
     # Install app packages
-    cp -f $SOURCES_ARMEABI/app/BromitePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/BromitePrebuilt.tar.xz
-    cp -f $SOURCES_ALL/app/CalculatorGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/CalendarGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/ChromeGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/DeskClockGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ARMEABI/app/GboardGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/GboardGooglePrebuilt.tar.xz
-    cp -f $SOURCES_ARMEABI/app/GoogleTTSPrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/GoogleTTSPrebuilt.tar.xz
-    cp -f $SOURCES_ARMEABI/app/MapsGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/MapsGooglePrebuilt.tar.xz
-    cp -f $SOURCES_ARMEABI/app/MarkupGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/MarkupGooglePrebuilt.tar.xz
-    cp -f $SOURCES_ALL/app/MessagesGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/MicroGGMSCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ARMEABI/app/PhotosGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/PhotosGooglePrebuilt.tar.xz
-    cp -f $SOURCES_ALL/app/SoundPickerPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/YouTubeStock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/YouTubeVanced.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ARMEABI/app/YouTube_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/YouTube.tar.xz
+    cp -f $SOURCES_ARMEABI/app/BromitePrebuilt_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/BromitePrebuilt.tar.xz
+    cp -f $SOURCES_ALL/app/CalculatorGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/CalendarGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/ChromeGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/DeskClockGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ARMEABI/app/GboardGooglePrebuilt_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/GboardGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ARMEABI/app/GoogleTTSPrebuilt_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/GoogleTTSPrebuilt.tar.xz
+    cp -f $SOURCES_ARMEABI/app/MapsGooglePrebuilt_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/MapsGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ARMEABI/app/MarkupGooglePrebuilt_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/MarkupGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ALL/app/MessagesGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/MicroGGMSCore.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ARMEABI/app/PhotosGooglePrebuilt_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/PhotosGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ALL/app/SoundPickerPrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/YouTubeStock.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/YouTubeVanced.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ARMEABI/app/YouTube_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/YouTube.tar.xz
     # Install etc packages
-    cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/DPSFirmware.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/DPSFirmwareSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/DPSPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/LauncherPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/MapsPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSFirmware.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSFirmwareSc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/LauncherPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/MapsPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     # Install framework packages
-    cp -f $SOURCES_ALL/framework/DialerFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/framework/MapsFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/framework/DialerFramework.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/framework/MapsFramework.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     # Install overlay packages
-    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlaySc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-    cp -f $SOURCES_ALL/overlay/DPSOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
+    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
+    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlaySc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
+    cp -f $SOURCES_ALL/overlay/DPSOverlay.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
     # Install priv-app packages
-    cp -f $SOURCES_ALL/priv-app/CarrierServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/ContactsGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ARMEABI/priv-app/DialerGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DialerGooglePrebuilt.tar.xz
-    cp -f $SOURCES_ARMEABI/priv-app/DPSGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuilt.tar.xz
-    cp -f $SOURCES_ARMEABI/priv-app/DPSGooglePrebuiltSc_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuiltSc.tar.xz
-    cp -f $SOURCES_ARMEABI/priv-app/DINGooglePrebuiltSc_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DINGooglePrebuiltSc.tar.xz
-    cp -f $SOURCES_ARMEABI/priv-app/GearheadGooglePrebuilt_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/GearheadGooglePrebuilt.tar.xz
-    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuiltSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWallet.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWalletSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ARMEABI/priv-app/Velvet_arm.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/Velvet.tar.xz
-    cp -f $SOURCES_ALL/priv-app/WellbeingPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/CarrierServices.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/ContactsGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ARMEABI/priv-app/DialerGooglePrebuilt_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/DialerGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ARMEABI/priv-app/DPSGooglePrebuilt_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ARMEABI/priv-app/DPSGooglePrebuiltSc_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuiltSc.tar.xz
+    cp -f $SOURCES_ARMEABI/priv-app/DINGooglePrebuiltSc_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/DINGooglePrebuiltSc.tar.xz
+    cp -f $SOURCES_ARMEABI/priv-app/GearheadGooglePrebuilt_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/GearheadGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuiltSc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWallet.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWalletSc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ARMEABI/priv-app/Velvet_arm.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/Velvet.tar.xz
+    cp -f $SOURCES_ALL/priv-app/WellbeingPrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
     # Install usr packages
-    cp -f $SOURCES_ALL/usr/usr_share.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/usr/usr_srec.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/usr/usr_share.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/usr/usr_srec.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     # Installer components
-    cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
-    cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
-    cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-    cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-    cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     # Create utility script
     makeutilityscript
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$CONFIG"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$CONFIG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Add YouTube Vanced boot scripts
     makevanced
     # Create LICENSE
     makelicense
     # Create ZIP
-    cd $BUILDDIR/$ARCH/$RELEASEDIR
+    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
     zip -qr9 ${RELEASEDIR}.zip *
-    cd ../../..
-    mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
+    cd ../../../..
+    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
     # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
     # Set build PLATFORM in global environment
     echo "TARGET_PLATFORM_ARM" >> $OUTDIR/ENV/env_platform.sh
     # List signed ZIP
-    ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
     # Wipe unsigned ZIP
-    rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
   fi
   # Platform ARM64
   if [ "$ARCH" == "arm64" ]; then
@@ -295,96 +298,96 @@ makeaddonv1() {
     SOURCES_AARCH64="sources/addon-sources/$ARCH"
     echo "Generating BiTGApps Addon package for $ARCH architecture"
     # Create release directory
-    mkdir "$BUILDDIR/$ARCH/BiTGApps-addon-${ARCH}-${COMMONADDONRELEASE}"
+    mkdir "$BUILDDIR/$TYPE/$ARCH/BiTGApps-addon-${ARCH}-${COMMONADDONRELEASE}"
     RELEASEDIR="BiTGApps-addon-${ARCH}-${COMMONADDONRELEASE}"
     # Create package components
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    mkdir -p $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    mkdir -p $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
     # Install app packages
-    cp -f $SOURCES_AARCH64/app/BromitePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/BromitePrebuilt.tar.xz
-    cp -f $SOURCES_ALL/app/CalculatorGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/CalendarGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/ChromeGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/DeskClockGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_AARCH64/app/GboardGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/GboardGooglePrebuilt.tar.xz
-    cp -f $SOURCES_AARCH64/app/GoogleTTSPrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/GoogleTTSPrebuilt.tar.xz
-    cp -f $SOURCES_AARCH64/app/MapsGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/MapsGooglePrebuilt.tar.xz
-    cp -f $SOURCES_AARCH64/app/MarkupGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/MarkupGooglePrebuilt.tar.xz
-    cp -f $SOURCES_ALL/app/MessagesGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/MicroGGMSCore.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_AARCH64/app/PhotosGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/PhotosGooglePrebuilt.tar.xz
-    cp -f $SOURCES_ALL/app/SoundPickerPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/YouTubeStock.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_ALL/app/YouTubeVanced.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS
-    cp -f $SOURCES_AARCH64/app/YouTube_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$SYS/YouTube.tar.xz
+    cp -f $SOURCES_AARCH64/app/BromitePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/BromitePrebuilt.tar.xz
+    cp -f $SOURCES_ALL/app/CalculatorGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/CalendarGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/ChromeGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/DeskClockGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_AARCH64/app/GboardGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/GboardGooglePrebuilt.tar.xz
+    cp -f $SOURCES_AARCH64/app/GoogleTTSPrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/GoogleTTSPrebuilt.tar.xz
+    cp -f $SOURCES_AARCH64/app/MapsGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/MapsGooglePrebuilt.tar.xz
+    cp -f $SOURCES_AARCH64/app/MarkupGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/MarkupGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ALL/app/MessagesGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/MicroGGMSCore.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_AARCH64/app/PhotosGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/PhotosGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ALL/app/SoundPickerPrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/YouTubeStock.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_ALL/app/YouTubeVanced.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS
+    cp -f $SOURCES_AARCH64/app/YouTube_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$SYS/YouTube.tar.xz
     # Install etc packages
-    cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/DPSFirmware.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/DPSFirmwareSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/DPSPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/LauncherPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/etc/MapsPermissions.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DialerPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSFirmware.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSFirmwareSc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/DPSPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/LauncherPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/LauncherSysconfig.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/etc/MapsPermissions.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     # Install framework packages
-    cp -f $SOURCES_ALL/framework/DialerFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/framework/MapsFramework.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/framework/DialerFramework.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/framework/MapsFramework.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     # Install overlay packages
-    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlaySc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
-    cp -f $SOURCES_ALL/overlay/DPSOverlay.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$OVERLAY
+    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlay.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
+    cp -f $SOURCES_ALL/overlay/NexusLauncherOverlaySc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
+    cp -f $SOURCES_ALL/overlay/DPSOverlay.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$OVERLAY
     # Install priv-app packages
-    cp -f $SOURCES_ALL/priv-app/CarrierServices.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/ContactsGooglePrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_AARCH64/priv-app/DialerGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DialerGooglePrebuilt.tar.xz
-    cp -f $SOURCES_AARCH64/priv-app/DPSGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuilt.tar.xz
-    cp -f $SOURCES_AARCH64/priv-app/DPSGooglePrebuiltSc_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuiltSc.tar.xz
-    cp -f $SOURCES_AARCH64/priv-app/DINGooglePrebuiltSc_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/DINGooglePrebuiltSc.tar.xz
-    cp -f $SOURCES_AARCH64/priv-app/GearheadGooglePrebuilt_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/GearheadGooglePrebuilt.tar.xz
-    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuiltSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWallet.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWalletSc.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
-    cp -f $SOURCES_AARCH64/priv-app/Velvet_arm64.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE/Velvet.tar.xz
-    cp -f $SOURCES_ALL/priv-app/WellbeingPrebuilt.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/CarrierServices.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/ContactsGooglePrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_AARCH64/priv-app/DialerGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/DialerGooglePrebuilt.tar.xz
+    cp -f $SOURCES_AARCH64/priv-app/DPSGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuilt.tar.xz
+    cp -f $SOURCES_AARCH64/priv-app/DPSGooglePrebuiltSc_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/DPSGooglePrebuiltSc.tar.xz
+    cp -f $SOURCES_AARCH64/priv-app/DINGooglePrebuiltSc_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/DINGooglePrebuiltSc.tar.xz
+    cp -f $SOURCES_AARCH64/priv-app/GearheadGooglePrebuilt_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/GearheadGooglePrebuilt.tar.xz
+    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusLauncherPrebuiltSc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWallet.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_ALL/priv-app/NexusQuickAccessWalletSc.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
+    cp -f $SOURCES_AARCH64/priv-app/Velvet_arm64.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE/Velvet.tar.xz
+    cp -f $SOURCES_ALL/priv-app/WellbeingPrebuilt.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$CORE
     # Install usr packages
-    cp -f $SOURCES_ALL/usr/usr_share.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
-    cp -f $SOURCES_ALL/usr/usr_srec.tar.xz $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/usr/usr_share.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $SOURCES_ALL/usr/usr_srec.tar.xz $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     # Installer components
-    cp -f $UPDATEBINARY $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/update-binary
-    cp -f $UPDATERSCRIPT $BUILDDIR/$ARCH/$RELEASEDIR/$METADIR/updater-script
-    cp -f $INSTALLER $BUILDDIR/$ARCH/$RELEASEDIR
-    cp -f $BUSYBOX $BUILDDIR/$ARCH/$RELEASEDIR
-    cp -f $AIK $BUILDDIR/$ARCH/$RELEASEDIR/$ZIP
+    cp -f $UPDATEBINARY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/update-binary
+    cp -f $UPDATERSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$METADIR/updater-script
+    cp -f $INSTALLER $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
+    cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
     # Create utility script
     makeutilityscript
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$CONFIG"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
-    replace_line $BUILDDIR/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$ADDON_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ZIPTYPE="" ZIPTYPE="$ZIPTYPE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_GAPPS_RELEASE="" TARGET_GAPPS_RELEASE="$TARGET_GAPPS_RELEASE"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_DIRTY_INSTALL="" TARGET_DIRTY_INSTALL="$TARGET_DIRTY_INSTALL"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ADDON="" ADDON="$CONFIG"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh ARMEABI="" ARMEABI="$ARMEABI"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh AARCH64="" AARCH64="$AARCH64"
+    replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh TARGET_CONFIG_VERSION="" TARGET_CONFIG_VERSION="$TARGET_CONFIG_VERSION"
     # Add YouTube Vanced boot scripts
     makevanced
     # Create LICENSE
     makelicense
     # Create ZIP
-    cd $BUILDDIR/$ARCH/$RELEASEDIR
+    cd $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
     zip -qr9 ${RELEASEDIR}.zip *
-    cd ../../..
-    mv $BUILDDIR/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}.zip
+    cd ../../../..
+    mv $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
     # Sign ZIP
-    java -jar $ZIPSIGNER $OUTDIR/$ARCH/${RELEASEDIR}.zip $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
+    java -jar $ZIPSIGNER $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip 2>/dev/null
     # Set build PLATFORM in global environment
     echo "TARGET_PLATFORM_ARM64" >> $OUTDIR/ENV/env_platform.sh
     # List signed ZIP
-    ls $OUTDIR/$ARCH/${RELEASEDIR}_signed.zip
+    ls $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}_signed.zip
     # Wipe unsigned ZIP
-    rm -rf $OUTDIR/$ARCH/${RELEASEDIR}.zip
+    rm -rf $OUTDIR/$TYPE/$ARCH/${RELEASEDIR}.zip
   fi
 }
 
