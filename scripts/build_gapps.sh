@@ -107,6 +107,9 @@ API_29_KEYSTORE="Build-Tools/Keystore/Keystore29.tar.xz"
 API_30_KEYSTORE="Build-Tools/Keystore/Keystore30.tar.xz"
 API_31_KEYSTORE="Build-Tools/Keystore/Keystore31.tar.xz"
 
+# Set hide policy source
+HIDE_POLICY="Build-Tools/Policy/Policy.tar.xz"
+
 # Set Boot Image Editor sources
 AIK="Build-Tools/AIK/AIK.tar.xz"
 
@@ -338,6 +341,7 @@ makegapps() {
       cp -f $LOGCATSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -432,6 +436,7 @@ makegapps() {
       cp -f $LOGCATSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -526,6 +531,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_26_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -620,6 +626,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_27_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -714,6 +721,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_28_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -806,6 +814,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_29_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -901,6 +910,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_30_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -996,6 +1006,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_31_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1100,6 +1111,7 @@ makegapps() {
       cp -f $LOGCATSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1194,6 +1206,7 @@ makegapps() {
       cp -f $LOGCATSCRIPT $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1288,6 +1301,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_26_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1382,6 +1396,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_27_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1476,6 +1491,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_28_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1568,6 +1584,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_29_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1663,6 +1680,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_30_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
@@ -1758,6 +1776,7 @@ makegapps() {
       cp -f $BUSYBOX $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR
       cp -f $AIK $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       cp -f $API_31_KEYSTORE $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
+      cp -f $HIDE_POLICY $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/$ZIP
       # Create utility script
       makeutilityscript
       replace_line $BUILDDIR/$TYPE/$ARCH/$RELEASEDIR/util_functions.sh REL="" REL="$GAPPS_RELEASE"
